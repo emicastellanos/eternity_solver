@@ -15,7 +15,7 @@ import java.util.logging.SimpleFormatter;
 public class Main {
     public static ArrayList<Ficha> fichas;
     public static Boolean[] libres ;
-    private static final int N = 6;
+    private static final int N = 16;
     public static Logger logger = Logger.getLogger(Main.class.getName());
     public static SimpleDateFormat formatter = new SimpleDateFormat("ddMMyyyy_hh_mm_ss");
 
@@ -66,6 +66,86 @@ public class Main {
         }
         b.close();
     }
+    
+    public static void crearFichasAuto(){
+    	fichas = new ArrayList<Ficha>();
+    	Ficha ficha = null ;
+    	Ficha[][] tablero = new Ficha[N][N];
+    	int id = 1;
+    	int color = 1;
+    	for(int i=0; i<N; i++){
+         for(int j=0; j<N; j++){
+    		if(i==0 && j==0){	
+    			ficha = new Ficha(0,0,color,color+N-1,String.valueOf(id));
+    			tablero[i][j] = ficha;
+    		}
+    		else{
+    			if(i==0 && j!= N-1){
+    				ficha = new Ficha(color-1,0,color,color+N-1,String.valueOf(id));
+        			tablero[i][j] = ficha;
+    			}
+    			else{
+    				if(i==0 && j==N-1){
+    					ficha = new Ficha(color-1,0,0,color+N-1,String.valueOf(id));
+            			tablero[i][j] = ficha;
+    				}
+    				else{
+    					if(j==0 && i!=N-1){
+    						color=tablero[i-1][N-1].getAbj()+1;
+    						ficha = new Ficha(0,tablero[i-1][j].getAbj(),color,color+N-1,String.valueOf(id));
+                			tablero[i][j] = ficha;
+    					}
+    					else{
+    						if(j!=N-1 && i!=N-1){
+    							ficha = new Ficha(color-1,tablero[i-1][j].getAbj(),color,color+N-1,String.valueOf(id));
+                    			tablero[i][j] = ficha;
+    						}
+    						else{
+    							if(j==N-1 && i!=N-1){
+    								ficha = new Ficha(color-1,tablero[i-1][j].getAbj(),0,color+N-1,String.valueOf(id));
+                        			tablero[i][j] = ficha;
+    							}
+    							else{
+    		    					if(j==0 && i==N-1){
+    		    						color=tablero[i-1][N-1].getAbj()+1;
+    		    						ficha = new Ficha(0,tablero[i-1][j].getAbj(),color,0,String.valueOf(id));
+    		                			tablero[i][j] = ficha;
+    		    					}
+    		    					else{
+    		    						if(j!=N-1 && i==N-1){
+    		    							ficha = new Ficha(color-1,tablero[i-1][j].getAbj(),color,0,String.valueOf(id));
+    		                    			tablero[i][j] = ficha;
+    		    						}
+    		    						else{
+    		    							if(j==N-1 && i==N-1){
+    		    								ficha = new Ficha(color-1,tablero[i-1][j].getAbj(),0,0,String.valueOf(id));
+    		                        			tablero[i][j] = ficha;
+    		    							}
+    		    						}
+    		    					}
+    							}
+    						}
+    					}
+    				}
+    			}
+    		}
+    		id++;
+    		color++;
+         }
+    	}
+    	for(int i=0; i<N; i++){
+            for(int j=0; j<N; j++){
+            	ficha =new Ficha(tablero[i][j].getIzq(), tablero[i][j].getArr(), tablero[i][j].getDer(), tablero[i][j].getAbj(), tablero[i][j].getId());
+            	fichas.add(ficha);
+            	ficha =new Ficha(tablero[i][j].getAbj(), tablero[i][j].getIzq(), tablero[i][j].getArr(), tablero[i][j].getDer(), tablero[i][j].getId());
+            	fichas.add(ficha);
+            	ficha =new Ficha(tablero[i][j].getDer(), tablero[i][j].getAbj(), tablero[i][j].getIzq(), tablero[i][j].getArr(), tablero[i][j].getId());
+            	fichas.add(ficha);
+            	ficha =new Ficha(tablero[i][j].getArr(), tablero[i][j].getDer(), tablero[i][j].getAbj(), tablero[i][j].getIzq(), tablero[i][j].getId());
+            	fichas.add(ficha);
+            }
+    	}
+    }
 
 
     public static void main(String[] args) throws FileNotFoundException, IOException {
@@ -73,9 +153,9 @@ public class Main {
         libres = new Boolean[N*N];
         inicializarLibres(libres);
         inicLogger();
-        crearFichas();
+        crearFichasAuto();
 
-        /*Collections.shuffle(fichas);*/
+        Collections.shuffle(fichas);
         logger.log(Level.INFO,"-----Fichas-----");
 
         for (Ficha f: fichas){
@@ -88,7 +168,7 @@ public class Main {
 
         logger.log(Level.INFO,"-----BACKTRACKING-----");
         long startTime = System.nanoTime();
-        solucion.findSolution();
+        solucion.solucionRichi(fichas);
         long endTime = System.nanoTime();
         long duration = (endTime - startTime);
         System.out.println("tiempo " + duration);

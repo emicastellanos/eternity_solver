@@ -154,7 +154,7 @@ public class SolverByBacktrack {
 	    	List<Ficha> aux ;
 	    	tablero.insertarFinal(f);
 	    	
-	    	if(tablero.esSolucionFinal()){
+	    	if(tablero.esSolucionFinal()&& tablero.esSolucion()){
 	    		logger.log(Level.INFO,tablero.imprimirse());
 	    		encontro=true;
 	    	}
@@ -163,7 +163,7 @@ public class SolverByBacktrack {
 	    			for(Ficha proxima : fichas){
 		    			aux = new ArrayList<Ficha>();
 		    			for(Ficha e: fichas)
-		    				if(e!=proxima)
+		    				if(e.getId()!=proxima.getId())
 		    					aux.add(e);
 		    			if(!encontro)
 		    				backRichi(aux,proxima);
@@ -182,7 +182,7 @@ public class SolverByBacktrack {
     	for(Ficha f: fichas){
     		aux = new ArrayList<Ficha>();
     		for(Ficha e: fichas)
-    			if(e!=f)
+    			if(e.getId()!=f.getId())
     				aux.add(e);
     		if(!encontro)
     			backRichi(aux,f);

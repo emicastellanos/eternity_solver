@@ -143,7 +143,10 @@ public class Tablero {
     	boolean seguir = true;
         for(int i=0;i<N && seguir;i++){
             for(int j=0;j<N && seguir;j++){
+
 	    		if(tablero[i][j]==null){
+
+
 	            	if(j==0){
 	            		tablero[i-1][N-1]=null;
 	            	}
@@ -152,6 +155,12 @@ public class Tablero {
 	            	}
 	            	seguir=false;
                 	
+                }
+                else{
+                    if(j==N-1 && i==N-1) {
+                        tablero[i][j] = null;
+                        seguir = false;
+                    }
                 }
             }
         }
