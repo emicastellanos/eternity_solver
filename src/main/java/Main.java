@@ -5,20 +5,19 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
 public class Main {
     public static ArrayList<Ficha> fichas;
+	public static ArrayList<Ficha> fichastemp;
     public static Boolean[] libres ;
-    private static final int N = 16;
+    private static final int N = 7;
     public static Logger logger = Logger.getLogger(Main.class.getName());
     public static SimpleDateFormat formatter = new SimpleDateFormat("ddMMyyyy_hh_mm_ss");
-
+	public static int colorMayor;
 
 
     public static void inicializarLibres(Boolean[] libres){
@@ -67,7 +66,7 @@ public class Main {
         b.close();
     }
     
-    public static void crearFichasAuto(){
+    public static void crearFichasAutoMaximoColores(){
     	fichas = new ArrayList<Ficha>();
     	Ficha ficha = null ;
     	Ficha[][] tablero = new Ficha[N][N];
@@ -147,13 +146,190 @@ public class Main {
     	}
     }
 
+	public static boolean existeFicha(Ficha aux){
+		for(Ficha f : fichastemp){
+			if( aux.getAbj() == f.getAbj() && aux.getArr() == f.getArr() && aux.getDer() == f.getDer() && aux.getIzq() == f.getIzq() )
+				return true;
+		}
+		return false;
+	}
+
+	public static void ponerColorDerAbj(Ficha aux){
+		boolean encontro = false;
+		int colorDer =1;
+		int colorAbj=1;
+		boolean AbjUltima=true;
+		while(!encontro && colorMayor>=colorDer && colorMayor>=colorAbj ){
+			aux.setDer(colorDer);
+			aux.setAbj(colorAbj);
+			if(!existeFicha(aux)){
+				encontro=true;
+			}
+			else{
+				if(AbjUltima){
+					colorDer++;
+					AbjUltima=false;
+				}
+				else{
+					colorAbj++;
+					AbjUltima=true;
+				}
+			}
+		}
+
+		colorDer=1;
+		colorAbj=1;
+		while(!encontro && colorMayor >= colorDer ){
+			aux.setDer(colorDer);
+			aux.setAbj(colorAbj);
+			if(!existeFicha(aux)){
+				encontro=true;
+			}
+			else{
+				colorDer++;
+
+			}
+		}
+
+		colorDer=1;
+		colorAbj=1;
+		while(!encontro && colorMayor >= colorAbj ){
+			aux.setDer(colorDer);
+			aux.setAbj(colorAbj);
+			if(!existeFicha(aux)){
+				encontro=true;
+			}
+			else{
+				colorAbj++;
+
+			}
+		}
+		if(!encontro){
+			colorMayor++;
+			aux.setDer(colorMayor);
+			aux.setAbj(1);
+		}
+
+	}
+
+	public static void ponerColorAbj(Ficha aux){
+		boolean encontro = false;
+		int color =1;
+		while(!encontro){
+			aux.setAbj(color);
+			if(!existeFicha(aux)){
+				encontro=true;
+				if(color>colorMayor)
+					colorMayor++;
+			}
+			color++;
+		}
+	}
+
+	public static void ponerColorDer(Ficha aux){
+		boolean encontro = false;
+		int color =1;
+		while(!encontro){
+			aux.setDer(color);
+			if(!existeFicha(aux)){
+				encontro=true;
+				if(color>colorMayor)
+					colorMayor++;
+			}
+			color++;
+		}
+	}
+
+	public static void crearFichasAutoMenorColores() {
+		fichastemp = new ArrayList<Ficha>();
+		fichas = new ArrayList<Ficha>();
+		Ficha ficha = null;
+		Ficha[][] tablero = new Ficha[N][N];
+		int id = 1;
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < N; j++) {
+				if (i == 0 && j == 0) {
+					ficha = new Ficha(0, 0, 0, 0, String.valueOf(id));
+					ponerColorDerAbj(ficha);
+					tablero[i][j] = ficha;
+					fichastemp.add(ficha);
+				} else {
+					if (i == 0 && j != N - 1) {
+						ficha = new Ficha(tablero[i][j - 1].getDer(), 0, 0, 0, String.valueOf(id));
+						ponerColorDerAbj(ficha);
+						tablero[i][j] = ficha;
+						fichastemp.add(ficha);
+					} else {
+						if (i == 0 && j == N - 1) {
+							ficha = new Ficha(tablero[i][j - 1].getDer(), 0, 0, 0, String.valueOf(id));
+							ponerColorAbj(ficha);
+							tablero[i][j] = ficha;
+							fichastemp.add(ficha);
+						} else {
+							if (j == 0 && i != N - 1) {
+								ficha = new Ficha(0, tablero[i - 1][j].getAbj(), 0, 0, String.valueOf(id));
+								ponerColorDerAbj(ficha);
+								tablero[i][j] = ficha;
+								fichastemp.add(ficha);
+							} else {
+								if (j != N - 1 && i != N - 1) {
+									ficha = new Ficha(tablero[i][j - 1].getDer(), tablero[i - 1][j].getAbj(), 0, 0, String.valueOf(id));
+									ponerColorDerAbj(ficha);
+									tablero[i][j] = ficha;
+									fichastemp.add(ficha);
+								} else {
+									if (j == N - 1 && i != N - 1) {
+										ficha = new Ficha(tablero[i][j - 1].getDer(), tablero[i - 1][j].getAbj(), 0, 0, String.valueOf(id));
+										ponerColorAbj(ficha);
+										tablero[i][j] = ficha;
+										fichastemp.add(ficha);
+									} else {
+										if (j == 0 && i == N - 1) {
+											ficha = new Ficha(0, tablero[i - 1][j].getAbj(), 0, 0, String.valueOf(id));
+											ponerColorDer(ficha);
+											tablero[i][j] = ficha;
+											fichastemp.add(ficha);
+										} else {
+											if (j != N - 1 && i == N - 1) {
+												ficha = new Ficha(tablero[i][j - 1].getDer(), tablero[i - 1][j].getAbj(), 0, 0, String.valueOf(id));
+												ponerColorDer(ficha);
+												tablero[i][j] = ficha;
+												fichastemp.add(ficha);
+											} else {
+												if (j == N - 1 && i == N - 1) {
+													ficha = new Ficha(tablero[i][j - 1].getDer(), tablero[i - 1][j].getAbj(), 0, 0, String.valueOf(id));
+													tablero[i][j] = ficha;
+													fichastemp.add(ficha);
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				id++;
+			}
+		}
+		for(Ficha f : fichastemp) {// las fichas originales son distintas pero una ficha rotada si puede ser igual a otra original,
+			fichas.add(f);
+			ficha = new Ficha(f.getAbj(), f.getIzq(), f.getArr(), f.getDer(), f.getId());
+			fichas.add(ficha);
+			ficha = new Ficha(f.getDer(), f.getAbj(), f.getIzq(), f.getArr(), f.getId());
+			fichas.add(ficha);
+			ficha = new Ficha(f.getArr(), f.getDer(), f.getAbj(), f.getIzq(), f.getId());
+			fichas.add(ficha);
+		}
+	}
+
 
     public static void main(String[] args) throws FileNotFoundException, IOException {
 
         libres = new Boolean[N*N];
         inicializarLibres(libres);
         inicLogger();
-        crearFichasAuto();
+        crearFichasAutoMenorColores();
 
         Collections.shuffle(fichas);
         logger.log(Level.INFO,"-----Fichas-----");
