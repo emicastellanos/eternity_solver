@@ -113,6 +113,16 @@ public class Tablero {
                             return false;
                         }
                     }
+                    if(i>0 && i<N-1){
+                        if( tablero[i][j]!=null && (tablero[i][j].getAbj() == 0 || tablero[i][j].getArr() == 0) ){
+                            return false;
+                        }
+                    }
+                    if(j>0 && j<N-1){
+                    	if( tablero[i][j]!=null && (tablero[i][j].getIzq() == 0 || tablero[i][j].getDer() == 0) ){
+                            return false;
+                        }
+                    }
                 }
                 else return true;
             }
