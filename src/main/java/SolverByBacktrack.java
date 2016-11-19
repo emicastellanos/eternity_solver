@@ -1,7 +1,8 @@
+import org.apache.log4j.Logger;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class SolverByBacktrack {
     private int N;
@@ -9,21 +10,20 @@ public class SolverByBacktrack {
     private Tablero tablero;
     private Boolean[] libres;
     private int TOTAL_FICHAS;
-    public Logger logger;
     public boolean encontro = false;
     private ArrayList<Integer> pilaUsados = new ArrayList<>();
+    static final Logger resultLog = Logger.getLogger("resultadoLogger");
 
 
 
 
 
-    public SolverByBacktrack(int N, ArrayList<Ficha> fichas, Tablero t, Boolean[] libres ,Logger logger){
+    public SolverByBacktrack(int N, ArrayList<Ficha> fichas, Tablero t, Boolean[] libres){
         this.N = N;
         this.fichas=fichas;
         tablero=t;
         this.libres=libres;
         TOTAL_FICHAS=N*N;
-        this.logger = logger;
     }
 
     /**
@@ -98,23 +98,23 @@ public class SolverByBacktrack {
     public void backtracking(Tablero tablero, int fila, int columna, Boolean[] libres, Integer ultimaUsada, Integer iteracion){
 
         Integer posibles = getCantidadLibres(libres);
-        logger.log(Level.INFO,"*******");
-        logger.log(Level.INFO,tablero.imprimirse());
+        resultLog.info("*******");
+        resultLog.info(tablero.imprimirse());
         if(detener()){
-            logger.log(Level.INFO,"ACA SE DETUVO");
+            resultLog.info("ACA SE DETUVO");
         }
         while (!todasUsadas(libres) && tablero.esSolucion() && posibles>0){
-            logger.log(Level.INFO, "["+fila+","+columna+"]");
+            resultLog.info("[" + fila + "," + columna + "]");
             Auxiliar aux = getFichaLibre(ultimaUsada);
             Ficha fichaUsada = aux.getF();
-            logger.log(Level.INFO, "PONE EN ["+fila+","+columna+"] <FICHA nro " + fichaUsada.getId() + ",pos en lista:"+ultimaUsada+">: "  + fichaUsada.imprimirse());
+            resultLog.info("PONE EN [" + fila + "," + columna + "] <FICHA nro " + fichaUsada.getId() + ",pos en lista:" + ultimaUsada + ">: " + fichaUsada.imprimirse());
             if(!tablero.estaLibre(fila,columna)){
-                logger.log(Level.INFO, "DETENER");
+                resultLog.info("DETENER");
             }
             tablero.setPosicion(fila, columna, fichaUsada);
 
             libres[aux.getPosicionUsada()]=false;
-            logger.log(Level.INFO,"fichas usadas ("+totalUsados()+") : "+usadas(libres));
+            resultLog.info("fichas usadas (" + totalUsados() + ") : " + usadas(libres));
             if(columna<N-1){
                 backtracking(tablero,fila,columna+1,libres, aux.getPosicionUsada(),iteracion+1);
             } else {
@@ -127,8 +127,8 @@ public class SolverByBacktrack {
             if((!tablero.esSolucion() || tablero.esSolucion() && posibles>=0) &&(!tablero.esSolucionFinal())){
                 tablero.liberarPosicion(fila, columna);
                 libres[aux.getPosicionUsada()]=true;
-                logger.log(Level.INFO, "SACA DE ["+fila+","+columna+"] <FICHA nro " + fichaUsada.getId() + ",pos en lista:"+ultimaUsada+">: " + fichaUsada.imprimirse());
-                logger.log(Level.INFO,"fichas usadas ("+totalUsados()+") : "+usadas(libres));
+                resultLog.info("SACA DE [" + fila + "," + columna + "] <FICHA nro " + fichaUsada.getId() + ",pos en lista:" + ultimaUsada + ">: " + fichaUsada.imprimirse());
+                resultLog.info("fichas usadas (" + totalUsados() + ") : " + usadas(libres));
                 if(aux.getPosicionUsada()<TOTAL_FICHAS-1){
                     ultimaUsada=aux.getPosicionUsada()+1;
                 }else{
@@ -144,9 +144,10 @@ public class SolverByBacktrack {
         Integer ultimaUsada = 0;
         backtracking(tablero,fila,columna,libres,ultimaUsada,0);
         if(!tablero.esSolucionFinal()){
-            logger.log(Level.WARNING,"NO SE ENCONTRO SOLUCION");
+            resultLog.info("NO SE ENCONTRO SOLUCION");
         }else{
-            logger.log(Level.INFO, tablero.imprimirse());
+            resultLog.info("SOLUCION");
+            resultLog.info(tablero.imprimirse());
         }
     }
     
@@ -155,7 +156,7 @@ public class SolverByBacktrack {
 	    	tablero.insertarFinal(f);
 	    	
 	    	if(tablero.esSolucionFinal()&& tablero.esSolucion()){
-	    		logger.log(Level.INFO,tablero.imprimirse());
+                resultLog.info(tablero.imprimirse());
 	    		encontro=true;
 	    	}
 	    	else{
