@@ -14,7 +14,6 @@ public class Main {
     public static ArrayList<Ficha> fichastemp;
     public static Boolean[] libres;
     private static final int N = 3;
-    public static SimpleDateFormat formatter = new SimpleDateFormat("ddMMyyyy_hh_mm_ss");
     static final Logger fichasLog = Logger.getLogger("debugLogger");
     static final Logger resultLog = Logger.getLogger("resultadoLogger");
 
@@ -26,7 +25,7 @@ public class Main {
         }
     }
 
-    public static void main(String[] args) throws FileNotFoundException, IOException {
+    public static void main(String[] args) {
 
         libres = new Boolean[N * N];
         inicializarLibres(libres);
@@ -45,11 +44,11 @@ public class Main {
         SolverByBacktrack solucion = new SolverByBacktrack(N, fichas, tablero, libres);
 
         resultLog.info("-----BACKTRACKING-----");
+
         long startTime = System.nanoTime();
         solucion.solucionRichi(fichas);
         long endTime = System.nanoTime();
         long duration = (endTime - startTime);
-        System.out.println("tiempo " + duration);
 
         resultLog.info("tiempo : " + duration);
 
