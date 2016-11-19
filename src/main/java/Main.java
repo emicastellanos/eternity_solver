@@ -1,17 +1,10 @@
-
 import org.apache.log4j.Logger;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
 
 
 public class Main {
     public static ArrayList<Ficha> fichas;
-    public static ArrayList<Ficha> fichastemp;
     public static Boolean[] libres;
     private static final int N = 3;
     static final Logger fichasLog = Logger.getLogger("debugLogger");
@@ -52,7 +45,5 @@ public class Main {
 
         resultLog.info("tiempo : " + duration);
 
-
     }
 }
-

@@ -2,7 +2,6 @@ import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 public class SolverByBacktrack {
     private int N;
@@ -11,7 +10,6 @@ public class SolverByBacktrack {
     private Boolean[] libres;
     private int TOTAL_FICHAS;
     public boolean encontro = false;
-    private ArrayList<Integer> pilaUsados = new ArrayList<>();
     static final Logger resultLog = Logger.getLogger("resultadoLogger");
 
 
@@ -78,7 +76,7 @@ public class SolverByBacktrack {
     }
 
     public int totalUbicados(){
-        return tablero.getTotalFichasPuestaS();
+        return tablero.getTotalFichasPuestas();
     }
 
     public int totalUsados(){
@@ -156,6 +154,7 @@ public class SolverByBacktrack {
 	    	tablero.insertarFinal(f);
 	    	
 	    	if(tablero.esSolucionFinal()&& tablero.esSolucion()){
+                resultLog.info("SOLUCION");
                 resultLog.info(tablero.imprimirse());
 	    		encontro=true;
 	    	}
@@ -169,12 +168,9 @@ public class SolverByBacktrack {
 		    			if(!encontro)
 		    				backRichi(aux,proxima);
 	    			}
-	    			
 	    		}
-	    		
 	    	}
 	    	tablero.eliminarUltima();
-
     }
 
     
