@@ -1,6 +1,7 @@
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 
 public class Main {
@@ -26,7 +27,7 @@ public class Main {
         fichas = generadorFichas.getFichasUnicas();
 
 
-        /*Collections.shuffle(fichas);*/
+        Collections.shuffle(fichas);
         fichasLog.info("-----Fichas-----");
         for (Ficha f : fichas) {
             fichasLog.info("F" + f.getId() + ": " + f.imprimirse());
@@ -34,7 +35,7 @@ public class Main {
 
         Tablero tablero = new Tablero(N);
 
-        SolverByBacktrack solucion = new SolverByBacktrack(N, fichas, tablero, libres);
+        SolverByBacktrack solucion = new SolverByBacktrack(tablero);
 
         resultLog.info("-----BACKTRACKING-----");
 
