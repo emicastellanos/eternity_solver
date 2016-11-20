@@ -36,11 +36,11 @@ public class SolverByBacktrack {
                         nivel+=1;
                         backRichi(aux, proxima, nivel);
                         nivel-=1;
-                        tablero.eliminarUltima();
                     }
                 }
             }
         }
+        tablero.eliminarUltima();
     }
 
     
