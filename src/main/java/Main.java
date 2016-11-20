@@ -8,7 +8,7 @@ public class Main {
     public static ArrayList<Ficha> fichas;
     public static Boolean[] libres;
     private static final int N = 3;
-    static final Logger fichasLog = Logger.getLogger("debugLogger");
+    static final Logger fichasLog = Logger.getLogger("fichasLogger");
     static final Logger resultLog = Logger.getLogger("resultadoLogger");
 
 
