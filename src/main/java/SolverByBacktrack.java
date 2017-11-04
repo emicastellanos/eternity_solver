@@ -44,7 +44,7 @@ public class SolverByBacktrack {
     }
 
     
-    public void solucionRichi(List<Ficha> fichas){
+    /*public void solucionRichi(List<Ficha> fichas){
     	List<Ficha> aux ;
         int nivel = 1;
     	for(Ficha f: fichas){
@@ -55,5 +55,8 @@ public class SolverByBacktrack {
     		if(!encontro)
     			backRichi(aux,f,nivel);
     	}
+    }*/
+    public void solucionRichi(List<Ficha> fichas){
+
     }
 }
