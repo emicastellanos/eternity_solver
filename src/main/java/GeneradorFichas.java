@@ -105,14 +105,15 @@ public class GeneradorFichas {
                 id++;
             }
         }
-        for (Ficha f : fichastemp) {// las fichas originales son distintas pero una ficha rotada si puede ser igual a otra original,
+        /*las fichas originales son distintas pero una ficha rotada si puede ser igual a otra original*/
+        for (Ficha f : fichastemp) {
             fichas.add(f);
-            /**ficha = new Ficha(f.getAbj(), f.getIzq(), f.getArr(), f.getDer(), f.getId());
-             fichas.add(ficha);
-             ficha = new Ficha(f.getDer(), f.getAbj(), f.getIzq(), f.getArr(), f.getId());
-             fichas.add(ficha);
-             ficha = new Ficha(f.getArr(), f.getDer(), f.getAbj(), f.getIzq(), f.getId());
-             fichas.add(ficha);**/
+            ficha = new Ficha(f.getAbj(), f.getIzq(), f.getArr(), f.getDer(), f.getId());
+            fichas.add(ficha);
+            ficha = new Ficha(f.getDer(), f.getAbj(), f.getIzq(), f.getArr(), f.getId());
+            fichas.add(ficha);
+            ficha = new Ficha(f.getArr(), f.getDer(), f.getAbj(), f.getIzq(), f.getId());
+            fichas.add(ficha);
         }
 
         return fichas;

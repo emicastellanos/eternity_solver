@@ -10,19 +10,25 @@ import java.util.concurrent.TimeUnit;
 
 public class Main {
 
-    private static final int N = 7;
+    private static final int N = 6;
     static final Logger fichasLog = Logger.getLogger("fichasLogger");
     static final Logger resultLog = Logger.getLogger("resultadoLogger");
 
 
-    public static void inicializarLibres(Boolean[] libres) {
-        int M = N * N;
-        for (int i = 0; i < M; i++) {
-            libres[i] = true;
-        }
+
+    public static void main (String[] args){
+
+        GeneradorFichas generadorFichas = new GeneradorFichas(N);
+
+        ArrayList<Ficha> fichas = generadorFichas.getFichasUnicas();
+
+        Maestro maestro = new Maestro(new Tablero(N), fichas);
+        maestro.generarHilos(10);
+
+
     }
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
 
         Boolean [] libres1 = new Boolean[N * N];
         inicializarLibres(libres1);
@@ -36,10 +42,10 @@ public class Main {
 
         Collections.shuffle(fichas);
         Collections.shuffle(fichas2);
-        /*fichasLog.info("-----Fichas-----");
+        *//*fichasLog.info("-----Fichas-----");
         for (Ficha f : fichas) {
             fichasLog.info("F" + f.getId() + ": " + f.imprimirse());
-        }*/
+        }*//*
 
         Tablero tablero = new Tablero(N);
 
@@ -85,14 +91,14 @@ public class Main {
         }
 
 
-        /*solucion.solucionRichi(fichas);*/
+        *//*solucion.solucionRichi(fichas);*//*
 
         long endTime = System.nanoTime();
         long duration = (endTime - startTime);
 
         resultLog.info("tiempo : " + duration);
 
-    }
+    }*/
 
     /*static int i = 0;
 
