@@ -9,12 +9,15 @@ public class TareaRunnable implements Runnable {
     private List<Ficha> fichas;
     public boolean encontro = false;
     public int nivelComienzo;
-    final Logger resultLog = Logger.getLogger("resultadoLogger");
+    public Logger resultLog;
+    public String nombreThread;
 
-    public TareaRunnable(Tablero tablero, List<Ficha> fichas, int nivelComienzo) {
+    public TareaRunnable(Tablero tablero, List<Ficha> fichas, int nivelComienzo, String nombreThread, Logger logger) {
         this.tablero = tablero;
         this.fichas = fichas;
         this.nivelComienzo = nivelComienzo;
+        this.nombreThread = nombreThread;
+        this.resultLog = logger;
     }
 
     public String getInfo(){
@@ -32,14 +35,17 @@ public class TareaRunnable implements Runnable {
 
     public void back(List<Ficha> fichas,Ficha f, Integer nivel){
         List<Ficha> aux ;
-        resultLog.info("NIVEL "+nivel);
 
         if(!tablero.estaUsada(f)) {
+            resultLog.info("NIVEL "+nivel);
             tablero.insertarFinal(f);
 
             if (tablero.esSolucionFinal() && tablero.esSolucion()) {
                 resultLog.info(".............SOLUCION ENCONTRADA POR " + Thread.currentThread().getName() + ".............");
                 resultLog.info(tablero.imprimirse());
+                resultLog.info("\nFICHAS USADAS:");
+                resultLog.info(tablero.imprimirUsadas());
+
                 encontro = true;
             } else {
                 if (tablero.esSolucion()) {
@@ -63,5 +69,8 @@ public class TareaRunnable implements Runnable {
     @Override
     public void run() {
         back(new ArrayList<>(fichas.subList(1,fichas.size())),fichas.get(0),nivelComienzo);
+        if(!encontro){
+            resultLog.info("------ MURIO EL THREAD SIN ENCONTRAR ------");
+        }
     }
 }

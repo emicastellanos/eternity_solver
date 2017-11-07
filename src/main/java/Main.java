@@ -11,8 +11,8 @@ import java.util.concurrent.TimeUnit;
 public class Main {
 
     private static final int N = 6;
-    static final Logger fichasLog = Logger.getLogger("fichasLogger");
-    static final Logger resultLog = Logger.getLogger("resultadoLogger");
+    //static final Logger fichasLog = Logger.getLogger("fichasLogger");
+    //static final Logger resultLog = Logger.getLogger("resultadoLogger");
 
 
 
@@ -21,8 +21,8 @@ public class Main {
         GeneradorFichas generadorFichas = new GeneradorFichas(N);
 
         ArrayList<Ficha> fichas = generadorFichas.getFichasUnicas();
-
-        Maestro maestro = new Maestro(new Tablero(N), fichas);
+        LoggerCustom loggerCustom = new LoggerCustom();
+        Maestro maestro = new Maestro(new Tablero(N, loggerCustom.getLogger("principal")), fichas);
         maestro.generarHilos(10);
 
 

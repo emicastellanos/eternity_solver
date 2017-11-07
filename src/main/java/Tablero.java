@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Tablero {
-    static final Logger resultLog = Logger.getLogger("resultadoLogger");
+    private Logger resultLog;
     private int N;
     private List<String> usadas;
+
 
     private Ficha[][] tablero;
 
@@ -36,10 +37,12 @@ public class Tablero {
         }
     }
 
-    public Tablero(int n) {
+    public Tablero(int n,Logger logger) {
         this.N = n;
         usadas = new ArrayList<>();
         tablero = new Ficha[N][N];
+        resultLog = logger;
+
         for (int i = 0; i < N; i++)
             for (int j = 0; j < N; j++)
                 tablero[i][j] = null;
@@ -186,7 +189,7 @@ public class Tablero {
                     tablero[i][j] = f;
                     usadas.add(f.getId());
                     seguir = false;
-                    resultLog.info(Thread.currentThread().getName() + "\n PONER [" + i + "," + j + "] \n "+this.imprimirse());
+                    resultLog.info("\n"+Thread.currentThread().getName() + "\nPONER [" + i + "," + j + "] \n "+this.imprimirse());
                     /*resultLog.info("PONER [" + i + "," + j + "] \n");
                     resultLog.info(this.imprimirse());*/
                 }
@@ -205,7 +208,7 @@ public class Tablero {
         return null;
     }
 
-    public synchronized void eliminarUltima() {
+    public void eliminarUltima() {
         boolean seguir = true;
         Ficha eliminada = null;
         for (int i = 0; i < N && seguir; i++) {
@@ -235,9 +238,8 @@ public class Tablero {
         usadas.remove(eliminada.getId());
     }
 
-    @Override
-    protected Object clone() {
-        Tablero result = new Tablero(this.N);
+    public Tablero clone(Logger logger) {
+        Tablero result = new Tablero(this.N,logger);
 
         for(int i=0; i<N; i++){
             for(int j=0; j<N; j++){
@@ -245,6 +247,14 @@ public class Tablero {
             }
         }
         return result;
+    }
+
+    public String imprimirUsadas(){
+        StringBuffer result = new StringBuffer();
+        for(String s : usadas){
+            result.append(s + ", ");
+        }
+        return result.toString();
 
     }
 
