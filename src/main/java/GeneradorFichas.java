@@ -23,7 +23,6 @@ public class GeneradorFichas {
         BufferedReader b = new BufferedReader(f);
         int i = 0;
         while ((cadena = b.readLine()) != null) {
-
             colores = cadena.split("-");
             ficha = new Ficha(Integer.valueOf(colores[0]), Integer.valueOf(colores[1]), Integer.valueOf(colores[2]), Integer.valueOf(colores[3]), String.valueOf(i));
             fichas.add(ficha);
@@ -108,12 +107,12 @@ public class GeneradorFichas {
         /*las fichas originales son distintas pero una ficha rotada si puede ser igual a otra original*/
         for (Ficha f : fichastemp) {
             fichas.add(f);
-            ficha = new Ficha(f.getAbj(), f.getIzq(), f.getArr(), f.getDer(), f.getId());
+            /*ficha = new Ficha(f.getAbj(), f.getIzq(), f.getArr(), f.getDer(), f.getId());
             fichas.add(ficha);
             ficha = new Ficha(f.getDer(), f.getAbj(), f.getIzq(), f.getArr(), f.getId());
             fichas.add(ficha);
             ficha = new Ficha(f.getArr(), f.getDer(), f.getAbj(), f.getIzq(), f.getId());
-            fichas.add(ficha);
+            fichas.add(ficha);*/
         }
 
         return fichas;
@@ -167,18 +166,6 @@ public class GeneradorFichas {
             }
         }
 
-        colorDer = 1;
-        colorAbj = 1;
-        while (!encontro && colorMayor >= colorAbj) {
-            aux.setDer(colorDer);
-            aux.setAbj(colorAbj);
-            if (!existeFicha(aux,fichas)) {
-                encontro = true;
-            } else {
-                colorAbj++;
-
-            }
-        }
         if (!encontro) {
             colorMayor++;
             aux.setDer(colorMayor);
