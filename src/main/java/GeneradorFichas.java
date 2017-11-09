@@ -165,6 +165,19 @@ public class GeneradorFichas {
 
             }
         }
+        
+        colorDer = 1;
+        colorAbj = 1;
+        while (!encontro && colorMayor >= colorAbj) {
+            aux.setDer(colorDer);
+            aux.setAbj(colorAbj);
+            if (!existeFicha(aux,fichas)) {
+                encontro = true;
+            } else {
+                colorAbj++;
+
+            }
+        }
 
         if (!encontro) {
             colorMayor++;
