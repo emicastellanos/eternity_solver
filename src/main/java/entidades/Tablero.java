@@ -1,3 +1,5 @@
+package entidades;
+
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
@@ -238,8 +240,8 @@ public class Tablero {
         usadas.remove(eliminada.getId());
     }
 
-    /*public Tablero clone(Logger logger) {
-        Tablero result = new Tablero(this.N,logger);
+    /*public entidades.Tablero clone(Logger logger) {
+        entidades.Tablero result = new entidades.Tablero(this.N,logger);
 
         for(int i=0; i<N; i++){
             for(int j=0; j<N; j++){

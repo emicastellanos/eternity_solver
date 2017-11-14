@@ -1,3 +1,4 @@
+package entidades;
 
 public class Ficha {
     private int izq;
