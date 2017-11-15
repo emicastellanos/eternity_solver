@@ -3,6 +3,7 @@ package soluciones.master_slave;
 import entidades.Ficha;
 import entidades.Tablero;
 import org.apache.log4j.Logger;
+import utilidades.LoggerCustom;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -13,17 +14,20 @@ import java.util.List;
 public class Maestro {
     private Tablero tablero;
     private List<Ficha> fichas;
-    private Logger logger;
+    private int nroThread = 0;
+    private LoggerCustom loggerCustom;
     final Logger threadsLogger = Logger.getLogger("threadLogger");
+    private Logger logger;
 
-    public Maestro(Tablero tablero, List<Ficha> fichas,Logger logger) {
+    public Maestro(Tablero tablero, List<Ficha> fichas) {
         this.tablero = tablero;
         this.fichas = fichas;
-        this.logger = logger;
+        this.loggerCustom = new LoggerCustom();
+        logger = loggerCustom.getLogger("Maestro");
     }
 
     //Ubica las primeras N fichas en orden en el tablero. Modifica la lista de fichas borrando las que haya usado
-    public void ubicarPrimeras(int n){
+    /*public void ubicarPrimeras(int n){
         int puestas=0;
         int a=0;
         List<Ficha> aBorrar = new ArrayList<>();
@@ -57,18 +61,29 @@ public class Maestro {
         public ArrayList<Ficha> getFichas(){
             return this.fichas;
         }
-    }
+    }*/
 
-    public void back(List<Ficha> fichas,Ficha f, Integer nivel,int nivelCorte, List<EstructuraAuxiliar> estructura){
+    public void back(List<Ficha> fichas,Ficha f, Integer nivel,int nivelCorte){
         List<Ficha> aux ;
 
-        if(nivel==nivelCorte && tablero.entra(f)){
-            ArrayList<Ficha> clonacion = new ArrayList<>(Arrays.asList(f));
-            clonacion.addAll(fichas);
-            estructura.add(new EstructuraAuxiliar(tablero.clone(),clonacion));
+        if(nivel==nivelCorte){
+            if(tablero.entra(f)){
+                ArrayList<Ficha> clonacion = new ArrayList<>(Arrays.asList(f));
+                clonacion.addAll(fichas);
+                String nombreThread = "Thread-"+nroThread;
+                Logger l = loggerCustom.getLogger(nombreThread);
+                TareaRunnable t =  new TareaRunnable(tablero.clone(),clonacion,nivelCorte,l);
+                Thread thread = new Thread(t);
+                thread.setName(nombreThread);
+                this.logger.info("--------------- SE ENVIA A TRABAJAR AL :" + nombreThread +"-----------" + f.imprimirse());
+                thread.start();
+                nroThread++;
+
+                //estructura.add(new EstructuraAuxiliar(tablero.clone(),clonacion));
+            }
         }else{
             if(!tablero.estaUsada(f)) {
-                tablero.insertarFinal(f);
+                tablero.insertarFinal(f, logger);
                 if (tablero.esSolucion()){
                     for (Ficha proxima : fichas) {
                         if(!tablero.estaUsada(proxima)){
@@ -78,12 +93,12 @@ public class Maestro {
                                     aux.add(e);
                             }
                             nivel += 1;
-                            back(aux, proxima, nivel, nivelCorte,estructura);
+                            back(aux, proxima, nivel, nivelCorte);
                             nivel -= 1;
                         }
                     }
                 }
-                tablero.eliminarUltima();
+                tablero.eliminarUltima(logger);
             }
         }
     }
@@ -94,15 +109,16 @@ public class Maestro {
 
         int nivel = 1;
         ArrayList<Ficha> aux;
-        List<EstructuraAuxiliar> estructuraAuxiliar = new ArrayList<>();
+        //List<EstructuraAuxiliar> estructuraAuxiliar = new ArrayList<>();
         for(Ficha f: fichas){
             aux = new ArrayList<>();
             for(Ficha e: fichas){
                 if(!e.getId().equals(f.getId()))
                     aux.add(e);
             }
-            back(aux,f,nivel,nivelCorte, estructuraAuxiliar);
+            back(aux,f,nivel,nivelCorte);
         }
+
 
 
 
