@@ -24,7 +24,7 @@ public class Main {
             fichasLog.info("F" + f.getId() + ": " + f.imprimirse());
         }
 
-        Maestro maestro = new Maestro(new Tablero(N), fichas, loggerCustom.getLogger("principal"));
+        Maestro maestro = new Maestro(new Tablero(N), fichas);
         maestro.generarHilos(2);
 
 
