@@ -1,15 +1,12 @@
 package entidades;
-
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Tablero {
-    //private Logger resultLog;
     private int N;
     private List<String> usadas;
-
 
     private Ficha[][] tablero;
 
@@ -43,7 +40,6 @@ public class Tablero {
         this.N = n;
         usadas = new ArrayList<>();
         tablero = new Ficha[N][N];
-        //resultLog = logger;
 
         for (int i = 0; i < N; i++)
             for (int j = 0; j < N; j++)
@@ -62,7 +58,6 @@ public class Tablero {
 
 
     public void setPosicion(int fila, int columna, Ficha ficha) {
-
         tablero[fila][columna] = ficha;
         if(ficha!=null){
             usadas.add(ficha.getId());
@@ -236,20 +231,9 @@ public class Tablero {
                 }
             }
         }
-
         usadas.remove(eliminada.getId());
     }
 
-    /*public entidades.Tablero clone(Logger logger) {
-        entidades.Tablero result = new entidades.Tablero(this.N,logger);
-
-        for(int i=0; i<N; i++){
-            for(int j=0; j<N; j++){
-                result.setPosicion(i,j,getPosicion(i,j));
-            }
-        }
-        return result;
-    }*/
 
     @Override
     public Tablero clone(){
@@ -269,7 +253,6 @@ public class Tablero {
             result.append(s + ", ");
         }
         return result.toString();
-
     }
 
     public boolean entra (Ficha f){

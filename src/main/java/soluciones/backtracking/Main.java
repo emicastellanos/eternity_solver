@@ -32,7 +32,7 @@ public class Main {
 
         Tablero tablero = new Tablero(N);
 
-        SolverByBacktrack solucion = new SolverByBacktrack(tablero,encontrarTodasSoluciones);
+        SolverByBacktrack solucion = new SolverByBacktrack(tablero,encontrarTodasSoluciones,resultLog);
 
         resultLog.info("-----BACKTRACKING-----");
 

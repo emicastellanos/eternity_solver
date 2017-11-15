@@ -11,12 +11,13 @@ public class SolverByBacktrack {
     private Tablero tablero;
     public boolean encontro = false;
     private boolean buscarTodasSoluciones;
-    static final Logger resultLog = Logger.getLogger("resultadoLogger");
+    private Logger resultLog ;
 
 
-    public SolverByBacktrack(Tablero t, boolean buscarTodas){
+    public SolverByBacktrack(Tablero t, boolean buscarTodas, Logger logger){
         this.tablero=t;
         this.buscarTodasSoluciones = buscarTodas;
+        this.resultLog = logger;
     }
 
     
