@@ -19,7 +19,6 @@ public class MasterSlaveMain {
         GeneradorFichas generadorFichas = new GeneradorFichas(N);
 
         ArrayList<Ficha> fichas = generadorFichas.getFichasUnicas();
-        LoggerCustom loggerCustom = new LoggerCustom();
         for (Ficha f : fichas) {
             fichasLog.info("F" + f.getId() + ": " + f.imprimirse());
         }

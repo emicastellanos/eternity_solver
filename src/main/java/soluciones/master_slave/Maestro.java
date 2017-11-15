@@ -89,7 +89,7 @@ public class Maestro {
                         if(!tablero.estaUsada(proxima)){
                             aux = new ArrayList<>();
                             for (Ficha e : fichas) {
-                                if (e.getId().equals(proxima.getId()) && !tablero.estaUsada(e) )
+                                if (!e.getId().equals(proxima.getId()) && !tablero.estaUsada(e) )
                                     aux.add(e);
                             }
                             nivel += 1;

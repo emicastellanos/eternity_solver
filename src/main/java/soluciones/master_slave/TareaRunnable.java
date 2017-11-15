@@ -61,7 +61,7 @@ public class TareaRunnable implements Runnable {
                     for (Ficha proxima : fichas) {
                         aux = new ArrayList<>();
                         for (Ficha e : fichas)
-                            if (e.getId() != proxima.getId() && !tablero.estaUsada(e))
+                            if (!e.getId().equals(proxima.getId()) && !tablero.estaUsada(e))
                                 aux.add(e);
                         if (!encontro) {
                             nivel += 1;
