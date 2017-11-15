@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 
-public class Main {
+public class BacktrackingMain {
     public static ArrayList<Ficha> fichas;
 
     private static final int N = 3;

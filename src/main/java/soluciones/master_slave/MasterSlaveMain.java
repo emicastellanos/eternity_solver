@@ -9,7 +9,7 @@ import utilidades.LoggerCustom;
 import java.util.ArrayList;
 
 
-public class Main {
+public class MasterSlaveMain {
 
     private static final int N = 3;
     static final Logger fichasLog = Logger.getLogger("fichasLogger");
