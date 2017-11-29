@@ -1,15 +1,46 @@
+package entidades;
 import org.apache.log4j.Logger;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Tablero {
-    static final Logger resultLog = Logger.getLogger("resultadoLogger");
     private int N;
+    private List<String> usadas;
 
     private Ficha[][] tablero;
 
+    public class Posicion{
+        int i;
+        int j;
+
+        public Posicion(int i, int j) {
+            this.i = i;
+            this.j = j;
+        }
+
+        public int getI() {
+            return i;
+        }
+
+        public void setI(int i) {
+            this.i = i;
+        }
+
+        public int getJ() {
+            return j;
+        }
+
+        public void setJ(int j) {
+            this.j = j;
+        }
+    }
 
     public Tablero(int n) {
         this.N = n;
+        usadas = new ArrayList<>();
         tablero = new Ficha[N][N];
+
         for (int i = 0; i < N; i++)
             for (int j = 0; j < N; j++)
                 tablero[i][j] = null;
@@ -28,21 +59,19 @@ public class Tablero {
 
     public void setPosicion(int fila, int columna, Ficha ficha) {
         tablero[fila][columna] = ficha;
+        if(ficha!=null){
+            usadas.add(ficha.getId());
+        }
     }
 
     public void liberarPosicion(int fila, int columna) {
+        if(tablero[fila][columna]!=null){
+            usadas.remove(tablero[fila][columna].getId());
+        }
         tablero[fila][columna] = null;
     }
-    
-    public String dameUnPiso() {
-    	StringBuffer r = new StringBuffer();
-    	for(int i=0; i<N; i++) {
-    		r.append("---------|");
-    	}
-    	return r.toString();
-    }
-    
-    public  String imprimirse() {
+
+    public synchronized String imprimirse() {
         String result = "\n";
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
@@ -54,30 +83,6 @@ public class Tablero {
 
             }
             result += "\n";
-        }
-        return result;
-    }
-
-    public String imprimirseCheto() {
-        String result = "";
-        String resultTecho = "";
-        String resultMedio = "";
-        String resultAbajo = "";
-        for (int i = 0; i < N; i++) {
-        	resultTecho = "";
-            resultMedio = "";
-            resultAbajo = "";
-            for (int j = 0; j < N; j++) {
-                if (tablero[i][j] != null) {
-                	resultTecho += tablero[i][j].imprimirTecho();
-                	resultMedio += tablero[i][j].imprimirMedio();
-                	resultAbajo += tablero[i][j].imprimirAbajo();
-                } else {
-                    result += "*-*-*-*|";
-                }
-            }
-            result += resultTecho + "\n" + resultMedio + "\n" +resultAbajo +"\n";
-            result += dameUnPiso() + "\n"; 
         }
         return result;
     }
@@ -173,40 +178,121 @@ public class Tablero {
         return true;
     }
 
-    public void insertarFinal(Ficha f) {
+    public void insertarFinal(Ficha f, Logger resultLog) {
         boolean seguir = true;
         for (int i = 0; i < N && seguir; i++)
             for (int j = 0; j < N && seguir; j++)
                 if (tablero[i][j] == null) {
                     tablero[i][j] = f;
+                    usadas.add(f.getId());
                     seguir = false;
-                  //  resultLog.info("PONER [" + i + "," + j + "] \n");
-                  //  resultLog.info(this.imprimirse());
+                    resultLog.info("\n"+Thread.currentThread().getName() + "\nPONER [" + i + "," + j + "] \n "+this.imprimirse());
+                    /*resultLog.info("PONER [" + i + "," + j + "] \n");
+                    resultLog.info(this.imprimirse());*/
                 }
     }
 
-    public void eliminarUltima() {
+    public boolean estaUsada(Ficha f){
+        return usadas.contains(f.getId());
+    }
+
+    public Posicion getUltimaPosicion () {
+        for (int i = 0; i < N; i++)
+            for (int j = 0; j < N; j++)
+                if (tablero[i][j] == null) {
+                    return new Posicion(i, j);
+                }
+        return null;
+    }
+
+    public void eliminarUltima(Logger resultLog) {
         boolean seguir = true;
+        Ficha eliminada = null;
         for (int i = 0; i < N && seguir; i++) {
             for (int j = 0; j < N && seguir; j++) {
                 if (tablero[i][j] == null) {
                     if (j == 0) {
+                        eliminada = tablero[i - 1][N - 1];
                         tablero[i - 1][N - 1] = null;
-                       // resultLog.info("ELIMINAR [" + String.valueOf(i - 1) + "," + String.valueOf(N-1) + "]");
+                        resultLog.info("ELIMINAR [" + String.valueOf(i - 1) + "," + String.valueOf(N-1) + "] " + Thread.currentThread().getName());
                     } else {
+                        eliminada = tablero[i][j - 1] ;
                         tablero[i][j - 1] = null;
-                        //resultLog.info("ELIMINAR [" + i + "," + String.valueOf(j-1) + "]");
+                        resultLog.info("ELIMINAR [" + i + "," + String.valueOf(j-1) + "] " + Thread.currentThread().getName());
                     }
                     seguir = false;
                 } else {
                     if (j == N - 1 && i == N - 1) {
+                        eliminada = tablero[i][j];
                         tablero[i][j] = null;
                         seguir = false;
-                      //  resultLog.info("ELIMINAR [" + i + "," + j + "]");
+                        resultLog.info("ELIMINAR [" + i + "," + j + "] " + Thread.currentThread().getName());
                     }
                 }
             }
         }
+        usadas.remove(eliminada.getId());
+    }
+
+
+    @Override
+    public Tablero clone(){
+        Tablero result = new Tablero(this.N);
+
+        for(int i=0; i<N; i++){
+            for(int j=0; j<N; j++){
+                result.setPosicion(i,j,getPosicion(i,j));
+            }
+        }
+        return result;
+    }
+    
+    public String dameUnPiso() {
+    	StringBuffer r = new StringBuffer();
+    	for(int i=0; i<N; i++) {
+    		r.append("---------|");
+    	}
+    	return r.toString();
+    }
+
+    public String imprimirUsadas(){
+        StringBuffer result = new StringBuffer();
+        for(String s : usadas){
+            result.append(s + ", ");
+        }
+        return result.toString();
+    }
+
+    public boolean entra (Ficha f){
+        Posicion p = getUltimaPosicion();
+        setPosicion(p.getI(),p.getJ(),f);
+        boolean result = esSolucion();
+        liberarPosicion(p.getI(),p.getJ());
+        return result;
+    }
+
+    public String imprimirseCheto() {
+        String result = "";
+        String resultTecho = "";
+        String resultMedio = "";
+        String resultAbajo = "";
+        for (int i = 0; i < N; i++) {
+            resultTecho = "";
+            resultMedio = "";
+            resultAbajo = "";
+            for (int j = 0; j < N; j++) {
+                if (tablero[i][j] != null) {
+                    resultTecho += tablero[i][j].imprimirTecho();
+                    resultMedio += tablero[i][j].imprimirMedio();
+                    resultAbajo += tablero[i][j].imprimirAbajo();
+                } else {
+                    result += "*-*-*-*|";
+                }
+            }
+            result += resultTecho + "\n" + resultMedio + "\n" +resultAbajo +"\n";
+            result += dameUnPiso() + "\n"; 
+        }
+        return result;
     }
 
 }

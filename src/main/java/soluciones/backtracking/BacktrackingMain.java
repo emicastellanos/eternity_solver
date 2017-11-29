@@ -1,41 +1,38 @@
+package soluciones.backtracking;
+
+import entidades.Ficha;
+import entidades.Tablero;
 import org.apache.log4j.Logger;
+import utilidades.GeneradorFichas;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
 
-public class Main {
+public class BacktrackingMain {
     public static ArrayList<Ficha> fichas;
-    public static Boolean[] libres;
+
     private static final int N = 3;
+    private static boolean encontrarTodasSoluciones = false;
     static final Logger fichasLog = Logger.getLogger("fichasLogger");
     static final Logger resultLog = Logger.getLogger("resultadoLogger");
 
 
-    public static void inicializarLibres(Boolean[] libres) {
-        int M = N * N;
-        for (int i = 0; i < M; i++) {
-            libres[i] = true;
-        }
-    }
-
     public static void main(String[] args) {
 
-        libres = new Boolean[N * N];
-        inicializarLibres(libres);
         GeneradorFichas generadorFichas = new GeneradorFichas(N);
         fichas = generadorFichas.getFichasUnicas();
 
 
         Collections.shuffle(fichas);
-        fichasLog.info("-----Fichas-----");
+        fichasLog.info("-----Fichas Generadas-----");
         for (Ficha f : fichas) {
             fichasLog.info("F" + f.getId() + ": " + f.imprimirse());
         }
 
         Tablero tablero = new Tablero(N);
 
-        SolverByBacktrack solucion = new SolverByBacktrack(tablero);
+        SolverByBacktrack solucion = new SolverByBacktrack(tablero,encontrarTodasSoluciones,resultLog);
 
         resultLog.info("-----BACKTRACKING-----");
 
