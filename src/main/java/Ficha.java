@@ -50,6 +50,52 @@ public class Ficha {
 
         return izq+"-"+arr+"-"+der+"-"+abj;
     }
+    
+    public String imprimirTecho() {
+    	StringBuffer result = new StringBuffer();
+    	result.append("   ");
+    	result.append(String.format("%1$3s", arr).replace(' ','0'));
+    	result.append("   |");
+    	
+    	return result.toString();
+    }
+    
+    public String imprimirMedio() {
+    	StringBuffer result = new StringBuffer();
+    	
+    	result.append(String.format("%1$3s", izq).replace(' ','0'));
+    	result.append("   ");
+    	result.append(String.format("%1$3s", der).replace(' ','0') + "|");
+    	
+    	return result.toString();
+    }
+    
+    public String imprimirAbajo() {
+    	StringBuffer result = new StringBuffer();
+    	result.append("   ");
+    	result.append(String.format("%1$3s", abj).replace(' ','0'));
+    	result.append("   |");
+    	
+    	return result.toString();
+    	
+    }
+    
+    public String imprimirseCuadrado(){
+    	StringBuffer result = new StringBuffer();
+    	result.append("---");
+    	result.append(String.format("%1$3s", arr).replace(' ','0'));
+    	result.append("---| \n");
+    	
+    	result.append(String.format("%1$3s", izq).replace(' ','0'));
+    	result.append("---");
+    	result.append(String.format("%1$3s", der).replace(' ','0') + " |");
+    	
+    	result.append("\n---");
+    	result.append(String.format("%1$3s", abj).replace(' ','0'));
+    	result.append("---|\n");
+    	
+        return result.toString();
+    }
 
 	public String getId() {
 		return id;

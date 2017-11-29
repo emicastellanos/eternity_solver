@@ -33,9 +33,17 @@ public class Tablero {
     public void liberarPosicion(int fila, int columna) {
         tablero[fila][columna] = null;
     }
-
-    public String imprimirse() {
-        String result = "";
+    
+    public String dameUnPiso() {
+    	StringBuffer r = new StringBuffer();
+    	for(int i=0; i<N; i++) {
+    		r.append("---------|");
+    	}
+    	return r.toString();
+    }
+    
+    public  String imprimirse() {
+        String result = "\n";
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
                 if (tablero[i][j] != null) {
@@ -46,6 +54,30 @@ public class Tablero {
 
             }
             result += "\n";
+        }
+        return result;
+    }
+
+    public String imprimirseCheto() {
+        String result = "";
+        String resultTecho = "";
+        String resultMedio = "";
+        String resultAbajo = "";
+        for (int i = 0; i < N; i++) {
+        	resultTecho = "";
+            resultMedio = "";
+            resultAbajo = "";
+            for (int j = 0; j < N; j++) {
+                if (tablero[i][j] != null) {
+                	resultTecho += tablero[i][j].imprimirTecho();
+                	resultMedio += tablero[i][j].imprimirMedio();
+                	resultAbajo += tablero[i][j].imprimirAbajo();
+                } else {
+                    result += "*-*-*-*|";
+                }
+            }
+            result += resultTecho + "\n" + resultMedio + "\n" +resultAbajo +"\n";
+            result += dameUnPiso() + "\n"; 
         }
         return result;
     }
@@ -148,8 +180,8 @@ public class Tablero {
                 if (tablero[i][j] == null) {
                     tablero[i][j] = f;
                     seguir = false;
-                    resultLog.info("PONER [" + i + "," + j + "] \n");
-                    resultLog.info(this.imprimirse());
+                  //  resultLog.info("PONER [" + i + "," + j + "] \n");
+                  //  resultLog.info(this.imprimirse());
                 }
     }
 
@@ -160,17 +192,17 @@ public class Tablero {
                 if (tablero[i][j] == null) {
                     if (j == 0) {
                         tablero[i - 1][N - 1] = null;
-                        resultLog.info("ELIMINAR [" + String.valueOf(i - 1) + "," + String.valueOf(N-1) + "]");
+                       // resultLog.info("ELIMINAR [" + String.valueOf(i - 1) + "," + String.valueOf(N-1) + "]");
                     } else {
                         tablero[i][j - 1] = null;
-                        resultLog.info("ELIMINAR [" + i + "," + String.valueOf(j-1) + "]");
+                        //resultLog.info("ELIMINAR [" + i + "," + String.valueOf(j-1) + "]");
                     }
                     seguir = false;
                 } else {
                     if (j == N - 1 && i == N - 1) {
                         tablero[i][j] = null;
                         seguir = false;
-                        resultLog.info("ELIMINAR [" + i + "," + j + "]");
+                      //  resultLog.info("ELIMINAR [" + i + "," + j + "]");
                     }
                 }
             }
