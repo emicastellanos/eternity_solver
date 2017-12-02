@@ -186,7 +186,7 @@ public class Tablero {
                     tablero[i][j] = f;
                     usadas.add(f.getId());
                     seguir = false;
-                    resultLog.info("\n"+Thread.currentThread().getName() + "\nPONER [" + i + "," + j + "] \n "+this.imprimirse());
+                    resultLog.info("\n"+Thread.currentThread().getName() + "\nPONER [" + i + "," + j + "] \n"+this.imprimirse());
                     /*resultLog.info("PONER [" + i + "," + j + "] \n");
                     resultLog.info(this.imprimirse());*/
                 }
