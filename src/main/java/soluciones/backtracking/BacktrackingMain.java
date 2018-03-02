@@ -2,18 +2,21 @@ package soluciones.backtracking;
 
 import entidades.Ficha;
 import entidades.Tablero;
+import soluciones.master_slave.TareaRunnable;
+
 import org.apache.log4j.Logger;
 import utilidades.GeneradorFichas;
 
+
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 
 public class BacktrackingMain {
     public static ArrayList<Ficha> fichas;
 
-    private static final int N = 3;
-    private static boolean encontrarTodasSoluciones = false;
+    private static final int N = 2;
     static final Logger fichasLog = Logger.getLogger("fichasLogger");
     static final Logger resultLog = Logger.getLogger("resultadoLogger");
 
@@ -22,7 +25,8 @@ public class BacktrackingMain {
 
         GeneradorFichas generadorFichas = new GeneradorFichas(N);
         fichas = generadorFichas.getFichasUnicas();
-
+    
+        
 
         Collections.shuffle(fichas);
         fichasLog.info("-----Fichas Generadas-----");
@@ -30,18 +34,22 @@ public class BacktrackingMain {
             fichasLog.info("F" + f.getId() + ": " + f.imprimirse());
         }
 
-        Tablero tablero = new Tablero(N);
 
-        SolverByBacktrack solucion = new SolverByBacktrack(tablero,encontrarTodasSoluciones,resultLog);
-
-        resultLog.info("-----BACKTRACKING-----");
-
-        long startTime = System.nanoTime();
-        solucion.solucionRichi(fichas);
-        long endTime = System.nanoTime();
-        long duration = (endTime - startTime);
-
-        resultLog.info("tiempo : " + duration);
+        List<TareaRunnable> tareas = new ArrayList<TareaRunnable>();
+        int nivel = 1;
+        for (Ficha f : fichas) {
+        	ArrayList<Ficha> aux = new ArrayList<Ficha>();
+            for (Ficha e : fichas) {
+                if (!e.getId().equals(f.getId())) {
+                    aux.add(e);
+                }
+            }
+            TareaRunnable tarea = new TareaRunnable(new Tablero(N),aux,nivel,f,resultLog);
+            tareas.add(tarea);
+        }
+        
+        for(TareaRunnable t :tareas)
+        	t.run();            
 
     }
 }
