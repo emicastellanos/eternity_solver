@@ -71,7 +71,7 @@ public class Tablero {
         tablero[fila][columna] = null;
     }
 
-    public synchronized String imprimirse() {
+    public  String imprimirse() {
         String result = "\n";
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
@@ -186,7 +186,7 @@ public class Tablero {
                     tablero[i][j] = f;
                     usadas.add(f.getId());
                     seguir = false;
-                    resultLog.info("\n"+Thread.currentThread().getName() + "\nPONER [" + i + "," + j + "] \n "+this.imprimirse());
+                   // resultLog.info("\n"+Thread.currentThread().getName() + "\nPONER [" + i + "," + j + "] \n "+this.imprimirse());
                     /*resultLog.info("PONER [" + i + "," + j + "] \n");
                     resultLog.info(this.imprimirse());*/
                 }
@@ -214,11 +214,11 @@ public class Tablero {
                     if (j == 0) {
                         eliminada = tablero[i - 1][N - 1];
                         tablero[i - 1][N - 1] = null;
-                        resultLog.info("ELIMINAR [" + String.valueOf(i - 1) + "," + String.valueOf(N-1) + "] " + Thread.currentThread().getName());
+                        //resultLog.info("ELIMINAR [" + String.valueOf(i - 1) + "," + String.valueOf(N-1) + "] " + Thread.currentThread().getName());
                     } else {
                         eliminada = tablero[i][j - 1] ;
                         tablero[i][j - 1] = null;
-                        resultLog.info("ELIMINAR [" + i + "," + String.valueOf(j-1) + "] " + Thread.currentThread().getName());
+                        //resultLog.info("ELIMINAR [" + i + "," + String.valueOf(j-1) + "] " + Thread.currentThread().getName());
                     }
                     seguir = false;
                 } else {
@@ -226,7 +226,7 @@ public class Tablero {
                         eliminada = tablero[i][j];
                         tablero[i][j] = null;
                         seguir = false;
-                        resultLog.info("ELIMINAR [" + i + "," + j + "] " + Thread.currentThread().getName());
+                        //resultLog.info("ELIMINAR [" + i + "," + j + "] " + Thread.currentThread().getName());
                     }
                 }
             }
