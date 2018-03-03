@@ -7,7 +7,7 @@ import org.apache.log4j.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TareaRunnable implements Runnable {
+public class TareaRunnable extends Thread {
 
     private Tablero tablero;
     private List<Ficha> fichas;
@@ -19,12 +19,13 @@ public class TareaRunnable implements Runnable {
     private boolean buscarTodasSoluciones = true;
     final Logger threadsLogger = Logger.getLogger("threadLogger");
 
-    public TareaRunnable(Tablero tablero, List<Ficha> fichas, int nivelComienzo,Ficha inicial, Logger logger) {
+    public TareaRunnable(Tablero tablero, List<Ficha> fichas, int nivelComienzo,Ficha inicial, Logger logger,String nombre) {
         this.tablero = tablero;
         this.inicial = inicial;
         this.fichas = fichas;
         this.nivelComienzo = nivelComienzo;
         this.resultLog = logger;
+        this.nombreThread = nombre;
     }
 
     public String getInfo(){
@@ -42,12 +43,12 @@ public class TareaRunnable implements Runnable {
     
     public void backRichi(List<Ficha> fichas,Ficha f, Integer nivel){
         List<Ficha> aux ;
-        resultLog.info("NIVEL "+nivel);
+        //resultLog.info("NIVEL "+nivel);
         tablero.insertarFinal(f,resultLog);
 
         if(tablero.esSolucionFinal()&& tablero.esSolucion()){
-            resultLog.info("SOLUCION");
-            resultLog.info(tablero.imprimirse());
+            //resultLog.info("SOLUCION");
+            //resultLog.info(tablero.imprimirse());
             encontro=true;
         }
         else{
@@ -76,9 +77,9 @@ public class TareaRunnable implements Runnable {
 
     @Override
     public void run() {
-        threadsLogger.info(Thread.currentThread().getName());
+        threadsLogger.info("\n----- ARRANCA EL THREAD " + nombreThread);
         backRichi(fichas,inicial,nivelComienzo);
-        threadsLogger.info("\n----- TERMINO EL THREAD" + Thread.currentThread().getName());
+        threadsLogger.info("\n----- TERMINO EL THREAD " + nombreThread);
         
     }
 }

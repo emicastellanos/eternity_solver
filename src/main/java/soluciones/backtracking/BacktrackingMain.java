@@ -16,13 +16,13 @@ import java.util.List;
 public class BacktrackingMain {
     public static ArrayList<Ficha> fichas;
 
-    private static final int N = 2;
+    private static final int N = 5;
     static final Logger fichasLog = Logger.getLogger("fichasLogger");
     static final Logger resultLog = Logger.getLogger("resultadoLogger");
 
 
     public static void main(String[] args) {
-
+    	long startTime = System.nanoTime();
         GeneradorFichas generadorFichas = new GeneradorFichas(N);
         fichas = generadorFichas.getFichasUnicas();
     
@@ -37,6 +37,7 @@ public class BacktrackingMain {
 
         List<TareaRunnable> tareas = new ArrayList<TareaRunnable>();
         int nivel = 1;
+        int nhilo= 1;
         for (Ficha f : fichas) {
         	ArrayList<Ficha> aux = new ArrayList<Ficha>();
             for (Ficha e : fichas) {
@@ -44,12 +45,16 @@ public class BacktrackingMain {
                     aux.add(e);
                 }
             }
-            TareaRunnable tarea = new TareaRunnable(new Tablero(N),aux,nivel,f,resultLog);
+            TareaRunnable tarea = new TareaRunnable(new Tablero(N),aux,nivel,f,resultLog,String.valueOf(nhilo));
+            nhilo++;
             tareas.add(tarea);
         }
         
         for(TareaRunnable t :tareas)
-        	t.run();            
-
+        	t.start();     
+        
+      //code
+      long endTime = System.nanoTime();
+      System.out.println("Took "+(endTime - startTime) + " ns"); 
     }
 }
