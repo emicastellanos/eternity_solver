@@ -6,7 +6,6 @@ import java.util.List;
 
 public class Tablero {
     private int N;
-    private List<String> usadas;
 
     private Ficha[][] tablero;
 
@@ -38,7 +37,6 @@ public class Tablero {
 
     public Tablero(int n) {
         this.N = n;
-        usadas = new ArrayList<>();
         tablero = new Ficha[N][N];
 
         for (int i = 0; i < N; i++)
@@ -59,33 +57,12 @@ public class Tablero {
 
     public void setPosicion(int fila, int columna, Ficha ficha) {
         tablero[fila][columna] = ficha;
-        if(ficha!=null){
-            usadas.add(ficha.getId());
-        }
     }
 
     public void liberarPosicion(int fila, int columna) {
-        if(tablero[fila][columna]!=null){
-            usadas.remove(tablero[fila][columna].getId());
-        }
         tablero[fila][columna] = null;
     }
 
-    public  String imprimirse() {
-        String result = "\n";
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
-                if (tablero[i][j] != null) {
-                    result += tablero[i][j].imprimirse() + "|";
-                } else {
-                    result += "*-*-*-*|";
-                }
-
-            }
-            result += "\n";
-        }
-        return result;
-    }
 
     public Boolean estaLibre(int i, int j) {
         return tablero[i][j] == null;
@@ -178,13 +155,12 @@ public class Tablero {
         return true;
     }
 
-    public void insertarFinal(Ficha f, Logger resultLog) {
+    public void insertarFinal(Ficha f) {
         boolean seguir = true;
         for (int i = 0; i < N && seguir; i++)
             for (int j = 0; j < N && seguir; j++)
                 if (tablero[i][j] == null) {
                     tablero[i][j] = f;
-                    usadas.add(f.getId());
                     seguir = false;
                    // resultLog.info("\n"+Thread.currentThread().getName() + "\nPONER [" + i + "," + j + "] \n "+this.imprimirse());
                     /*resultLog.info("PONER [" + i + "," + j + "] \n");
@@ -192,9 +168,6 @@ public class Tablero {
                 }
     }
 
-    public boolean estaUsada(Ficha f){
-        return usadas.contains(f.getId());
-    }
 
     public Posicion getUltimaPosicion () {
         for (int i = 0; i < N; i++)
@@ -205,7 +178,7 @@ public class Tablero {
         return null;
     }
 
-    public void eliminarUltima(Logger resultLog) {
+    public void eliminarUltima() {
         boolean seguir = true;
         Ficha eliminada = null;
         for (int i = 0; i < N && seguir; i++) {
@@ -231,68 +204,23 @@ public class Tablero {
                 }
             }
         }
-        usadas.remove(eliminada.getId());
     }
 
 
     @Override
-    public Tablero clone(){
+    public Tablero clone() {
         Tablero result = new Tablero(this.N);
 
-        for(int i=0; i<N; i++){
-            for(int j=0; j<N; j++){
-                result.setPosicion(i,j,getPosicion(i,j));
-            }
-        }
-        return result;
-    }
-    
-    public String dameUnPiso() {
-    	StringBuffer r = new StringBuffer();
-    	for(int i=0; i<N; i++) {
-    		r.append("---------|");
-    	}
-    	return r.toString();
-    }
-
-    public String imprimirUsadas(){
-        StringBuffer result = new StringBuffer();
-        for(String s : usadas){
-            result.append(s + ", ");
-        }
-        return result.toString();
-    }
-
-    public boolean entra (Ficha f){
-        Posicion p = getUltimaPosicion();
-        setPosicion(p.getI(),p.getJ(),f);
-        boolean result = esSolucion();
-        liberarPosicion(p.getI(),p.getJ());
-        return result;
-    }
-
-    public String imprimirseCheto() {
-        String result = "";
-        String resultTecho = "";
-        String resultMedio = "";
-        String resultAbajo = "";
         for (int i = 0; i < N; i++) {
-            resultTecho = "";
-            resultMedio = "";
-            resultAbajo = "";
             for (int j = 0; j < N; j++) {
-                if (tablero[i][j] != null) {
-                    resultTecho += tablero[i][j].imprimirTecho();
-                    resultMedio += tablero[i][j].imprimirMedio();
-                    resultAbajo += tablero[i][j].imprimirAbajo();
-                } else {
-                    result += "*-*-*-*|";
-                }
+                result.setPosicion(i, j, getPosicion(i, j));
             }
-            result += resultTecho + "\n" + resultMedio + "\n" +resultAbajo +"\n";
-            result += dameUnPiso() + "\n"; 
         }
         return result;
     }
+
+
+
+
 
 }

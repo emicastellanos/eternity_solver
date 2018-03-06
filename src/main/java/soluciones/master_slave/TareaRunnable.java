@@ -4,6 +4,7 @@ import entidades.Ficha;
 import entidades.Tablero;
 import org.apache.log4j.Logger;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,66 +12,46 @@ public class TareaRunnable extends Thread {
 
     private Tablero tablero;
     private List<Ficha> fichas;
-    public boolean encontro = false;
-    public Ficha inicial ;
-    public Logger resultLog;
     public int nivelComienzo;
     public String nombreThread;
-    private boolean buscarTodasSoluciones = true;
     final Logger threadsLogger = Logger.getLogger("threadLogger");
 
-    public TareaRunnable(Tablero tablero, List<Ficha> fichas, int nivelComienzo,Ficha inicial, Logger logger,String nombre) {
+    public TareaRunnable(Tablero tablero, List<Ficha> fichas, String nombre) {
         this.tablero = tablero;
-        this.inicial = inicial;
-        this.fichas = fichas;
-        this.nivelComienzo = nivelComienzo;
-        this.resultLog = logger;
+        this.fichas = new ArrayList<Ficha>();
+        Ficha aux;
+        for(Ficha f : fichas){
+            aux = new Ficha(f.getIzq(),f.getArr(),f.getDer(),f.getAbj(),f.getId());
+            this.fichas.add(aux);
+        }
         this.nombreThread = nombre;
     }
 
-    public String getInfo(){
-        StringBuffer result = new StringBuffer();
-        result.append("Fichas: ");
-        for (int i=0; i<fichas.size(); i++){
-            Ficha f = fichas.get(i);
-            result.append("["+f.getIzq()+","+f.getArr()+","+f.getDer()+","+f.getAbj()+ "]");
-            if(i<fichas.size()-1){
-                result.append(" - ");
-            }
-        }
-        return result.toString();
-    }
-    
-    public void backRichi(List<Ficha> fichas,Ficha f, Integer nivel){
-        List<Ficha> aux ;
-        //resultLog.info("NIVEL "+nivel);
-        tablero.insertarFinal(f,resultLog);
 
-        if(tablero.esSolucionFinal()&& tablero.esSolucion()){
-            //resultLog.info("SOLUCION");
-            //resultLog.info(tablero.imprimirse());
-            encontro=true;
-        }
-        else{
-            if(tablero.esSolucion()){
-                for(Ficha proxima : fichas){
-                    aux = new ArrayList<>();
-                    for(Ficha e: fichas)
-                        if(!e.getId().equals(proxima.getId()))
+    
+    public void backRichi(List<Ficha> fichas, Integer nivel){
+
+        for (Ficha f : fichas) {
+            tablero.insertarFinal(f);
+            if(tablero.esSolucionFinal() && tablero.esSolucion()){
+                //threadsLogger.info("SOLUCION");
+                //resultLog.info(tablero.imprimirse());
+            }
+            else{
+                if (tablero.esSolucion() ) {
+                    ArrayList<Ficha> aux = new ArrayList<Ficha>();
+                    for (Ficha e : fichas) {
+                        if (e.getId() != f.getId()) {
                             aux.add(e);
-                    if(buscarTodasSoluciones) {
-                        nivel+=1;
-                        backRichi(aux, proxima, nivel);
-                        nivel-=1;
-                    }else if(!encontro) {
-                        nivel+=1;
-                        backRichi(aux, proxima, nivel);
-                        nivel-=1;
+                        }
                     }
+                    nivel += 1;
+                    backRichi(aux, nivel);
+                    nivel -= 1;
                 }
             }
+            tablero.eliminarUltima();
         }
-        tablero.eliminarUltima(resultLog);
     }
 
     
@@ -78,8 +59,9 @@ public class TareaRunnable extends Thread {
     @Override
     public void run() {
         threadsLogger.info("\n----- ARRANCA EL THREAD " + nombreThread);
-        backRichi(fichas,inicial,nivelComienzo);
-        threadsLogger.info("\n----- TERMINO EL THREAD " + nombreThread);
+        backRichi(this.fichas,this.nivelComienzo);
+        ZonedDateTime zdt ;
+        threadsLogger.info("\n----- TERMINO EL THREAD " + nombreThread+" "+ZonedDateTime.now());
         
     }
 }

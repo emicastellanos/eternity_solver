@@ -2,18 +2,17 @@ package soluciones.backtracking;
 
 import entidades.Ficha;
 import entidades.Tablero;
-import soluciones.master_slave.TareaRunnable;
-
 import org.apache.log4j.Logger;
+import soluciones.master_slave.TareaRunnable;
 import utilidades.GeneradorFichas;
 
-
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 
-public class BacktrackingMain {
+public class LinealMain {
     public static ArrayList<Ficha> fichas;
 
     private static final int N = 5;
@@ -22,7 +21,6 @@ public class BacktrackingMain {
 
 
     public static void main(String[] args) {
-    	long startTime = System.nanoTime();
         GeneradorFichas generadorFichas = new GeneradorFichas(N);
         fichas = generadorFichas.getFichasUnicas();
     
@@ -30,31 +28,18 @@ public class BacktrackingMain {
 
         Collections.shuffle(fichas);
         fichasLog.info("-----Fichas Generadas-----");
-        for (Ficha f : fichas) {
-            fichasLog.info("F" + f.getId() + ": " + f.imprimirse());
-        }
 
 
         List<TareaRunnable> tareas = new ArrayList<TareaRunnable>();
         int nivel = 1;
         int nhilo= 1;
-        for (Ficha f : fichas) {
-        	ArrayList<Ficha> aux = new ArrayList<Ficha>();
-            for (Ficha e : fichas) {
-                if (!e.getId().equals(f.getId())) {
-                    aux.add(e);
-                }
-            }
-            TareaRunnable tarea = new TareaRunnable(new Tablero(N),aux,nivel,f,resultLog,String.valueOf(nhilo));
-            nhilo++;
-            tareas.add(tarea);
-        }
+        TareaRunnable tarea = new TareaRunnable(new Tablero(N),fichas,String.valueOf(nhilo));
+        resultLog.info("INICIO " + ZonedDateTime.now());
+        tarea.backRichi(fichas,nivel);
+        ZonedDateTime zdt ;
+        resultLog.info("\n----- TERMINO  "+ZonedDateTime.now());
+
         
-        for(TareaRunnable t :tareas)
-        	t.start();     
-        
-      //code
-      long endTime = System.nanoTime();
-      System.out.println("Took "+(endTime - startTime) + " ns"); 
+
     }
 }

@@ -29,7 +29,7 @@ public class GeneradorFichas {
         while ((cadena = b.readLine()) != null) {
 
             colores = cadena.split("-");
-            ficha = new Ficha(Integer.valueOf(colores[0]), Integer.valueOf(colores[1]), Integer.valueOf(colores[2]), Integer.valueOf(colores[3]), String.valueOf(i));
+            ficha = new Ficha(Integer.valueOf(colores[0]), Integer.valueOf(colores[1]), Integer.valueOf(colores[2]), Integer.valueOf(colores[3]), i);
             fichas.add(ficha);
             i++;
         }
@@ -46,55 +46,55 @@ public class GeneradorFichas {
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
                 if (i == 0 && j == 0) {
-                    ficha = new Ficha(0, 0, 0, 0, String.valueOf(id));
+                    ficha = new Ficha(0, 0, 0, 0, id);
                     ponerColorDerAbj(ficha,fichastemp);
                     tablero[i][j] = ficha;
                     fichastemp.add(ficha);
                 } else {
                     if (i == 0 && j != N - 1) {
-                        ficha = new Ficha(tablero[i][j - 1].getDer(), 0, 0, 0, String.valueOf(id));
+                        ficha = new Ficha(tablero[i][j - 1].getDer(), 0, 0, 0, id);
                         ponerColorDerAbj(ficha,fichastemp);
                         tablero[i][j] = ficha;
                         fichastemp.add(ficha);
                     } else {
                         if (i == 0 && j == N - 1) {
-                            ficha = new Ficha(tablero[i][j - 1].getDer(), 0, 0, 0, String.valueOf(id));
+                            ficha = new Ficha(tablero[i][j - 1].getDer(), 0, 0, 0, id);
                             ponerColorAbj(ficha,fichastemp);
                             tablero[i][j] = ficha;
                             fichastemp.add(ficha);
                         } else {
                             if (j == 0 && i != N - 1) {
-                                ficha = new Ficha(0, tablero[i - 1][j].getAbj(), 0, 0, String.valueOf(id));
+                                ficha = new Ficha(0, tablero[i - 1][j].getAbj(), 0, 0, id);
                                 ponerColorDerAbj(ficha,fichastemp);
                                 tablero[i][j] = ficha;
                                 fichastemp.add(ficha);
                             } else {
                                 if (j != N - 1 && i != N - 1) {
-                                    ficha = new Ficha(tablero[i][j - 1].getDer(), tablero[i - 1][j].getAbj(), 0, 0, String.valueOf(id));
+                                    ficha = new Ficha(tablero[i][j - 1].getDer(), tablero[i - 1][j].getAbj(), 0, 0, id);
                                     ponerColorDerAbj(ficha,fichastemp);
                                     tablero[i][j] = ficha;
                                     fichastemp.add(ficha);
                                 } else {
                                     if (j == N - 1 && i != N - 1) {
-                                        ficha = new Ficha(tablero[i][j - 1].getDer(), tablero[i - 1][j].getAbj(), 0, 0, String.valueOf(id));
+                                        ficha = new Ficha(tablero[i][j - 1].getDer(), tablero[i - 1][j].getAbj(), 0, 0, id);
                                         ponerColorAbj(ficha,fichastemp);
                                         tablero[i][j] = ficha;
                                         fichastemp.add(ficha);
                                     } else {
                                         if (j == 0 && i == N - 1) {
-                                            ficha = new Ficha(0, tablero[i - 1][j].getAbj(), 0, 0, String.valueOf(id));
+                                            ficha = new Ficha(0, tablero[i - 1][j].getAbj(), 0, 0, id);
                                             ponerColorDer(ficha,fichastemp);
                                             tablero[i][j] = ficha;
                                             fichastemp.add(ficha);
                                         } else {
                                             if (j != N - 1 && i == N - 1) {
-                                                ficha = new Ficha(tablero[i][j - 1].getDer(), tablero[i - 1][j].getAbj(), 0, 0, String.valueOf(id));
+                                                ficha = new Ficha(tablero[i][j - 1].getDer(), tablero[i - 1][j].getAbj(), 0, 0, id);
                                                 ponerColorDer(ficha,fichastemp);
                                                 tablero[i][j] = ficha;
                                                 fichastemp.add(ficha);
                                             } else {
                                                 if (j == N - 1 && i == N - 1) {
-                                                    ficha = new Ficha(tablero[i][j - 1].getDer(), tablero[i - 1][j].getAbj(), 0, 0, String.valueOf(id));
+                                                    ficha = new Ficha(tablero[i][j - 1].getDer(), tablero[i - 1][j].getAbj(), 0, 0, id);
                                                     tablero[i][j] = ficha;
                                                     fichastemp.add(ficha);
                                                 }
