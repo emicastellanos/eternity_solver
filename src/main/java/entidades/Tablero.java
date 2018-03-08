@@ -1,8 +1,4 @@
 package entidades;
-import org.apache.log4j.Logger;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class Tablero {
     private int N;
@@ -10,30 +6,34 @@ public class Tablero {
     private Ficha[][] tablero;
 
     public class Posicion{
-        int i;
-        int j;
+        int fila;
+        int columna;
 
         public Posicion(int i, int j) {
-            this.i = i;
-            this.j = j;
+            this.fila = i;
+            this.columna = j;
         }
 
-        public int getI() {
-            return i;
-        }
+		public int getFila() {
+			return fila;
+		}
 
-        public void setI(int i) {
-            this.i = i;
-        }
+		public void setFila(int fila) {
+			this.fila = fila;
+		}
 
-        public int getJ() {
-            return j;
-        }
+		public int getColumna() {
+			return columna;
+		}
 
-        public void setJ(int j) {
-            this.j = j;
-        }
+		public void setColumna(int columna) {
+			this.columna = columna;
+		}
+        
+
     }
+    
+    private Posicion posicion = new Posicion(0,0);
 
     public Tablero(int n) {
         this.N = n;
@@ -72,138 +72,74 @@ public class Tablero {
     public Ficha getPosicion(int fila, int col) {
         return tablero[fila][col];
     }
-
-
-    public Boolean esSolucion(int fila, int columna, Ficha f) {
-
-        if (fila == 0) {
-            if (f.getArr() != 0)
-                return false;
-        }
-        if (columna == 0) {
-            if (f.getIzq() != 0)
-                return false;
-        }
-        if (fila == N - 1) {
-            if (f != null && f.getAbj() != 0) {
-                return false;
-            }
-        }
-        if (columna == N - 1) {
-            if (f.getDer() != 0) {
-                return false;
-            }
-        }
-        if (fila != 0 && tablero[fila - 1][columna] != null && tablero[fila - 1][columna].getAbj() != f.getArr()) {
-            return false;
-        }
-        if (columna != 0 && tablero[fila][columna - 1] != null && tablero[fila][columna - 1].getDer() != f.getIzq()) {
-            return false;
-        }
-
-        return true;
+    
+    public void aumentarPosicion() {
+    	if(posicion.columna != N-1)
+    		posicion.columna++;
+    	else {
+    		posicion.fila++;
+    		posicion.columna = 0;
+    	}
     }
+    
+    public void retrocederPosicion() {
+    	if(posicion.columna != 0)
+    		posicion.columna--;
+    	else {
+    		posicion.columna = N-1;
+    		posicion.fila--;
+    	}
+    }
+    
+
 
     public Boolean esSolucion() {
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
-                if (tablero[i][j] != null) {
-                    if (i == 0 && tablero[i][j].getArr() != 0) {
-                        return false;
-                    }
-                    if (i == N - 1 && tablero[i][j].getAbj() != 0) {
-                        return false;
-                    }
-                    if (j == 0 && tablero[i][j].getIzq() != 0) {
-                        return false;
-                    }
-                    if (j == N - 1 && tablero[i][j].getDer() != 0) {
-                        return false;
-                    }
-                    if (j >= 0 && j < N - 1) {
-                        if (tablero[i][j + 1] != null && tablero[i][j].getDer() != tablero[i][j + 1].getIzq()) {
-                            return false;
-                        }
-                    }
-                    if (i >= 0 && i < N - 1) {
-                        if (tablero[i + 1][j] != null && tablero[i][j].getAbj() != tablero[i + 1][j].getArr()) {
-                            return false;
-                        }
-                    }
-                    if (i > 0 && i < N - 1) {
-                        if (tablero[i][j] != null && (tablero[i][j].getAbj() == 0 || tablero[i][j].getArr() == 0)) {
-                            return false;
-                        }
-                    }
-                    if (j > 0 && j < N - 1) {
-                        if (tablero[i][j] != null && (tablero[i][j].getIzq() == 0 || tablero[i][j].getDer() == 0)) {
-                            return false;
-                        }
-                    }
-                } else return true;
+
+        if (posicion.fila == 0) {
+            if (tablero[posicion.fila][posicion.columna].getArr() != 0)
+                return false;
+        }
+        if (posicion.columna == 0) {
+            if (tablero[posicion.fila][posicion.columna].getIzq() != 0)
+                return false;
+        }
+        if (posicion.fila == N - 1) {
+            if (tablero[posicion.fila][posicion.columna].getAbj() != 0) {
+                return false;
             }
+        }
+        if (posicion.columna == N - 1) {
+            if (tablero[posicion.fila][posicion.columna].getDer() != 0) {
+                return false;
+            }
+        }
+        //arriba
+        if (posicion.fila != 0 && tablero[posicion.fila-1][posicion.columna].getAbj() != tablero[posicion.fila][posicion.columna].getArr()) {
+            return false;
+        }
+        //izquierda
+        if (posicion.columna != 0 && tablero[posicion.fila][posicion.columna-1].getDer() != tablero[posicion.fila][posicion.columna].getIzq()) {
+            return false;
         }
         return true;
     }
 
-    public Boolean esSolucionFinal() {
-        for (int i = 0; i < N; i++)
-            for (int j = 0; j < N; j++)
-                if (tablero[i][j] == null)
-                    return false;
 
-        return true;
+    public Boolean esSolucionFinal() {
+       if(posicion.fila == N-1 && posicion.columna == N-1)
+    	   return true;
+       else
+    	   return false;
     }
 
     public void insertarFinal(Ficha f) {
-        boolean seguir = true;
-        for (int i = 0; i < N && seguir; i++)
-            for (int j = 0; j < N && seguir; j++)
-                if (tablero[i][j] == null) {
-                    tablero[i][j] = f;
-                    seguir = false;
-                   // resultLog.info("\n"+Thread.currentThread().getName() + "\nPONER [" + i + "," + j + "] \n "+this.imprimirse());
-                    /*resultLog.info("PONER [" + i + "," + j + "] \n");
-                    resultLog.info(this.imprimirse());*/
-                }
+       tablero[posicion.fila][posicion.columna] = f; 
     }
 
 
-    public Posicion getUltimaPosicion () {
-        for (int i = 0; i < N; i++)
-            for (int j = 0; j < N; j++)
-                if (tablero[i][j] == null) {
-                    return new Posicion(i, j);
-                }
-        return null;
-    }
 
     public void eliminarUltima() {
-        boolean seguir = true;
-        Ficha eliminada = null;
-        for (int i = 0; i < N && seguir; i++) {
-            for (int j = 0; j < N && seguir; j++) {
-                if (tablero[i][j] == null) {
-                    if (j == 0) {
-                        eliminada = tablero[i - 1][N - 1];
-                        tablero[i - 1][N - 1] = null;
-                        //resultLog.info("ELIMINAR [" + String.valueOf(i - 1) + "," + String.valueOf(N-1) + "] " + Thread.currentThread().getName());
-                    } else {
-                        eliminada = tablero[i][j - 1] ;
-                        tablero[i][j - 1] = null;
-                        //resultLog.info("ELIMINAR [" + i + "," + String.valueOf(j-1) + "] " + Thread.currentThread().getName());
-                    }
-                    seguir = false;
-                } else {
-                    if (j == N - 1 && i == N - 1) {
-                        eliminada = tablero[i][j];
-                        tablero[i][j] = null;
-                        seguir = false;
-                        //resultLog.info("ELIMINAR [" + i + "," + j + "] " + Thread.currentThread().getName());
-                    }
-                }
-            }
-        }
+    	 tablero[posicion.fila][posicion.columna] = null;
     }
 
 
