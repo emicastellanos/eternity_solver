@@ -3,7 +3,9 @@ package soluciones.master_slave;
 import entidades.Ficha;
 import entidades.Tablero;
 import org.apache.log4j.Logger;
+import soluciones.manager.Tarea;
 
+import java.security.PublicKey;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,10 +13,15 @@ import java.util.List;
 public class TareaRunnable extends Thread {
 
     private Tablero tablero;
-    private List<Ficha> fichas;
+    private ArrayList<Ficha> fichas;
     public int nivelComienzo;
     public String nombreThread;
     final Logger threadsLogger = Logger.getLogger("threadLogger");
+
+    public TareaRunnable (Tablero tablero){
+        this.tablero = tablero;
+
+    }
 
     public TareaRunnable(Tablero tablero, List<Ficha> fichas, String nombre) {
         this.tablero = tablero;
@@ -29,13 +36,14 @@ public class TareaRunnable extends Thread {
 
 
     
-    public void backRichi(List<Ficha> fichas, Integer nivel){
-
+    public ArrayList<Tablero> backRichi(ArrayList<Ficha> fichas, Integer nivel){
+        ArrayList<Tablero> listaSoluciones = new ArrayList<>();
         for (Ficha f : fichas) {
             tablero.insertarFinal(f);
             if(tablero.esSolucionFinal() && tablero.esSolucion()){
                 //threadsLogger.info("SOLUCION");
                 //resultLog.info(tablero.imprimirse());
+                listaSoluciones.add(tablero.clone());
             }
             else{
                 if (tablero.esSolucion() ) {
@@ -46,21 +54,22 @@ public class TareaRunnable extends Thread {
                         }
                     }
                     nivel += 1;
-                    backRichi(aux, nivel);
+                    listaSoluciones.addAll(backRichi(aux, nivel));
                     nivel -= 1;
                 }
             }
             tablero.eliminarUltima();
         }
+        return listaSoluciones;
     }
 
     
 
     @Override
     public void run() {
-        threadsLogger.info("\n----- ARRANCA EL THREAD " + nombreThread);
-        backRichi(this.fichas,this.nivelComienzo);
         ZonedDateTime zdt ;
+        threadsLogger.info("\n----- ARRANCA EL THREAD " + nombreThread + " " + ZonedDateTime.now());
+        backRichi(this.fichas,this.nivelComienzo);
         threadsLogger.info("\n----- TERMINO EL THREAD " + nombreThread+" "+ZonedDateTime.now());
         
     }

@@ -80,7 +80,7 @@ public class GeneradorFichas {
         Ficha ficha ;
         for(int i=0; i<N; i++){
             for(int j=0; j<N; j++){
-                ficha = new Ficha(String.valueOf(contador));
+                ficha = new Ficha(contador);
                 //pongo el lado de izquiero igual a 0 si es el borde izquierdo. Sino el valor del lado de la derecha de la ficha de su izquierda
                 if(j==0){
                     ficha.setIzq(0);
@@ -130,11 +130,11 @@ public class GeneradorFichas {
             }
         }
 
-        System.out.print("COLORES: ");
+        /*System.out.print("COLORES: ");
         for (int i=0; i<=MAX_COLOR;i++){
             System.out.print(colores[i] +" - " );
-        }
-        return /*rotarFichas(*/generadas;
+        }*/
+        return /*rotarFichas(*/generadas;/*);*/
     }
 
     public ArrayList<Ficha> rotarFichas(ArrayList<Ficha> fichastemp){

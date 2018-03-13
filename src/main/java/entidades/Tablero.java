@@ -54,6 +54,14 @@ public class Tablero {
         return t;
     }
 
+    public ArrayList<Ficha> getFichasUsadas(){
+        ArrayList<Ficha> usadas = new ArrayList<>();
+        for (int i = 0; i < N; i++)
+            for (int j = 0; j < N; j++)
+                usadas.add(tablero[i][j]);
+        return usadas;
+    }
+
 
     public void setPosicion(int fila, int columna, Ficha ficha) {
         tablero[fila][columna] = ficha;
@@ -219,8 +227,15 @@ public class Tablero {
         return result;
     }
 
-
-
-
-
+    @Override
+    public boolean equals(Object o) {
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                if (getPosicion(i,j).getId() != ((Tablero) o).getPosicion(i,j).getId()){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 }

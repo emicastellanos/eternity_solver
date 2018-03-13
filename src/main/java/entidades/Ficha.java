@@ -8,6 +8,10 @@ public class Ficha {
     private int abj;
     private int id;
 
+    public Ficha(int id){
+        this.id = id;
+    }
+
 
     public Ficha(int izq, int arr,int der, int abj,int id) {
         this.izq = izq;
