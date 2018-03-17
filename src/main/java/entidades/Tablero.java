@@ -57,8 +57,12 @@ public class Tablero {
     public ArrayList<Ficha> getFichasUsadas(){
         ArrayList<Ficha> usadas = new ArrayList<>();
         for (int i = 0; i < N; i++)
-            for (int j = 0; j < N; j++)
+            for (int j = 0; j < N; j++){
+                if(tablero[i][j]==null){
+                    break;
+                }
                 usadas.add(tablero[i][j]);
+            }
         return usadas;
     }
 

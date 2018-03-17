@@ -7,6 +7,7 @@ import soluciones.master_slave.TareaRunnable;
 import utilidades.GeneradorFichas;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Manager {
@@ -47,19 +48,20 @@ public class Manager {
                     //TODO preguntar si la tarea esa no esta finalizada
                     //capaz pueda resolverse con un solo boolean
                     tarea.setDividir(true);
-                    tarea.setBloqueado(true);
+                    //tarea.setBloqueado(true);
                     String msg = "";
                     while (bloqueado){ //Busy waiting
                         //do nothing
-                        msg = "manager.SolicitarMas() BLOQUEADO name:" + Thread.currentThread().getName() + " tarea name "+ tarea.getName() + " tarea nombre "+ tarea.getNombre();
+                        msg = "manager.SolicitarMas() BLOQUEADO name:" + Thread.currentThread().getName() + " tarea name "+ tarea.getName() + " tarea nombre "+ tarea.getNombre()+ " " + new Date();
                         resultLog.error(msg);
 
                     }
                     if(!tarea.isDividir()){
-                        resultLog.error("habia pa dividir");
+                        resultLog.error(Thread.currentThread().getName() + " habia pa dividir");
                         pendientes.addAll(creadorTareas.crear(tarea.getEstado()));
+                        //tarea.setBloqueado(false);
                     }else{
-                        resultLog.error("NOOOOOO habia pa dividir");
+                        resultLog.error(Thread.currentThread().getName() +" NOOOOOO se pudo dividir");
                     }
                     /*if (!tarea.isFinalizado()) {
 
@@ -73,7 +75,7 @@ public class Manager {
             }
 
         }
-        resultLog.info("activadas " + cantActivadas() + " pendientes " + pendientes.size());
+        resultLog.info(Thread.currentThread().getName() +" activadas " + cantActivadas() + " pendientes " + pendientes.size());
     }
 
     /**
@@ -198,9 +200,9 @@ public class Manager {
     }
 
     public static void main(String[] args){
-        GeneradorFichas generadorFichas = new GeneradorFichas(5);
+        GeneradorFichas generadorFichas = new GeneradorFichas(6);
         ArrayList <Ficha> fichas = generadorFichas.getFichasUnicas();
-        Tablero tablero = new Tablero(5);
+        Tablero tablero = new Tablero(6);
 
         TareaRunnable tareaRunnable = new TareaRunnable(tablero.clone());
         ArrayList<Tablero> comparacion = tareaRunnable.backRichi(fichas,1);
