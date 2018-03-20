@@ -57,12 +57,12 @@ public class Manager {
 
                     }
                     if(!tarea.isDividir()){
-                        resultLog.error(Thread.currentThread().getName() + " habia pa dividir");
+                        resultLog.error(Thread.currentThread().getName() + " habia pa dividir " + tarea.getName());
                         pendientes.addAll(creadorTareas.crear(tarea.getEstado()));
                         //tarea.setBloqueado(false);
                         break;
                     }else{
-                        resultLog.error(Thread.currentThread().getName() +" NOOOOOO se pudo dividir");
+                        resultLog.error(Thread.currentThread().getName() +" NOOOOOO se pudo dividir " + tarea.getName());
                     }
 
 
@@ -191,9 +191,9 @@ public class Manager {
     }
 
     public static void main(String[] args){
-        GeneradorFichas generadorFichas = new GeneradorFichas(6);
+        GeneradorFichas generadorFichas = new GeneradorFichas(5);
         ArrayList <Ficha> fichas = generadorFichas.getFichasUnicas();
-        Tablero tablero = new Tablero(6);
+        Tablero tablero = new Tablero(5);
 
         TareaRunnable tareaRunnable = new TareaRunnable(tablero.clone());
         ArrayList<Tablero> comparacion = tareaRunnable.backRichi(fichas,1);
