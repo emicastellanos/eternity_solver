@@ -31,26 +31,51 @@ public class TareaRunnable extends Thread {
     
     public void backRichi(List<Ficha> fichas){
         for (Ficha f : fichas) {
-        		tablero.insertarFinal(f);
+        	tablero.insertarFinal(f);
             if(tablero.esSolucion()) {
-            		if(tablero.esSolucionFinal()){
-            			solucion++;
-            			//threadsLogger.info("SOLUCION");
-            			//resultLog.info(tablero.imprimirse());
+            	if(tablero.esSolucionFinal()){
+	    			solucion++;
+	    			//threadsLogger.info("SOLUCION");
+	    			//resultLog.info(tablero.imprimirse());
 	            }
 	            else{            
-	            		ArrayList<Ficha> aux = new ArrayList<Ficha>();
-	            		for (Ficha e : fichas) {
-	            			if (e.getId() != f.getId()) {
-	            				aux.add(e);
-	            			}
-	            		}
-	            		tablero.aumentarPosicion();
-	            		backRichi(aux); 
-	            		tablero.retrocederPosicion();
+	        		ArrayList<Ficha> aux = new ArrayList<Ficha>();
+	        		for (Ficha e : fichas) {
+	        			if (e.getId() != f.getId()) {
+	        				aux.add(e);
+	        			}
+	        		}
+            		tablero.aumentarPosicion();
+            		backRichi(aux); 
+            		tablero.retrocederPosicion();
 	            }
             }
             tablero.eliminarUltima();
+        }
+    }
+    
+    public void backRichiViejo(List<Ficha> fichas, Integer nivel){
+        for (Ficha f : fichas) {
+            tablero.insertarFinalVieja(f);
+            if(tablero.esSolucionVieja()) {
+	            if(tablero.esSolucionFinalVieja()){
+	            	solucion++;
+	                //threadsLogger.info("SOLUCION");
+	                //resultLog.info(tablero.imprimirse());
+	            }
+	            else{
+	                ArrayList<Ficha> aux = new ArrayList<Ficha>();
+	                for (Ficha e : fichas) {
+	                    if (e.getId() != f.getId()) {
+	                        aux.add(e);
+	                    }
+	                }
+	                nivel += 1;
+	                backRichiViejo(aux, nivel);
+	                nivel -= 1;
+	                }
+            }
+            tablero.eliminarUltimaVieja();
         }
     }
 
