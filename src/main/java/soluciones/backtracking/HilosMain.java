@@ -28,7 +28,7 @@ public class HilosMain {
     
         
 
-        Collections.shuffle(fichas);
+        //Collections.shuffle(fichas);
         fichasLog.info("-----Fichas Generadas-----");
 
         List<TareaRunnable> tareas = new ArrayList<TareaRunnable>();
