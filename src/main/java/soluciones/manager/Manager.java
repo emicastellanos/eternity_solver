@@ -43,7 +43,7 @@ public class Manager {
         resultLog.info("manager.solicitarMas() ");
         if(activas.size() > 0 ){
             for(Tarea tarea : activas){
-                if(tarea.isAlive() && !tarea.isBloqueado()){
+                if(tarea.isAlive()){
                     bloqueado = true;
                     //TODO preguntar si la tarea esa no esta finalizada
                     //capaz pueda resolverse con un solo boolean
@@ -60,15 +60,11 @@ public class Manager {
                         resultLog.error(Thread.currentThread().getName() + " habia pa dividir");
                         pendientes.addAll(creadorTareas.crear(tarea.getEstado()));
                         //tarea.setBloqueado(false);
+                        break;
                     }else{
                         resultLog.error(Thread.currentThread().getName() +" NOOOOOO se pudo dividir");
                     }
-                    /*if (!tarea.isFinalizado()) {
 
-                        tarea.setBloqueado(false);
-                        tarea.setDividir(false);
-                    }*/
-                    break;
 
                 }
 
@@ -80,17 +76,18 @@ public class Manager {
 
     /**
      * cantidad de tareas de la lista de activas a las que se les dio start y todavia no terminaron
-     * sun metodo run()
+     * su metodo run()
      * */
     public int cantActivadas(){
 /*        System.out.println("manager.cantActivadas() ");
         resultLog.info("manager.cantActivadas() ");*/
+
+        //isAlive() es true si al thread le dieron start y todavia no termino su metodo run
+        // (no precisamente tiene que estar corriendo)
+
         int c = 0;
         for (Tarea t : activas ) {
             if(t.isAlive() ) {
-                //isAlive() es true si al thread le dieron start y todavia no termino su metodo run
-                // (no precisamente tiene que estar corriendo)
-
                 c++;
             }
         }
@@ -106,15 +103,15 @@ public class Manager {
         int activadas = cantActivadas();
         resultLog.info("hay " + String.valueOf(activadas) + " activadas");
         resultLog.info("pendientes " + pendientes.size());
-        int disponibles =  pendientes.size() - activadas;
 
-        if(disponibles < windowSize){
+        int espacioLibre = windowSize - activadas;
+
+        if(pendientes.size() < espacioLibre){
             activas.addAll(pendientes);
             pendientes.clear();
         }else{
             ArrayList<Tarea> removerPendientes = new ArrayList<>();
-            int espacio = windowSize - activadas;
-            for(int i=0 ; i < espacio; i++){
+            for(int i=0 ; i < espacioLibre; i++){
                 removerPendientes.add(pendientes.get(i));
             }
             activas.addAll(removerPendientes);
@@ -188,13 +185,7 @@ public class Manager {
                 activarTareas();
             }
             iniciarTareasActivas();
-            /*else {
-                try {
-                    Thread.currentThread().sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }*/
+            //AHORA MANDAR A DORMIR ?
         }
 
     }

@@ -52,7 +52,6 @@ public class Tarea extends Thread {
     }
 
     public void setBloqueado(boolean bloqueado) {
-        resultLog.info("------------ "+ nombre + " bloqueado = " + bloqueado + new Date());
         this.bloqueado = bloqueado;
     }
 
@@ -81,6 +80,7 @@ public class Tarea extends Thread {
             //1) desbloquea el manager
             dividir = false;
             Manager.setBloqueado(false);
+            resultLog.info(Thread.currentThread().getName() +" DESBLOQUEO AL MANAGER " );
             /*while (bloqueado){
                 //do nothing
                 resultLog.warn("BackRichi() BLOQUEADO " + Thread.currentThread().getName() + " " + new Date());
@@ -124,6 +124,7 @@ public class Tarea extends Thread {
     
     @Override
     public void run(){
+        resultLog.info("......... Comienza " + Thread.currentThread().getName());
         backRichi(fichas,nivelComienzo);
         finalizado = true;
         resultLog.info("......... Finalizo " + Thread.currentThread().getName());
@@ -136,7 +137,7 @@ public class Tarea extends Thread {
             Manager.setBloqueado(false);
         }*/
 
-        if(Manager.isBloqueado()){
+        if(Manager.isBloqueado() && dividir){
             System.out.println(Thread.currentThread().getName() + " ENTRA");
             Manager.setBloqueado(false);
         }
