@@ -152,7 +152,7 @@ public class GeneradorFichas {
         return  fichasRotadas;
     }
 
-    /*public ArrayList<Ficha> getFichasUnicas() {
+    public ArrayList<Ficha> getFichasUnicasRicardo() {
         ArrayList<Ficha> fichastemp = new ArrayList<Ficha>();
         ArrayList<Ficha> fichas = new ArrayList<Ficha>();
         Ficha ficha = null;
@@ -235,7 +235,7 @@ public class GeneradorFichas {
         }
 
         return fichas;
-    }*/
+    }
 
     private boolean existeFicha(Ficha aux, ArrayList<Ficha> fichastemp) {
         for (Ficha f : fichastemp) {

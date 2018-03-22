@@ -91,19 +91,18 @@ public class Tarea extends Thread {
         }else{
             for (Ficha f : fichas) {
                 tablero.insertarFinal(f);
-                if(tablero.esSolucionFinal() && tablero.esSolucion()){
-                    resultLog.info(" ---------------- SE ENCONTRO UNA SOLUCION " + Thread.currentThread().getName());
-                    Tablero resultado = tablero.clone();
-                    Manager.SOLUCIONES.add(resultado);
-                    String todas ="";
-                    ArrayList<Ficha> todasFichas = resultado.getFichasUsadas();
-                    for(Ficha ficha : todasFichas){
-                        todas+= String.valueOf(ficha.getId()) + " - ";
-                    }
-                    resultLog.info(todas);
-                }
-                else{
-                    if (tablero.esSolucion() ) {
+                if(tablero.esSolucion()) {
+                    if (tablero.esSolucionFinal()) {
+                        resultLog.info(" ---------------- SE ENCONTRO UNA SOLUCION " + Thread.currentThread().getName());
+                        Tablero resultado = tablero.clone();
+                        Manager.SOLUCIONES.add(resultado);
+                        String todas = "";
+                        ArrayList<Ficha> todasFichas = resultado.getFichasUsadas();
+                        for (Ficha ficha : todasFichas) {
+                            todas += String.valueOf(ficha.getId()) + " - ";
+                        }
+                        resultLog.info(todas);
+                    } else {
                         ArrayList<Ficha> aux = new ArrayList<Ficha>();
                         for (Ficha e : fichas) {
                             if (e.getId() != f.getId()) {
@@ -111,7 +110,9 @@ public class Tarea extends Thread {
                             }
                         }
                         nivel += 1;
+                        tablero.aumentarPosicion();
                         backRichi(aux, nivel);
+                        tablero.retrocederPosicion();
                         nivel -= 1;
                     }
                 }

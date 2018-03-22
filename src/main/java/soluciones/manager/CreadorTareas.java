@@ -19,7 +19,9 @@ public class CreadorTareas {
         for(Ficha ficha : estado.getFichas()){
             estado.getTablero().insertarFinal(ficha);
             if(estado.getTablero().esSolucion()){
-                resultado.add(new Tarea(estado.getTablero().clone(),
+                Tablero clonado = estado.getTablero().clone();
+                clonado.aumentarPosicion();
+                resultado.add(new Tarea(clonado,
                         ListUtils.getCopiaSin(estado.getFichas(),ficha), String.valueOf(Tarea.NRO), estado.getNivel()));
             }
             estado.getTablero().eliminarUltima();
@@ -35,30 +37,23 @@ public class CreadorTareas {
         ArrayList<Tarea> resultado = new ArrayList<>();
         for (Ficha f : fichas) {
             tablero.insertarFinal(f);
-            if(tablero.esSolucionFinal() && tablero.esSolucion()){
-                //threadsLogger.info("SOLUCION");
-                //resultLog.info(tablero.imprimirse());
-            }
-            else{
-                if (tablero.esSolucion() ) {
-                    ArrayList<Ficha> aux = new ArrayList<Ficha>();
-                    for (Ficha e : fichas) {
-                        if (e.getId() != f.getId()) {
-                            aux.add(e);
-                        }
+            if(tablero.esSolucion()) {
+                ArrayList<Ficha> aux = new ArrayList<Ficha>();
+                for (Ficha e : fichas) {
+                    if (e.getId() != f.getId()) {
+                        aux.add(e);
                     }
-
-                    nivel += 1;
-
-                    if(nivel.equals(nivelObjetivo)){
-                        Tarea tarea = new Tarea(tablero.clone(),aux,String.valueOf(Tarea.NRO),nivel);
-                        resultado.add(tarea);
-                    }else{
-                        resultado.addAll(backNivel(aux, nivel,tablero,nivelObjetivo));
-                    }
-
-                    nivel -= 1;
                 }
+                nivel += 1;
+                tablero.aumentarPosicion();
+                if (nivel.equals(nivelObjetivo)) {
+                    Tarea tarea = new Tarea(tablero.clone(), aux, String.valueOf(Tarea.NRO), nivel);
+                    resultado.add(tarea);
+                } else {
+                    resultado.addAll(backNivel(aux, nivel, tablero, nivelObjetivo));
+                }
+                tablero.retrocederPosicion();
+                nivel -= 1;
             }
             tablero.eliminarUltima();
         }

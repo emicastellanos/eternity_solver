@@ -24,7 +24,7 @@ public class Manager {
         creadorTareas = new CreadorTareas();
         activas = new ArrayList<>();
         pendientes = new ArrayList<>();
-        windowSize = 3; //Runtime.getRuntime().availableProcessors();
+        windowSize = 5;//Runtime.getRuntime().availableProcessors() -1 ;
         SOLUCIONES = new ArrayList<>();
     }
 
@@ -54,7 +54,6 @@ public class Manager {
                         //do nothing
                         msg = "manager.SolicitarMas() BLOQUEADO name:" + Thread.currentThread().getName() + " tarea name "+ tarea.getName() + " tarea nombre "+ tarea.getNombre()+ " " + new Date();
                         resultLog.error(msg);
-
                     }
                     if(!tarea.isDividir()){
                         resultLog.error(Thread.currentThread().getName() + " habia pa dividir " + tarea.getName());
@@ -64,12 +63,8 @@ public class Manager {
                     }else{
                         resultLog.error(Thread.currentThread().getName() +" NOOOOOO se pudo dividir " + tarea.getName());
                     }
-
-
                 }
-
             }
-
         }
         resultLog.info(Thread.currentThread().getName() +" activadas " + cantActivadas() + " pendientes " + pendientes.size());
     }
@@ -191,9 +186,9 @@ public class Manager {
     }
 
     public static void main(String[] args){
-        GeneradorFichas generadorFichas = new GeneradorFichas(5);
+        GeneradorFichas generadorFichas = new GeneradorFichas(6);
         ArrayList <Ficha> fichas = generadorFichas.getFichasUnicas();
-        Tablero tablero = new Tablero(5);
+        Tablero tablero = new Tablero(6);
 
         TareaRunnable tareaRunnable = new TareaRunnable(tablero.clone());
         ArrayList<Tablero> comparacion = tareaRunnable.backRichi(fichas,1);

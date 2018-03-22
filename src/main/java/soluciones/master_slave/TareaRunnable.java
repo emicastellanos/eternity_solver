@@ -44,7 +44,7 @@ public class TareaRunnable extends Thread {
                     solucion++;
                     //threadsLogger.info("SOLUCION");
                     //resultLog.info(tablero.imprimirse());
-                    //listaSoluciones.add(tablero.clone());
+                    listaSoluciones.add(tablero.clone());
                 } else {
                     ArrayList<Ficha> aux = new ArrayList<Ficha>();
                     for (Ficha e : fichas) {
