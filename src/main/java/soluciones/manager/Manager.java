@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 public class Manager {
-    private static boolean bloqueado = false;
+    private boolean bloqueado;
     public static ArrayList<Tablero> SOLUCIONES;
     private CreadorTareas creadorTareas;
     private ArrayList<Tarea> pendientes;
@@ -21,18 +21,19 @@ public class Manager {
 
 
     public Manager () {
-        creadorTareas = new CreadorTareas();
+        creadorTareas = new CreadorTareas(this);
         activas = new ArrayList<>();
         pendientes = new ArrayList<>();
         windowSize = 5;//Runtime.getRuntime().availableProcessors() -1 ;
         SOLUCIONES = new ArrayList<>();
+        bloqueado = false;
     }
 
-    public static void setBloqueado(boolean e){
+    public void setBloqueado(boolean e){
         bloqueado = e;
     }
 
-    public static boolean isBloqueado() {
+    public boolean isBloqueado() {
         return bloqueado;
     }
 
@@ -46,11 +47,9 @@ public class Manager {
                 if(tarea.isAlive()){
                     bloqueado = true;
                     //TODO preguntar si la tarea esa no esta finalizada
-                    //capaz pueda resolverse con un solo boolean
                     tarea.setDividir(true);
-                    //tarea.setBloqueado(true);
                     String msg = "";
-                    while (bloqueado){ //Busy waiting
+                    while (bloqueado && !tarea.isFinalizado()){ //Busy waiting
                         //do nothing
                         msg = "manager.SolicitarMas() BLOQUEADO name:" + Thread.currentThread().getName() + " tarea name "+ tarea.getName() + " tarea nombre "+ tarea.getNombre()+ " " + new Date();
                         resultLog.error(msg);
@@ -58,7 +57,7 @@ public class Manager {
                     if(!tarea.isDividir()){
                         resultLog.error(Thread.currentThread().getName() + " habia pa dividir " + tarea.getName());
                         pendientes.addAll(creadorTareas.crear(tarea.getEstado()));
-                        //tarea.setBloqueado(false);
+                        tarea.setBloqueado(false);
                         break;
                     }else{
                         resultLog.error(Thread.currentThread().getName() +" NOOOOOO se pudo dividir " + tarea.getName());

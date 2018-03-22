@@ -19,15 +19,16 @@ public class Tarea extends Thread {
     private Estado estado;
     private String nombre;
     static final Logger resultLog = Logger.getLogger("resultadoLogger");
+    private Manager manager;
 
 
-    public Tarea(Tablero tablero, ArrayList<Ficha> fichas, String nombre,Integer nivel) {
+    public Tarea(Tablero tablero, ArrayList<Ficha> fichas, String nombre,Integer nivel,Manager manager) {
         this.tablero = tablero;
         this.nivelComienzo = nivel;
         this.finalizado = false;
         this.dividir = false;
         this.fichas = ListUtils.getCopia(fichas);
-        this.nombre = "TAREA " + nombre;
+        this.nombre = "Thread actual:" + currentThread().getName() + " va a correr en " + getName() + " TAREA " + nombre;
         String todas ="";
         ArrayList<Ficha> todasFichas = tablero.getFichasUsadas();
         for(Ficha ficha : todasFichas){
@@ -40,6 +41,7 @@ public class Tarea extends Thread {
         }
         resultLog.info(this.nombre + " (para usar): " + todas);
         NRO++;
+        this.manager = manager;
 
     }
 
@@ -79,14 +81,15 @@ public class Tarea extends Thread {
             this.estado = new Estado(tablero.clone(),fichas,nivel);
             //1) desbloquea el manager
             dividir = false;
-            Manager.setBloqueado(false);
+            bloqueado = true;
+            manager.setBloqueado(false);
             resultLog.info(Thread.currentThread().getName() +" DESBLOQUEO AL MANAGER " );
-            /*while (bloqueado){
+            while (bloqueado){
                 //do nothing
-                resultLog.warn("BackRichi() BLOQUEADO " + Thread.currentThread().getName() + " " + new Date());
-                resultLog.warn("BackRichi() BLOQUEADO " + getNombre());
-                resultLog.warn("BackRichi() BLOQUEADO " + getName());
-            }*/
+                resultLog.info("BackRichi() BLOQUEADO " + Thread.currentThread().getName() + " " + new Date());
+                /*resultLog.warn("BackRichi() BLOQUEADO " + getNombre());
+                resultLog.warn("BackRichi() BLOQUEADO " + getName());*/
+            }
             resultLog.info(Thread.currentThread().getName() +" ya dividio");
         }else{
             for (Ficha f : fichas) {
@@ -138,9 +141,10 @@ public class Tarea extends Thread {
             Manager.setBloqueado(false);
         }*/
 
-        if(Manager.isBloqueado() && dividir){
+        //
+        if(manager.isBloqueado() && dividir){
             System.out.println(Thread.currentThread().getName() + " ENTRA");
-            Manager.setBloqueado(false);
+            manager.setBloqueado(false);
         }
     }
 }
