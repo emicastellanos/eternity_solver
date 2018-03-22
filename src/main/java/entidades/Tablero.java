@@ -1,58 +1,52 @@
 package entidades;
-import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Tablero {
     private int N;
 
+    private int fila;
+    private int columna;
+
     private Ficha[][] tablero;
 
-    public class Posicion{
-        int i;
-        int j;
-
-        public Posicion(int i, int j) {
-            this.i = i;
-            this.j = j;
-        }
-
-        public int getI() {
-            return i;
-        }
-
-        public void setI(int i) {
-            this.i = i;
-        }
-
-        public int getJ() {
-            return j;
-        }
-
-        public void setJ(int j) {
-            this.j = j;
-        }
-    }
 
     public Tablero(int n) {
         this.N = n;
         tablero = new Ficha[N][N];
-
+        fila = 0;
+        columna = 0;
         for (int i = 0; i < N; i++)
             for (int j = 0; j < N; j++)
                 tablero[i][j] = null;
     }
 
-    public int getTotalFichasPuestas() {
-        int t = 0;
-        for (int i = 0; i < N; i++)
-            for (int j = 0; j < N; j++)
-                if (tablero[i][j] != null) {
-                    t++;
-                }
-        return t;
+    public int getFila() {
+        return fila;
     }
+
+    public void setFila(int fila) {
+        this.fila = fila;
+    }
+
+    public int getColumna() {
+        return columna;
+    }
+
+    public void setColumna(int columna) {
+        this.columna = columna;
+    }
+
+    public void aumentarPosicion() {
+	    	if(columna != N-1) {
+	    		columna++;
+	    	}
+	    	else {
+	    		fila++;
+	    		columna = 0;
+	    	}
+    }
+
 
     public ArrayList<Ficha> getFichasUsadas(){
         ArrayList<Ficha> usadas = new ArrayList<>();
@@ -67,56 +61,77 @@ public class Tablero {
     }
 
 
-    public void setPosicion(int fila, int columna, Ficha ficha) {
-        tablero[fila][columna] = ficha;
+
+    
+    public void retrocederPosicion() {
+	    	if(columna != 0) {
+	    		columna--;
+	    	}
+	    	else {
+	    		columna = N-1;
+	    		fila--;
+	    	}
     }
-
-    public void liberarPosicion(int fila, int columna) {
-        tablero[fila][columna] = null;
-    }
+    
 
 
-    public Boolean estaLibre(int i, int j) {
-        return tablero[i][j] == null;
-    }
-
-
-    public Ficha getPosicion(int fila, int col) {
-        return tablero[fila][col];
-    }
-
-
-    public Boolean esSolucion(int fila, int columna, Ficha f) {
-
-        if (fila == 0) {
-            if (f.getArr() != 0)
-                return false;
-        }
-        if (columna == 0) {
-            if (f.getIzq() != 0)
-                return false;
-        }
-        if (fila == N - 1) {
-            if (f != null && f.getAbj() != 0) {
-                return false;
-            }
-        }
-        if (columna == N - 1) {
-            if (f.getDer() != 0) {
-                return false;
-            }
-        }
-        if (fila != 0 && tablero[fila - 1][columna] != null && tablero[fila - 1][columna].getAbj() != f.getArr()) {
+    public Boolean esSolucion() {
+    	
+    	//arriba
+        if (fila != 0 && tablero[fila-1][columna].getAbj() != tablero[fila][columna].getArr()) 
             return false;
-        }
-        if (columna != 0 && tablero[fila][columna - 1] != null && tablero[fila][columna - 1].getDer() != f.getIzq()) {
+        
+        //izquierda
+        if (columna != 0 && tablero[fila][columna-1].getDer() != tablero[fila][columna].getIzq()) 
             return false;
-        }
-
+            
+        if (columna != N-1 && tablero[fila][columna].getDer() == 0 )
+        	return false;
+        
+        if (fila != N-1 && tablero[fila][columna].getAbj() == 0 )
+        	return false;
+       
+        if (fila == 0 && tablero[fila][columna].getArr() != 0) 
+                return false;
+        
+        if (columna == 0 && tablero[fila][columna].getIzq() != 0) 
+                return false;
+            
+        
+        if (fila == N-1 && tablero[fila][columna].getAbj() != 0) 
+                return false;
+           
+        
+        if (columna == N - 1 && tablero[fila][columna].getDer() != 0)
+                return false;
+        
+        
         return true;
     }
 
-    public Boolean esSolucion() {
+
+    public Boolean esSolucionFinal() {
+       if(fila == N-1 && columna == N-1) {
+    	   		return true;
+       }
+       else {
+    	   		return false;
+       }
+    }
+
+
+    public void insertarFinal(Ficha f) {
+       tablero[fila][columna] = f; 
+    }
+
+
+    public void eliminarUltima() {
+    	 tablero[fila][columna] = null;
+    }
+    
+    //**---------------------------------------------------------***
+
+    public Boolean esSolucionVieja() {
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
                 if (tablero[i][j] != null) {
@@ -158,7 +173,7 @@ public class Tablero {
         return true;
     }
 
-    public Boolean esSolucionFinal() {
+    public Boolean esSolucionFinalVieja() {
         for (int i = 0; i < N; i++)
             for (int j = 0; j < N; j++)
                 if (tablero[i][j] == null)
@@ -167,7 +182,9 @@ public class Tablero {
         return true;
     }
 
-    public void insertarFinal(Ficha f) {
+
+    public void insertarFinalVieja(Ficha f) {
+
         boolean seguir = true;
         for (int i = 0; i < N && seguir; i++)
             for (int j = 0; j < N && seguir; j++)
@@ -181,16 +198,9 @@ public class Tablero {
     }
 
 
-    public Posicion getUltimaPosicion () {
-        for (int i = 0; i < N; i++)
-            for (int j = 0; j < N; j++)
-                if (tablero[i][j] == null) {
-                    return new Posicion(i, j);
-                }
-        return null;
-    }
 
-    public void eliminarUltima() {
+
+    public void eliminarUltimaVieja() {
         boolean seguir = true;
         Ficha eliminada = null;
         for (int i = 0; i < N && seguir; i++) {
@@ -218,11 +228,20 @@ public class Tablero {
         }
     }
 
+    public Ficha getPosicion(int fila, int col) {
+        return tablero[fila][col];
+    }
+
+    public void setPosicion(int fila, int col,Ficha f) {
+        tablero[fila][col]=f;
+    }
+
 
     @Override
     public Tablero clone() {
         Tablero result = new Tablero(this.N);
-
+        result.setFila(this.getFila());
+        result.setColumna(this.getColumna());
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
                 result.setPosicion(i, j, getPosicion(i, j));

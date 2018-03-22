@@ -15,7 +15,7 @@ import java.util.List;
 public class LinealMain {
     public static ArrayList<Ficha> fichas;
 
-    private static final int N = 5;
+    private static final int N = 10;
     static final Logger fichasLog = Logger.getLogger("fichasLogger");
     static final Logger resultLog = Logger.getLogger("resultadoLogger");
 
@@ -37,6 +37,7 @@ public class LinealMain {
         resultLog.info("INICIO " + ZonedDateTime.now());
         tarea.backRichi(fichas,nivel);
         ZonedDateTime zdt ;
+        resultLog.info(tarea.solucion);
         resultLog.info("\n----- TERMINO  "+ZonedDateTime.now());
 
         

@@ -26,9 +26,9 @@ public class HilosMain {
         GeneradorFichas generadorFichas = new GeneradorFichas(N);
         fichas = generadorFichas.getFichasUnicas();
     
-        
 
         Collections.shuffle(fichas);
+
         fichasLog.info("-----Fichas Generadas-----");
 
         List<TareaRunnable> tareas = new ArrayList<TareaRunnable>();

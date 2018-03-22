@@ -8,16 +8,15 @@ public class Ficha {
     private int abj;
     private int id;
 
-    public Ficha(int id){
-        this.id = id;
-    }
-
-
     public Ficha(int izq, int arr,int der, int abj,int id) {
         this.izq = izq;
         this.der = der;
         this.arr = arr;
         this.abj = abj;
+        this.id = id;
+    }
+
+    public Ficha(int id) {
         this.id = id;
     }
 
@@ -57,17 +56,10 @@ public class Ficha {
         return id;
     }
 
-    public String imprimirAbajo() {
-        StringBuffer result = new StringBuffer();
-        result.append("   ");
-        result.append(String.format("%1$3s", abj).replace(' ', '0'));
-        result.append("   |");
 
-        return result.toString();
+    public void setId(int id) {
+        this.id = id;
     }
 
-        public void setId ( int id){
-            this.id = id;
-        }
-    }
 
+}
