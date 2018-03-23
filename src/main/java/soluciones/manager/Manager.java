@@ -25,7 +25,7 @@ public class Manager {
         creadorTareas = new CreadorTareas(this);
         activas = new ArrayList<>();
         pendientes = new ArrayList<>();
-        windowSize = 2;//Runtime.getRuntime().availableProcessors() - 2 ;
+        windowSize = 7;//Runtime.getRuntime().availableProcessors() -1 ;
         SOLUCIONES = Collections.synchronizedList(new ArrayList<>());
         bloqueado = false;
     }
@@ -220,6 +220,9 @@ public class Manager {
         resultLog.info("PARALELIZADO: " + SOLUCIONES.size());
         for(Tablero t : SOLUCIONES){
             String todas ="";
+            if(t == null){
+                System.out.println("asd");
+            }
             ArrayList<Ficha> todasFichas = t.getFichasUsadas();
             for(Ficha ficha : todasFichas){
                 todas+= String.valueOf(ficha.getId()) + "("+ ficha.getRot() +") - ";
