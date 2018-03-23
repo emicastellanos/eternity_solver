@@ -201,7 +201,7 @@ public class Manager {
         ArrayList <Ficha> fichas = generadorFichas.getFichasUnicas();
         Tablero tablero = new Tablero(7);
 
-        TareaRunnable tareaRunnable = new TareaRunnable(tablero.clone());
+        TareaRunnable tareaRunnable = new TareaRunnable(tablero.);
         tareaRunnable.backRichi();
 
         resultLog.info("LINEAL: " + comparacion.size());
