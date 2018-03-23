@@ -34,12 +34,12 @@ public class Tarea extends Thread {
         for(Ficha ficha : todasFichas){
             todas+= String.valueOf(ficha.getId()) + " - ";
         }
-        resultLog.info(this.nombre + " (tablero): " + todas);
+        /*resultLog.info(this.nombre + " (tablero): " + todas);
         todas="";
         for(Ficha ficha : fichas){
             todas+= String.valueOf(ficha.getId()) + " - ";
         }
-        resultLog.info(this.nombre + " (para usar): " + todas);
+        resultLog.info(this.nombre + " (para usar): " + todas);*/
         NRO++;
         this.manager = manager;
 
@@ -77,7 +77,7 @@ public class Tarea extends Thread {
     public void backRichi(ArrayList<Ficha> fichas, Integer nivel){
         if(dividir && fichas.size()>1){ //porque si queda solo una ficha es mas facil que este thread termine
             //ademas si hay soo una ficha, el creador va a ser el que "encuentre" la solucion
-            resultLog.info(Thread.currentThread().getName() +" entro al dividir " + getNombre());
+            //resultLog.info(Thread.currentThread().getName() +" entro al dividir " + getNombre());
             this.estado = new Estado(tablero.clone(),fichas,nivel);
             //1) desbloquea el manager
             dividir = false;
@@ -86,11 +86,17 @@ public class Tarea extends Thread {
             resultLog.info(Thread.currentThread().getName() +" DESBLOQUEO AL MANAGER " );
             while (bloqueado){
                 //do nothing
-                resultLog.info("BackRichi() BLOQUEADO " + Thread.currentThread().getName() + " " + new Date());
+                int i;
+                resultLog.info("BackRichi() BLOQUEADO " + Thread.currentThread().getName());
+                try {
+                    Thread.sleep(1);
+                } catch (InterruptedException e) {
+
+                }
                 /*resultLog.warn("BackRichi() BLOQUEADO " + getNombre());
                 resultLog.warn("BackRichi() BLOQUEADO " + getName());*/
             }
-            resultLog.info(Thread.currentThread().getName() +" ya dividio");
+            //resultLog.info(Thread.currentThread().getName() +" ya dividio");
         }else{
             for (Ficha f : fichas) {
                 tablero.insertarFinal(f);
@@ -98,13 +104,16 @@ public class Tarea extends Thread {
                     if (tablero.esSolucionFinal()) {
                         resultLog.info(" ---------------- SE ENCONTRO UNA SOLUCION " + Thread.currentThread().getName());
                         Tablero resultado = tablero.clone();
+                        if(resultado==null){
+                            System.out.println("asd");
+                        }
                         Manager.SOLUCIONES.add(resultado);
-                        String todas = "";
+                        /*String todas = "";
                         ArrayList<Ficha> todasFichas = resultado.getFichasUsadas();
                         for (Ficha ficha : todasFichas) {
                             todas += String.valueOf(ficha.getId()) + " - ";
                         }
-                        resultLog.info(todas);
+                        resultLog.info(todas);*/
                     } else {
                         ArrayList<Ficha> aux = new ArrayList<Ficha>();
                         for (Ficha e : fichas) {
@@ -122,7 +131,7 @@ public class Tarea extends Thread {
                 tablero.eliminarUltima();
             }
         }
-        resultLog.info("SALIENDO DEL BACK " + Thread.currentThread().getName());
+        //resultLog.info("SALIENDO DEL BACK " + Thread.currentThread().getName());
 
     }
     
@@ -143,7 +152,7 @@ public class Tarea extends Thread {
 
         //
         if(manager.isBloqueado() && dividir){
-            System.out.println(Thread.currentThread().getName() + " ENTRA");
+            System.out.println(Thread.currentThread().getName() + " TENIA QUE DIVIDIR PERO TERMINO, DESBLOQUEA EL MANAGER");
             manager.setBloqueado(false);
         }
     }
