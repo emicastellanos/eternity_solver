@@ -87,7 +87,6 @@ public class Ficha {
     public int getRot(){return rot;}
 
     public void setRot(int i ){rot =i;}
-	
 
     @Override
     public boolean equals(Object obj1) {
