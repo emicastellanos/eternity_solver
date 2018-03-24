@@ -23,38 +23,27 @@ public class GeneradorFichas {
         tablero = new Tablero(N);
     }
 
-    public ArrayList<Ficha> crearFichasDesdeArchivo(String location) throws FileNotFoundException, IOException {
-        String cadena;
-        Ficha ficha = null;
-        ArrayList<Ficha> fichas = new ArrayList<Ficha>();
-        String[] colores;
-        FileReader f = new FileReader(location);
-        BufferedReader b = new BufferedReader(f);
-        int i = 0;
-        while ((cadena = b.readLine()) != null) {
-
-            colores = cadena.split("-");
-            ficha = new Ficha(Integer.valueOf(colores[0]), Integer.valueOf(colores[1]), Integer.valueOf(colores[2]), Integer.valueOf(colores[3]), i);
-            fichas.add(ficha);
-            i++;
-        }
-        b.close();
-        return fichas;
+    public int[] getColores() {
+        return colores;
     }
 
     public boolean existe (Ficha ficha){
         for(int i=0; i<N; i++){
             for(int j=0; j<N; j++){
                 Ficha fichaDeTablero = tablero.getPosicion(i,j);
-                if (fichaDeTablero!=null && ficha.equals(fichaDeTablero)){
-                    return true;
+                if(fichaDeTablero==null){
+                    return false;
+                }else{
+                    if(ficha.equals(fichaDeTablero)){
+                        return true;
+                    }
                 }
             }
         }
         return false;
     }
 
-    public int getColor(){
+    private int getColor(){
         int color = 1;
         for(int i = 1; i<=MAX_COLOR; i++){
             if(colores[i]< colores[color]){
@@ -65,7 +54,7 @@ public class GeneradorFichas {
         return color;
     }
 
-    public int getColorAleatorio(){
+    private int getColorAleatorio(){
         Double i= Math.random()*MAX_COLOR;
         while (i.intValue()==0){
             i= Math.random()*MAX_COLOR;
@@ -137,7 +126,7 @@ public class GeneradorFichas {
         return /*rotarFichas(*/generadas;/*);*/
     }
 
-    public ArrayList<Ficha> rotarFichas(ArrayList<Ficha> fichastemp){
+    private ArrayList<Ficha> rotarFichas(ArrayList<Ficha> fichastemp){
         ArrayList<Ficha> fichasRotadas = new ArrayList<>();
         Ficha ficha = null;
         for (Ficha f : fichastemp) {// las fichas originales son distintas pero una ficha rotada si puede ser igual a otra original,
@@ -152,6 +141,9 @@ public class GeneradorFichas {
         return  fichasRotadas;
     }
 
+
+
+    /**............... A partir de aca para abajo hay codigo que ni se usa ............................*/
     public ArrayList<Ficha> getFichasUnicasRicardo() {
         ArrayList<Ficha> fichastemp = new ArrayList<Ficha>();
         ArrayList<Ficha> fichas = new ArrayList<Ficha>();
@@ -333,7 +325,22 @@ public class GeneradorFichas {
         }
     }
 
-    public int[] getColores() {
-        return colores;
+    public ArrayList<Ficha> crearFichasDesdeArchivo(String location) throws FileNotFoundException, IOException {
+        String cadena;
+        Ficha ficha = null;
+        ArrayList<Ficha> fichas = new ArrayList<Ficha>();
+        String[] colores;
+        FileReader f = new FileReader(location);
+        BufferedReader b = new BufferedReader(f);
+        int i = 0;
+        while ((cadena = b.readLine()) != null) {
+
+            colores = cadena.split("-");
+            ficha = new Ficha(Integer.valueOf(colores[0]), Integer.valueOf(colores[1]), Integer.valueOf(colores[2]), Integer.valueOf(colores[3]), i);
+            fichas.add(ficha);
+            i++;
+        }
+        b.close();
+        return fichas;
     }
 }
