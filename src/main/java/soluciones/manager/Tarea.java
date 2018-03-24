@@ -19,27 +19,29 @@ public class Tarea extends Thread {
     private Estado estado;
     private String nombre;
     static final Logger resultLog = Logger.getLogger("resultadoLogger");
+    private Manager manager;
 
 
-    public Tarea(Tablero tablero, ArrayList<Ficha> fichas, String nombre,Integer nivel) {
+    public Tarea(Tablero tablero, ArrayList<Ficha> fichas, String nombre,Integer nivel,Manager manager) {
         this.tablero = tablero;
         this.nivelComienzo = nivel;
         this.finalizado = false;
         this.dividir = false;
         this.fichas = ListUtils.getCopia(fichas);
-        this.nombre = "TAREA " + nombre;
+        this.nombre = "Thread actual:" + currentThread().getName() + " va a correr en " + getName() + " TAREA " + nombre;
         String todas ="";
         ArrayList<Ficha> todasFichas = tablero.getFichasUsadas();
         for(Ficha ficha : todasFichas){
             todas+= String.valueOf(ficha.getId()) + " - ";
         }
-        resultLog.info(this.nombre + " (tablero): " + todas);
+        /*resultLog.info(this.nombre + " (tablero): " + todas);
         todas="";
         for(Ficha ficha : fichas){
             todas+= String.valueOf(ficha.getId()) + " - ";
         }
-        resultLog.info(this.nombre + " (para usar): " + todas);
+        resultLog.info(this.nombre + " (para usar): " + todas);*/
         NRO++;
+        this.manager = manager;
 
     }
 
@@ -75,19 +77,29 @@ public class Tarea extends Thread {
     public void backRichi(ArrayList<Ficha> fichas, Integer nivel){
         if(dividir && fichas.size()>1){ //porque si queda solo una ficha es mas facil que este thread termine
             //ademas si hay soo una ficha, el creador va a ser el que "encuentre" la solucion
-            resultLog.info(Thread.currentThread().getName() +" entro al dividir " + getNombre());
+            //resultLog.info(Thread.currentThread().getName() +" entro al dividir " + getNombre());
             this.estado = new Estado(tablero.clone(),fichas,nivel);
+            /**Quizas haya alguna forma de no crear una tarea si despues el thread padre
+             * no va a conseguir una tarea para continuar**/
+            /**Quizas se conveniente devolver mas de un estado.. una lista **/
             //1) desbloquea el manager
             dividir = false;
-            Manager.setBloqueado(false);
+            bloqueado = true;
+            manager.setBloqueado(false);
             resultLog.info(Thread.currentThread().getName() +" DESBLOQUEO AL MANAGER " );
-            /*while (bloqueado){
+            while (bloqueado){
                 //do nothing
-                resultLog.warn("BackRichi() BLOQUEADO " + Thread.currentThread().getName() + " " + new Date());
-                resultLog.warn("BackRichi() BLOQUEADO " + getNombre());
-                resultLog.warn("BackRichi() BLOQUEADO " + getName());
-            }*/
-            resultLog.info(Thread.currentThread().getName() +" ya dividio");
+                int i;
+                resultLog.info("BackRichi() BLOQUEADO " + Thread.currentThread().getName());
+                try {
+                    Thread.sleep(1);
+                } catch (InterruptedException e) {
+
+                }
+                /*resultLog.warn("BackRichi() BLOQUEADO " + getNombre());
+                resultLog.warn("BackRichi() BLOQUEADO " + getName());*/
+            }
+            //resultLog.info(Thread.currentThread().getName() +" ya dividio");
         }else{
             for (Ficha f : fichas) {
                 tablero.insertarFinal(f);
@@ -95,13 +107,16 @@ public class Tarea extends Thread {
                     if (tablero.esSolucionFinal()) {
                         resultLog.info(" ---------------- SE ENCONTRO UNA SOLUCION " + Thread.currentThread().getName());
                         Tablero resultado = tablero.clone();
+                        if(resultado==null){
+                            System.out.println("asd");
+                        }
                         Manager.SOLUCIONES.add(resultado);
-                        String todas = "";
+                        /*String todas = "";
                         ArrayList<Ficha> todasFichas = resultado.getFichasUsadas();
                         for (Ficha ficha : todasFichas) {
                             todas += String.valueOf(ficha.getId()) + " - ";
                         }
-                        resultLog.info(todas);
+                        resultLog.info(todas);*/
                     } else {
                         ArrayList<Ficha> aux = new ArrayList<Ficha>();
                         for (Ficha e : fichas) {
@@ -119,7 +134,7 @@ public class Tarea extends Thread {
                 tablero.eliminarUltima();
             }
         }
-        resultLog.info("SALIENDO DEL BACK " + Thread.currentThread().getName());
+        //resultLog.info("SALIENDO DEL BACK " + Thread.currentThread().getName());
 
     }
     
@@ -138,9 +153,10 @@ public class Tarea extends Thread {
             Manager.setBloqueado(false);
         }*/
 
-        if(Manager.isBloqueado() && dividir){
-            System.out.println(Thread.currentThread().getName() + " ENTRA");
-            Manager.setBloqueado(false);
+        //
+        if(manager.isBloqueado() && dividir){
+            System.out.println(Thread.currentThread().getName() + " TENIA QUE DIVIDIR PERO TERMINO, DESBLOQUEA EL MANAGER");
+            manager.setBloqueado(false);
         }
     }
 }

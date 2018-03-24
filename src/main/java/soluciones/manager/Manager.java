@@ -7,66 +7,72 @@ import soluciones.master_slave.TareaRunnable;
 import utilidades.GeneradorFichas;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 public class Manager {
-    private static boolean bloqueado = false;
-    public static ArrayList<Tablero> SOLUCIONES;
+    private boolean bloqueado;
+    public static List<Tablero> SOLUCIONES;
     private CreadorTareas creadorTareas;
     private ArrayList<Tarea> pendientes;
     private ArrayList<Tarea> activas;
-    private int windowSize ; //Cambiar nombre -> refiere a la cantidad de threads que puede haber como maximo
+    private int windowSize ; //TODO Cambiar nombre -> refiere a la cantidad de threads que puede haber como maximo
     static final Logger resultLog = Logger.getLogger("resultadoLogger");
 
 
     public Manager () {
-        creadorTareas = new CreadorTareas();
+        creadorTareas = new CreadorTareas(this);
         activas = new ArrayList<>();
         pendientes = new ArrayList<>();
-        windowSize = 5;//Runtime.getRuntime().availableProcessors() -1 ;
-        SOLUCIONES = new ArrayList<>();
+        windowSize = 7;//Runtime.getRuntime().availableProcessors() -1 ;
+        SOLUCIONES = Collections.synchronizedList(new ArrayList<>());
+        bloqueado = false;
     }
 
-    public static void setBloqueado(boolean e){
+    public void setBloqueado(boolean e){
         bloqueado = e;
     }
 
-    public static boolean isBloqueado() {
+    public boolean isBloqueado() {
         return bloqueado;
     }
+
+
 
     /**
      * toma una Tarea de la lista de activas, la subdivide.
      * */
     public void solicitarMas(){
-        resultLog.info("manager.solicitarMas() ");
-        if(activas.size() > 0 ){
-            for(Tarea tarea : activas){
-                if(tarea.isAlive()){
-                    bloqueado = true;
-                    //TODO preguntar si la tarea esa no esta finalizada
-                    //capaz pueda resolverse con un solo boolean
-                    tarea.setDividir(true);
-                    //tarea.setBloqueado(true);
-                    String msg = "";
-                    while (bloqueado){ //Busy waiting
-                        //do nothing
-                        msg = "manager.SolicitarMas() BLOQUEADO name:" + Thread.currentThread().getName() + " tarea name "+ tarea.getName() + " tarea nombre "+ tarea.getNombre()+ " " + new Date();
-                        resultLog.error(msg);
+        resultLog.info("ACTUAL " + Thread.currentThread().getName() + " solicitarMas()");
+        for(Tarea tarea : activas){ //Podriamos tener alguna clase Filtro elija las tareas mas prometedoras
+            if(tarea.isAlive()){// EN lugar de agarrar solo uno, podriamos agarrar un par.
+                bloqueado = true;
+                //TODO preguntar si la tarea esa no esta finalizada
+                tarea.setDividir(true);
+                String msg = "";
+                while (bloqueado && !tarea.isFinalizado()){ //Busy waiting
+                    //do nothing
+                    msg = "BLOQUEADO Thread: " + Thread.currentThread().getName() + " TAREA NAME  "+ tarea.getName() ;
+                    resultLog.error(msg);
+                    try {
+                        Thread.sleep(1);
+                    } catch (InterruptedException e) {
+
                     }
-                    if(!tarea.isDividir()){
-                        resultLog.error(Thread.currentThread().getName() + " habia pa dividir " + tarea.getName());
-                        pendientes.addAll(creadorTareas.crear(tarea.getEstado()));
-                        //tarea.setBloqueado(false);
-                        break;
-                    }else{
-                        resultLog.error(Thread.currentThread().getName() +" NOOOOOO se pudo dividir " + tarea.getName());
-                    }
+                }
+                if(!tarea.isDividir()){
+                    resultLog.info(Thread.currentThread().getName() + " habia pa dividir " + tarea.getName());
+                    pendientes.addAll(creadorTareas.crear(tarea.getEstado()));
+                    tarea.setBloqueado(false);
+                    resultLog.info(Thread.currentThread().getName() + " DESBLOQUEO A " + tarea.getName());
+                    break;
+                }else{
+                    resultLog.error("ACTUAL " + Thread.currentThread().getName() +" NOOOOOO se pudo dividir " + tarea.getName());
                 }
             }
         }
-        resultLog.info(Thread.currentThread().getName() +" activadas " + cantActivadas() + " pendientes " + pendientes.size());
+        resultLog.info("SALIENDO SOLICITAR MAS: ACTUAL " +Thread.currentThread().getName() +" activadas " + cantActivadas() + " pendientes " + pendientes.size());
     }
 
     /**
@@ -74,9 +80,6 @@ public class Manager {
      * su metodo run()
      * */
     public int cantActivadas(){
-/*        System.out.println("manager.cantActivadas() ");
-        resultLog.info("manager.cantActivadas() ");*/
-
         //isAlive() es true si al thread le dieron start y todavia no termino su metodo run
         // (no precisamente tiene que estar corriendo)
 
@@ -93,13 +96,13 @@ public class Manager {
      * pasar tareas de lista de pendientes a lista de activa.
      * */
     public void activarTareas(){
-        System.out.println("manager.activarTareas() ");
-        resultLog.info("------ manager.activarTareas() ------");
         int activadas = cantActivadas();
-        resultLog.info("hay " + String.valueOf(activadas) + " activadas");
-        resultLog.info("pendientes " + pendientes.size());
-
         int espacioLibre = windowSize - activadas;
+
+        resultLog.info("ACTUAL " + Thread.currentThread().getName() + "  ---------- manager.activarTareas() ---------");
+        resultLog.info(" HAY " + activas.size() + " activas");
+        resultLog.info(" HAY " + String.valueOf(activadas) + " activadas");
+        resultLog.info(" HAY " + pendientes.size() + " pendientes");
 
         if(pendientes.size() < espacioLibre){
             activas.addAll(pendientes);
@@ -112,10 +115,11 @@ public class Manager {
             activas.addAll(removerPendientes);
             pendientes.removeAll(removerPendientes);
         }
-        resultLog.info("al salir de manager.activarTareas() quedaron");
+
+        resultLog.info("quedaron");
         resultLog.info("activas " + activas.size());
         resultLog.info("pendientes " + pendientes.size());
-
+        resultLog.info("SALIENDO CON EL " + Thread.currentThread().getName() + "  ---------- manager.activarTareas() ---------");
     }
 
     /**
@@ -123,14 +127,21 @@ public class Manager {
      * */
     public void iniciarTareasActivas(){
         int log = 0;
-        resultLog.info("IniciarTareasActivas activas : " + activas.size());
+        resultLog.info("ENTRANDO CON " + Thread.currentThread().getName() +" a IniciarTareasActivas #activas : " + activas.size());
+        ArrayList<Tarea> borrar = new ArrayList<>();
         for(Tarea a : activas){
-            if(!a.isAlive() && !a.isFinalizado()){
-                a.start();
-                log++;
+            if(!a.isAlive()){
+                if (!a.isFinalizado()){
+                    a.start();
+                    log++;
+                }else{
+                    borrar.add(a);
+                }
             }
         }
-        resultLog.info("IniciarTareasActivas se iniciaron : " + String.valueOf(log));
+        //activas.removeAll(borrar);
+
+        resultLog.info("SALIENDO CON "+ Thread.currentThread().getName() + " IniciarTareasActivas se iniciaron : " + String.valueOf(log) + " FINALIZADAS: " + borrar.size());
     }
 
     public boolean tieneTareas (){
@@ -186,9 +197,9 @@ public class Manager {
     }
 
     public static void main(String[] args){
-        GeneradorFichas generadorFichas = new GeneradorFichas(6);
+        GeneradorFichas generadorFichas = new GeneradorFichas(7);
         ArrayList <Ficha> fichas = generadorFichas.getFichasUnicas();
-        Tablero tablero = new Tablero(6);
+        Tablero tablero = new Tablero(7);
 
         TareaRunnable tareaRunnable = new TareaRunnable(tablero.clone());
         tareaRunnable.backRichi();
@@ -215,6 +226,9 @@ public class Manager {
         for(Tablero t : SOLUCIONES){
             resultLog.info("SOL " + s);
             String todas ="";
+            if(t == null){
+                System.out.println("asd");
+            }
             ArrayList<Ficha> todasFichas = t.getFichasUsadas();
             for(Ficha ficha : todasFichas){
                 todas+= String.valueOf(ficha.getId()) + " - ";

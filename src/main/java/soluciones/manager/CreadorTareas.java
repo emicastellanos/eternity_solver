@@ -10,7 +10,13 @@ import java.util.List;
 
 public class CreadorTareas {
 
-    /* como cuesta mucho arrancar estas tareas seria mas conveniente devolver algo que contenga
+    private Manager manager;
+
+    public CreadorTareas (Manager m){
+        manager = m;
+    }
+
+    /** como cuesta mucho arrancar estas tareas seria mas conveniente devolver algo que contenga
     un tablero (clonado), una copia de las fichas, y el nivel y que el manager se encargue de
     reutilizar los threads muertos pasandole esa info y volviendo a startear.
     * */
@@ -22,7 +28,7 @@ public class CreadorTareas {
                 Tablero clonado = estado.getTablero().clone();
                 clonado.aumentarPosicion();
                 resultado.add(new Tarea(clonado,
-                        ListUtils.getCopiaSin(estado.getFichas(),ficha), String.valueOf(Tarea.NRO), estado.getNivel()));
+                        ListUtils.getCopiaSin(estado.getFichas(),ficha), String.valueOf(Tarea.NRO), estado.getNivel(),manager));
             }
             estado.getTablero().eliminarUltima();
         }
@@ -32,6 +38,8 @@ public class CreadorTareas {
     /**
      * Backtracking que devuelve en forma de lista todas las tareas que se puedan obtener al llegar
      * a un nivel dado (nivelObjetivo)
+     * TODO Devolver una lista de estados y que sea el manager el que decide cuantos threads crear
+     * o si reutilizar threads ya creados
      */
     public ArrayList<Tarea> backNivel(List<Ficha> fichas, Integer nivel, Tablero tablero, Integer nivelObjetivo) {
         ArrayList<Tarea> resultado = new ArrayList<>();
@@ -47,7 +55,7 @@ public class CreadorTareas {
                 nivel += 1;
                 tablero.aumentarPosicion();
                 if (nivel.equals(nivelObjetivo)) {
-                    Tarea tarea = new Tarea(tablero.clone(), aux, String.valueOf(Tarea.NRO), nivel);
+                    Tarea tarea = new Tarea(tablero.clone(), aux, String.valueOf(Tarea.NRO), nivel,manager);
                     resultado.add(tarea);
                 } else {
                     resultado.addAll(backNivel(aux, nivel, tablero, nivelObjetivo));
@@ -64,17 +72,6 @@ public class CreadorTareas {
     public ArrayList<Tarea> crearTareasIniciales(Tablero tablero, ArrayList<Ficha> fichas, int nivelInicial){
         //nivelInicial = cantidad de fichas bien colocadas en los tableros devueltos
         return backNivel(fichas,0,tablero,nivelInicial);
-    }
-
-    public static void main(String[] args) {
-        GeneradorFichas generadorFichas = new GeneradorFichas(5);
-        ArrayList <Ficha> fichas = generadorFichas.getFichasUnicas();
-        CreadorTareas ct = new CreadorTareas();
-        Tablero tablero = new Tablero(5);
-        ArrayList<Tarea> tareas = ct.crearTareasIniciales(tablero,fichas,2);
-
-        System.out.println("fin");
-
     }
 
 }
