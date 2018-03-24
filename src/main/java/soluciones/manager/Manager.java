@@ -191,7 +191,7 @@ public class Manager {
         Tablero tablero = new Tablero(6);
 
         TareaRunnable tareaRunnable = new TareaRunnable(tablero.clone());
-        ArrayList<Tablero> comparacion = tareaRunnable.backRichi(fichas,1);
+        tareaRunnable.backRichi();
 
         resultLog.info("LINEAL: " + comparacion.size());
 

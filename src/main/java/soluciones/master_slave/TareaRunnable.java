@@ -14,7 +14,7 @@ public class TareaRunnable extends Thread {
     private ArrayList<Ficha> fichas;
     public int nivelComienzo;
     public String nombreThread;
-    public int solucion;
+    static int solucion;
     final Logger threadsLogger = Logger.getLogger("threadLogger");
 
     public TareaRunnable (Tablero tablero){
@@ -35,34 +35,31 @@ public class TareaRunnable extends Thread {
     }
 
     
-    public ArrayList<Tablero> backRichi(ArrayList<Ficha> fichas, Integer nivel){
-        ArrayList<Tablero> listaSoluciones = new ArrayList<>();
+    public void backRichi(){
         for (Ficha f : fichas) {
-            tablero.insertarFinal(f);
-            if(tablero.esSolucion()) {
-                if (tablero.esSolucionFinal()) {
-                    solucion++;
-                    //threadsLogger.info("SOLUCION");
-                    //resultLog.info(tablero.imprimirse());
-                    listaSoluciones.add(tablero.clone());
-                } else {
-                    ArrayList<Ficha> aux = new ArrayList<Ficha>();
-                    for (Ficha e : fichas) {
-                        if (e.getId() != f.getId()) {
-                            aux.add(e);
-                        }
-                    }
-                    nivel += 1;
-                    tablero.aumentarPosicion();
-                    listaSoluciones.addAll(backRichi(aux, nivel));
-                    tablero.retrocederPosicion();
-                    nivel -= 1;
-
-                }
-            }
-            tablero.eliminarUltima();
+        		if(!f.isUsada()) {
+		        	for(int i=0; i<4;i++) {
+		            tablero.insertarFinal(f);
+		            if(tablero.esSolucion()) {
+		                if (tablero.esSolucionFinal()) {
+		                    solucion++;
+		                    //threadsLogger.info("SOLUCION");
+		                    //resultLog.info(tablero.imprimirse());
+		                    //listaSoluciones.add(tablero.clone());
+		                    
+		                } else {
+		                		f.setUsada(true);
+		                    tablero.aumentarPosicion();
+		                    backRichi();
+		                    tablero.retrocederPosicion();
+		                    f.setUsada(false);
+		                }
+		            }
+		            tablero.eliminarUltima();
+		            f.rotar();
+		        }
+        		}
         }
-        return listaSoluciones;
     }
 
 
@@ -97,7 +94,7 @@ public class TareaRunnable extends Thread {
     public void run() {
         ZonedDateTime zdt ;
         threadsLogger.info("\n----- ARRANCA EL THREAD " + nombreThread + " " + ZonedDateTime.now());
-        backRichi(this.fichas,this.nivelComienzo);
+        backRichi();
         threadsLogger.info("\n----- TERMINO EL THREAD " + nombreThread+" "+ZonedDateTime.now());
         
     }
