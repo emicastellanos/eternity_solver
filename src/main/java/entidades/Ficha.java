@@ -7,13 +7,23 @@ public class Ficha {
     private int der;
     private int abj;
     private int id;
+    public boolean usada;
 
-    public Ficha(int izq, int arr,int der, int abj,int id) {
+    public boolean isUsada() {
+		return usada;
+	}
+
+	public void setUsada(boolean usada) {
+		this.usada = usada;
+	}
+
+	public Ficha(int izq, int arr,int der, int abj,int id,boolean usada) {
         this.izq = izq;
         this.der = der;
         this.arr = arr;
         this.abj = abj;
         this.id = id;
+        this.usada = usada;
     }
 
     public Ficha(int id) {
@@ -60,6 +70,14 @@ public class Ficha {
     public void setId(int id) {
         this.id = id;
     }
+	
+	public void rotar() {
+		arr = izq;
+		der = arr;
+		abj = der;
+		izq = abj;
+	}
+	
 
     @Override
     public boolean equals(Object obj1) {
