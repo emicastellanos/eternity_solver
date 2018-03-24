@@ -16,7 +16,7 @@ public class CreadorTareas {
         manager = m;
     }
 
-    /* como cuesta mucho arrancar estas tareas seria mas conveniente devolver algo que contenga
+    /** como cuesta mucho arrancar estas tareas seria mas conveniente devolver algo que contenga
     un tablero (clonado), una copia de las fichas, y el nivel y que el manager se encargue de
     reutilizar los threads muertos pasandole esa info y volviendo a startear.
     * */
@@ -38,6 +38,8 @@ public class CreadorTareas {
     /**
      * Backtracking que devuelve en forma de lista todas las tareas que se puedan obtener al llegar
      * a un nivel dado (nivelObjetivo)
+     * TODO Devolver una lista de estados y que sea el manager el que decide cuantos threads crear
+     * o si reutilizar threads ya creados
      */
     public ArrayList<Tarea> backNivel(List<Ficha> fichas, Integer nivel, Tablero tablero, Integer nivelObjetivo) {
         ArrayList<Tarea> resultado = new ArrayList<>();

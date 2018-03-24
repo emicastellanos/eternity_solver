@@ -38,13 +38,15 @@ public class Manager {
         return bloqueado;
     }
 
+
+
     /**
      * toma una Tarea de la lista de activas, la subdivide.
      * */
     public void solicitarMas(){
         resultLog.info("ACTUAL " + Thread.currentThread().getName() + " solicitarMas()");
-        for(Tarea tarea : activas){
-            if(tarea.isAlive()){// EN lugar de agarrar solo uno, podriamos agarrar un par
+        for(Tarea tarea : activas){ //Podriamos tener alguna clase Filtro elija las tareas mas prometedoras
+            if(tarea.isAlive()){// EN lugar de agarrar solo uno, podriamos agarrar un par.
                 bloqueado = true;
                 //TODO preguntar si la tarea esa no esta finalizada
                 tarea.setDividir(true);

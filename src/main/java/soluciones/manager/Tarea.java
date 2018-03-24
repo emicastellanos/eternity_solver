@@ -79,6 +79,9 @@ public class Tarea extends Thread {
             //ademas si hay soo una ficha, el creador va a ser el que "encuentre" la solucion
             //resultLog.info(Thread.currentThread().getName() +" entro al dividir " + getNombre());
             this.estado = new Estado(tablero.clone(),fichas,nivel);
+            /**Quizas haya alguna forma de no crear una tarea si despues el thread padre
+             * no va a conseguir una tarea para continuar**/
+            /**Quizas se conveniente devolver mas de un estado.. una lista **/
             //1) desbloquea el manager
             dividir = false;
             bloqueado = true;
