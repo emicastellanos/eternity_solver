@@ -61,5 +61,18 @@ public class Ficha {
         this.id = id;
     }
 
+    @Override
+    public boolean equals(Object obj1) {
+        Ficha obj = (Ficha)obj1;
+        if (obj.getIzq() == this.getIzq() && obj.getArr() == this.getArr() && obj.getDer() == this.getDer() && obj.getAbj() == this.getAbj())
+            return true;
+        if (obj.getIzq() == this.getAbj() && obj.getArr() == this.getIzq() && obj.getDer() == this.getArr() && obj.getAbj() == this.getDer())
+            return true;
+        if (obj.getIzq() == this.getDer() && obj.getArr() == this.getAbj() && obj.getDer() == this.getIzq() && obj.getAbj() == this.getArr())
+            return true;
+        if (obj.getIzq() == this.getArr() && obj.getArr() == this.getDer() && obj.getDer() == this.getAbj() && obj.getAbj() == this.getIzq())
+            return true;
 
+        return false;
+    }
 }
