@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class ListUtils {
 
-    public static ArrayList<Ficha> getCopiaSin(ArrayList<Ficha> listaFichas, Ficha objetivo){
+    /*public static ArrayList<Ficha> getCopiaSin(ArrayList<Ficha> listaFichas, Ficha objetivo){
         ArrayList<Ficha> resultado = new ArrayList<>();
         for (Ficha e : listaFichas) {
             if (e.getId() != objetivo.getId()) {
@@ -14,12 +14,12 @@ public class ListUtils {
             }
         }
         return resultado;
-    }
+    }*/
 
     public static ArrayList<Ficha> getCopia(ArrayList<Ficha> listaFichas){
         ArrayList<Ficha> resultado = new ArrayList<>();
-        for(Ficha ficha : listaFichas){
-            resultado.add(new Ficha(ficha.getIzq(),ficha.getArr(),ficha.getDer(),ficha.getAbj(),ficha.getId()));
+        for(Ficha f : listaFichas){
+            resultado.add(f.clone());
         }
         return resultado;
     }

@@ -5,10 +5,10 @@ import entidades.Tablero;
 import org.apache.log4j.Logger;
 import soluciones.master_slave.TareaRunnable;
 import utilidades.GeneradorFichas;
+import utilidades.ListUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 public class Manager {
@@ -25,7 +25,7 @@ public class Manager {
         creadorTareas = new CreadorTareas(this);
         activas = new ArrayList<>();
         pendientes = new ArrayList<>();
-        windowSize = 7;//Runtime.getRuntime().availableProcessors() -1 ;
+        windowSize = 2;//Runtime.getRuntime().availableProcessors() - 2 ;
         SOLUCIONES = Collections.synchronizedList(new ArrayList<>());
         bloqueado = false;
     }
@@ -38,15 +38,13 @@ public class Manager {
         return bloqueado;
     }
 
-
-
     /**
      * toma una Tarea de la lista de activas, la subdivide.
      * */
     public void solicitarMas(){
         resultLog.info("ACTUAL " + Thread.currentThread().getName() + " solicitarMas()");
         for(Tarea tarea : activas){ //Podriamos tener alguna clase Filtro elija las tareas mas prometedoras
-            if(tarea.isAlive()){// EN lugar de agarrar solo uno, podriamos agarrar un par.
+            if(tarea.isAlive()){// TODO EN lugar de agarrar solo uno, podriamos agarrar un par.
                 bloqueado = true;
                 //TODO preguntar si la tarea esa no esta finalizada
                 tarea.setDividir(true);
@@ -62,7 +60,7 @@ public class Manager {
                     }
                 }
                 if(!tarea.isDividir()){
-                    resultLog.info(Thread.currentThread().getName() + " habia pa dividir " + tarea.getName());
+                    resultLog.info(Thread.currentThread().getName() + " SE PUDO DIVIDIR " + tarea.getName());
                     pendientes.addAll(creadorTareas.crear(tarea.getEstado()));
                     tarea.setBloqueado(false);
                     resultLog.info(Thread.currentThread().getName() + " DESBLOQUEO A " + tarea.getName());
@@ -93,7 +91,7 @@ public class Manager {
     }
 
     /**
-     * pasar tareas de lista de pendientes a lista de activa.
+     * Pasar Estados de lista de pendientes a las Tareas que corresponda de la lista de activas.
      * */
     public void activarTareas(){
         int activadas = cantActivadas();
@@ -175,8 +173,7 @@ public class Manager {
     public void ejecutar(ArrayList <Ficha> fichas, Tablero tablero )  {
         resultLog.info("manaager.Ejecutar () ");
 
-
-        pendientes = creadorTareas.crearTareasIniciales(tablero,fichas,2);
+        pendientes = creadorTareas.crearEstadosIniciales(tablero, fichas, 2);
         resultLog.info("CrearTareasIniciales = " + pendientes.size());
         activarTareas();
         iniciarTareasActivas();
@@ -197,16 +194,15 @@ public class Manager {
     }
 
     public static void main(String[] args){
-        GeneradorFichas generadorFichas = new GeneradorFichas(7);
+        GeneradorFichas generadorFichas = new GeneradorFichas(10);
         ArrayList <Ficha> fichas = generadorFichas.getFichasUnicas();
-        Tablero tablero = new Tablero(7);
-
-        TareaRunnable tareaRunnable = new TareaRunnable(tablero.);
+        Tablero tablero = new Tablero(10);
+        TareaRunnable tareaRunnable = new TareaRunnable(tablero.clone(), ListUtils.getCopia(fichas),null);
         tareaRunnable.backRichi();
 
-        resultLog.info("LINEAL: " + comparacion.size());
+        resultLog.info("LINEAL #Soluciones: " + tareaRunnable.solucion);
 
-        int s = 0;
+        /*int s = 0;
         for(Tablero t : comparacion){
             resultLog.info("SOL " + s);
             String todas ="";
@@ -216,32 +212,26 @@ public class Manager {
             }
             resultLog.info(todas);
             s++;
-        }
+        }*/
 
         Manager m = new Manager();
         m.ejecutar(fichas,tablero);
 
         resultLog.info("PARALELIZADO: " + SOLUCIONES.size());
-        s = 0;
         for(Tablero t : SOLUCIONES){
-            resultLog.info("SOL " + s);
             String todas ="";
-            if(t == null){
-                System.out.println("asd");
-            }
             ArrayList<Ficha> todasFichas = t.getFichasUsadas();
             for(Ficha ficha : todasFichas){
-                todas+= String.valueOf(ficha.getId()) + " - ";
+                todas+= String.valueOf(ficha.getId()) + "("+ ficha.getRot() +") - ";
             }
             resultLog.info(todas);
-            s++;
         }
 
 
         int cont = 0;
-        if(comparacion.size() == SOLUCIONES.size()){
+        if(tareaRunnable.solucion == SOLUCIONES.size()){
             resultLog.info("MISMA CANTIDAD ENTRE LINEAL Y PARALELIZABLE");
-            for(Tablero t : SOLUCIONES){
+            /*for(Tablero t : SOLUCIONES){
                 if(!comparacion.contains(t)){
                     resultLog.info("NO SON IGUALES");
                 }else{
@@ -250,9 +240,9 @@ public class Manager {
             }
             if (cont == SOLUCIONES.size()) {
                 resultLog.info("SON IGUALES");
-            }
+            }*/
         }else {
-            resultLog.info("NO HAY IGUAL CANTIDAD soluciones = " + SOLUCIONES.size() +  " Lineal " + comparacion.size()) ;
+            resultLog.info("NO HAY IGUAL CANTIDAD soluciones = " + SOLUCIONES.size() +  " Lineal " + tareaRunnable.solucion) ;
         }
 
     }

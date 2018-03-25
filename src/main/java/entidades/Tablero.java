@@ -42,7 +42,7 @@ public class Tablero {
 	    		columna++;
 	    	}
 	    	else {
-	    		fila++;
+	    		fila+=1;
 	    		columna = 0;
 	    	}
     }
@@ -244,7 +244,12 @@ public class Tablero {
         result.setColumna(this.getColumna());
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
-                result.setPosicion(i, j, getPosicion(i, j));
+                Ficha clon = getPosicion(i, j);
+                if(clon!=null){
+                    result.setPosicion(i, j, clon.clone());
+                }else {
+                    result.setPosicion(i, j, null);
+                }
             }
         }
         return result;

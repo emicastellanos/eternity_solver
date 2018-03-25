@@ -2,6 +2,7 @@ package soluciones.manager;
 
 import entidades.Ficha;
 import entidades.Tablero;
+import org.apache.log4j.Logger;
 import utilidades.GeneradorFichas;
 import utilidades.ListUtils;
 
@@ -11,7 +12,9 @@ import java.util.List;
 public class CreadorTareas {
 
     private Manager manager;
+    static final Logger resultLog = Logger.getLogger("resultadoLogger");
 
+    //TODO Debe haber alguna alternativa mejor que pasar una referencia del manager
     public CreadorTareas (Manager m){
         manager = m;
     }
@@ -22,51 +25,57 @@ public class CreadorTareas {
     * */
     public ArrayList<Tarea> crear(Estado estado){
         ArrayList<Tarea> resultado = new ArrayList<>();
+        resultLog.info("ENTRANDO A CREAR (TAREA) " + Thread.currentThread().getName() );
         for(Ficha ficha : estado.getFichas()){
-            estado.getTablero().insertarFinal(ficha);
-            if(estado.getTablero().esSolucion()){
-                Tablero clonado = estado.getTablero().clone();
-                clonado.aumentarPosicion();
-                resultado.add(new Tarea(clonado,
-                        ListUtils.getCopiaSin(estado.getFichas(),ficha), String.valueOf(Tarea.NRO), estado.getNivel(),manager));
+            if(!ficha.isUsada()) {
+                for(int i=0; i<4;i++) {
+                    estado.getTablero().insertarFinal(ficha);
+                    if (estado.getTablero().esSolucion()) {
+                        ficha.setUsada(true);
+                        Tablero clonado = estado.getTablero().clone();
+                        clonado.aumentarPosicion();
+                        resultado.add(new Tarea(clonado, ListUtils.getCopia(estado.getFichas()), null, estado.getNivel(), manager));
+                        ficha.setUsada(false);
+                    }
+                    estado.getTablero().eliminarUltima();
+                    ficha.rotar();
+                }
             }
-            estado.getTablero().eliminarUltima();
         }
+        resultLog.info(Thread.currentThread().getName() + " CREO " + resultado.size() + " TAREAS");
         return resultado;
     }
 
     /**
-     * Backtracking que devuelve en forma de lista todas los estados que se puedan obtener al llegar
-     * a un nivel dado (nivelObjetivo) y que seran convertidos en tareas poor el manager
-     *
+     * Backtracking que devuelve en forma de lista todas los ESTADOs que se puedan obtener al llegar
+     * a un nivel dado (nivelObjetivo)
      */
-    public ArrayList<Estado> backNivel(List<Ficha> fichas, Integer nivel, Tablero tablero, Integer nivelObjetivo) {
-        ArrayList<Estado> resultado = new ArrayList<>();
+    public ArrayList<Tarea> backNivel(ArrayList<Ficha> fichas, Integer nivel, Tablero tablero, Integer nivelObjetivo) {
+        ArrayList<Tarea> resultado = new ArrayList<>();
         for (Ficha f : fichas) {
-            tablero.insertarFinal(f);
-            if(tablero.esSolucion()) {
-                ArrayList<Ficha> aux = new ArrayList<>();
-                for (Ficha e : fichas) {
-                    if (e.getId() != f.getId()) {
-                        aux.add(e);
+            if (!f.isUsada()) {
+                for (int i = 0; i < 4; i++) {
+                    tablero.insertarFinal(f);
+                    if (tablero.esSolucion()) {
+                        nivel += 1;
+                        f.setUsada(true);
+                        tablero.aumentarPosicion();
+                        if (nivel.equals(nivelObjetivo)) {
+                            Tarea estado = new Tarea(tablero.clone(), ListUtils.getCopia(fichas), null, nivel, manager);
+                            resultado.add(estado);
+                        } else {
+                            resultado.addAll(backNivel(fichas, nivel, tablero, nivelObjetivo));
+                        }
+                        tablero.retrocederPosicion();
+                        nivel -= 1;
+                        f.setUsada(false);
                     }
+                    tablero.eliminarUltima();
+                    f.rotar();
                 }
-                nivel += 1;
-                tablero.aumentarPosicion();
-                if (nivel.equals(nivelObjetivo)) {
-                    Estado tarea = new Estado(tablero.clone(), aux, nivel);
-                    resultado.add(tarea);
-                } else {
-                    resultado.addAll(backNivel(aux, nivel, tablero, nivelObjetivo));
-                }
-                tablero.retrocederPosicion();
-                nivel -= 1;
+                return resultado;
             }
-            tablero.eliminarUltima();
-        }
-
-        return resultado;
-    }
+   }
 
     public ArrayList<Estado> crearTareasIniciales(Tablero tablero, ArrayList<Ficha> fichas, int nivelInicial){
         //nivelInicial = cantidad de fichas bien colocadas en los tableros devueltos

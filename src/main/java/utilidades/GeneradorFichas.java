@@ -3,10 +3,6 @@ package utilidades;
 import entidades.Ficha;
 import entidades.Tablero;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class GeneradorFichas {
@@ -123,10 +119,10 @@ public class GeneradorFichas {
         for (int i=0; i<=MAX_COLOR;i++){
             System.out.print(colores[i] +" - " );
         }*/
-        return /*rotarFichas(*/generadas;/*);*/
+        return generadas;
     }
 
-    private ArrayList<Ficha> rotarFichas(ArrayList<Ficha> fichastemp){
+    /*private ArrayList<Ficha> rotarFichas(ArrayList<Ficha> fichastemp){
         ArrayList<Ficha> fichasRotadas = new ArrayList<>();
         Ficha ficha = null;
         for (Ficha f : fichastemp) {// las fichas originales son distintas pero una ficha rotada si puede ser igual a otra original,
@@ -139,12 +135,13 @@ public class GeneradorFichas {
             fichasRotadas.add(ficha);
         }
         return  fichasRotadas;
-    }
+    }*/
 
 
 
     /**............... A partir de aca para abajo hay codigo que ni se usa ............................*/
-    public ArrayList<Ficha> getFichasUnicasRicardo() {
+
+    /*public ArrayList<Ficha> getFichasUnicasRicardo() {
         ArrayList<Ficha> fichastemp = new ArrayList<Ficha>();
         ArrayList<Ficha> fichas = new ArrayList<Ficha>();
         Ficha ficha = null;
@@ -352,5 +349,6 @@ public class GeneradorFichas {
             System.out.println(f.getIzq() + " | " + f.getArr() + " | " + f.getDer() + " | " + f.getAbj() + " | ");
 
         }
-    }
+
+    }*/
 }

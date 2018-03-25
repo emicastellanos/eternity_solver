@@ -14,22 +14,17 @@ public class Estado {
 
 
     public Estado (Tablero t, ArrayList<Ficha> fichas, Integer nivel){
-        tablero = t;
+        this.tablero = t;
         this.nivel = new Integer(nivel);
-        this.fichas = new ArrayList<>();
-        Ficha aux;
-        for(Ficha f : fichas){
-            aux = new Ficha(f.getIzq(),f.getArr(),f.getDer(),f.getAbj(),f.getId());
-            this.fichas.add(aux);
-        }
+        this.fichas = fichas;
         String todas ="";
         ArrayList<Ficha> todasFichas = tablero.getFichasUsadas();
         for(Ficha ficha : todasFichas){
-            todas+= String.valueOf(ficha.getId()) + " - ";
+            todas+= String.valueOf(ficha.getId()) + "(" + ficha.getRot() + ") - ";
         }
         resultLog.info(Thread.currentThread().getName() + " ESTADO (tablero): " + todas);
         todas="";
-        for(Ficha ficha : fichas){
+        for(Ficha ficha : this.fichas){
             todas+= String.valueOf(ficha.getId()) + " - ";
         }
         resultLog.info(Thread.currentThread().getName() + " ESTADO  (para usar): " + todas);
