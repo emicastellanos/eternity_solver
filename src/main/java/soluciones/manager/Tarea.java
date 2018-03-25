@@ -78,60 +78,54 @@ public class Tarea extends Thread {
         if(dividir && fichas.size()>1){ //porque si queda solo una ficha es mas facil que este thread termine
             //ademas si hay soo una ficha, el creador va a ser el que "encuentre" la solucion
             //resultLog.info(Thread.currentThread().getName() +" entro al dividir " + getNombre());
-            this.estado = new Estado(tablero.clone(),fichas,nivel);
+            this.estado = new Estado(tablero.clone(),ListUtils.getCopia(fichas),nivel);
             /**Quizas haya alguna forma de no crear una tarea si despues el thread padre
              * no va a conseguir una tarea para continuar**/
             /**Quizas se conveniente devolver mas de un estado.. una lista **/
-            //1) desbloquea el manager
+            //desbloquea el manager
             dividir = false;
             bloqueado = true;
             manager.setBloqueado(false);
-            resultLog.info(Thread.currentThread().getName() +" DESBLOQUEO AL MANAGER " );
+            resultLog.info(Thread.currentThread().getName() + " DESBLOQUEO AL MANAGER ");
             while (bloqueado){
                 //do nothing
-                int i;
                 resultLog.info("BackRichi() BLOQUEADO " + Thread.currentThread().getName());
                 try {
                     Thread.sleep(1);
                 } catch (InterruptedException e) {
 
                 }
-                /*resultLog.warn("BackRichi() BLOQUEADO " + getNombre());
-                resultLog.warn("BackRichi() BLOQUEADO " + getName());*/
             }
-            //resultLog.info(Thread.currentThread().getName() +" ya dividio");
         }else{
             for (Ficha f : fichas) {
-                tablero.insertarFinal(f);
-                if(tablero.esSolucion()) {
-                    if (tablero.esSolucionFinal()) {
-                        resultLog.info(" ---------------- SE ENCONTRO UNA SOLUCION " + Thread.currentThread().getName());
-                        Tablero resultado = tablero.clone();
-                        if(resultado==null){
-                            System.out.println("asd");
-                        }
-                        Manager.SOLUCIONES.add(resultado);
-                        /*String todas = "";
-                        ArrayList<Ficha> todasFichas = resultado.getFichasUsadas();
-                        for (Ficha ficha : todasFichas) {
-                            todas += String.valueOf(ficha.getId()) + " - ";
-                        }
-                        resultLog.info(todas);*/
-                    } else {
-                        ArrayList<Ficha> aux = new ArrayList<Ficha>();
-                        for (Ficha e : fichas) {
-                            if (e.getId() != f.getId()) {
-                                aux.add(e);
+                if(!f.isUsada()) {
+                    for(int i=0; i<4;i++) {
+                        tablero.insertarFinal(f);
+                        if(tablero.esSolucion()) {
+                            if (tablero.esSolucionFinal()) {
+                                resultLog.info(" ---------------- SE ENCONTRO UNA SOLUCION " + Thread.currentThread().getName());
+                                Tablero resultado = tablero.clone();
+                                Manager.SOLUCIONES.add(resultado);
+                                /*String todas = "";
+                                ArrayList<Ficha> todasFichas = resultado.getFichasUsadas();
+                                for (Ficha ficha : todasFichas) {
+                                    todas += String.valueOf(ficha.getId()) + " - ";
+                                }
+                                resultLog.info(todas);*/
+                            } else {
+                                nivel += 1;
+                                f.setUsada(true);
+                                tablero.aumentarPosicion();
+                                backRichi(fichas, nivel);
+                                tablero.retrocederPosicion();
+                                f.setUsada(false);
+                                nivel -= 1;
                             }
                         }
-                        nivel += 1;
-                        tablero.aumentarPosicion();
-                        backRichi(aux, nivel);
-                        tablero.retrocederPosicion();
-                        nivel -= 1;
+                        tablero.eliminarUltima();
+                        f.rotar();
                     }
                 }
-                tablero.eliminarUltima();
             }
         }
         //resultLog.info("SALIENDO DEL BACK " + Thread.currentThread().getName());
@@ -140,7 +134,7 @@ public class Tarea extends Thread {
     
     @Override
     public void run(){
-        resultLog.info("......... Comienza " + Thread.currentThread().getName());
+        resultLog.info("......... Comienza THREAD ACTUAL " + Thread.currentThread().getName() + " TAREA " + getNombre() + "con dividir = " + dividir);
         backRichi(fichas,nivelComienzo);
         finalizado = true;
         resultLog.info("......... Finalizo " + Thread.currentThread().getName());

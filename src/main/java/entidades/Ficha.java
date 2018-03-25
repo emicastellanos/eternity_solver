@@ -8,7 +8,7 @@ public class Ficha {
     private int abj;
     private int id;
     private boolean usada;
-
+    private int rot;
     public boolean isUsada() {
 		return usada;
 	}
@@ -24,6 +24,7 @@ public class Ficha {
         this.abj = abj;
         this.id = id;
         this.usada = usada;
+        rot = 1;
     }
 
     public Ficha(int id) {
@@ -70,7 +71,7 @@ public class Ficha {
     public void setId(int id) {
         this.id = id;
     }
-	
+
 	public void rotar() {
 		int auxd = der;
 		int auxi = izq;
@@ -80,7 +81,12 @@ public class Ficha {
 		der = auxar;
 		abj = auxd;
 		izq = auxab;
+        rot+=1;
 	}
+
+    public int getRot(){return rot;}
+
+    public void setRot(int i ){rot =i;}
 	
 
     @Override
@@ -96,5 +102,13 @@ public class Ficha {
             return true;
 
         return false;
+    }
+
+    //Podria alguien rotar una ficha mientras otro esta clonandola ?
+    @Override
+    public Ficha clone(){
+        Ficha f =new Ficha(izq,arr,der,abj,id,usada);
+        f.setRot(getRot());
+        return f;
     }
 }
