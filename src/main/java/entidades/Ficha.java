@@ -7,7 +7,7 @@ public class Ficha {
     private int der;
     private int abj;
     private int id;
-    public boolean usada;
+    private boolean usada;
 
     public boolean isUsada() {
 		return usada;
@@ -72,10 +72,14 @@ public class Ficha {
     }
 	
 	public void rotar() {
-		arr = izq;
-		der = arr;
-		abj = der;
-		izq = abj;
+		int auxd = der;
+		int auxi = izq;
+		int auxar = arr;
+		int auxab = abj;
+		arr = auxi;
+		der = auxar;
+		abj = auxd;
+		izq = auxab;
 	}
 	
 

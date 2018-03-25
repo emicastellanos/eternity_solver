@@ -36,7 +36,7 @@ public class HilosMain {
         Ficha auxF;
         for (Ficha f : fichas) {
             Tablero auxTablero = new Tablero(N);
-            auxF = new Ficha(f.getIzq(),f.getArr(),f.getDer(),f.getAbj(),f.getId());
+            auxF = new Ficha(f.getIzq(),f.getArr(),f.getDer(),f.getAbj(),f.getId(),false);
             auxTablero.insertarFinal(auxF);
             if(auxTablero.esSolucion()){
                 ArrayList<Ficha> aux = new ArrayList<Ficha>();
