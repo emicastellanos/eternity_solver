@@ -14,13 +14,9 @@ public class TareaRunnable extends Thread {
     private ArrayList<Ficha> fichas;
     public int nivelComienzo;
     public String nombreThread;
-    static int solucion;
+    public static int solucion;
     final Logger threadsLogger = Logger.getLogger("threadLogger");
 
-    public TareaRunnable (Tablero tablero){
-        this.tablero = tablero;
-
-    }
 
     public TareaRunnable(Tablero tablero, List<Ficha> fichas, String nombre) {
         this.tablero = tablero;
@@ -28,7 +24,7 @@ public class TareaRunnable extends Thread {
         solucion = 0;
         Ficha aux;
         for(Ficha f : fichas){
-            aux = new Ficha(f.getIzq(),f.getArr(),f.getDer(),f.getAbj(),f.getId());
+            aux = new Ficha(f.getIzq(),f.getArr(),f.getDer(),f.getAbj(),f.getId(),f.isUsada());
             this.fichas.add(aux);
         }
         this.nombreThread = nombre;
