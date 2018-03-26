@@ -8,14 +8,6 @@ public class Ficha {
     private int abj;
     private int id;
     private boolean usada;
-    private int rot;
-    public boolean isUsada() {
-		return usada;
-	}
-
-	public void setUsada(boolean usada) {
-		this.usada = usada;
-	}
 
 	public Ficha(int izq, int arr,int der, int abj,int id,boolean usada) {
         this.izq = izq;
@@ -24,7 +16,6 @@ public class Ficha {
         this.abj = abj;
         this.id = id;
         this.usada = usada;
-        rot = 1;
     }
 
     public Ficha(int id) {
@@ -72,6 +63,13 @@ public class Ficha {
         this.id = id;
     }
 
+    public void setUsada(boolean usada) {
+        this.usada = usada;
+    }
+    public boolean isUsada() {
+        return usada;
+    }
+
 	public void rotar() {
 		int auxd = der;
 		int auxi = izq;
@@ -81,12 +79,7 @@ public class Ficha {
 		der = auxar;
 		abj = auxd;
 		izq = auxab;
-        rot+=1;
 	}
-
-    public int getRot(){return rot;}
-
-    public void setRot(int i ){rot =i;}
 
     @Override
     public boolean equals(Object obj1) {
@@ -107,7 +100,6 @@ public class Ficha {
     @Override
     public Ficha clone(){
         Ficha f =new Ficha(izq,arr,der,abj,id,usada);
-        f.setRot(getRot());
         return f;
     }
 }
