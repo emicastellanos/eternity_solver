@@ -36,17 +36,16 @@ public class CreadorTareas {
     }
 
     /**
-     * Backtracking que devuelve en forma de lista todas las tareas que se puedan obtener al llegar
-     * a un nivel dado (nivelObjetivo)
-     * TODO Devolver una lista de estados y que sea el manager el que decide cuantos threads crear
-     * o si reutilizar threads ya creados
+     * Backtracking que devuelve en forma de lista todas los estados que se puedan obtener al llegar
+     * a un nivel dado (nivelObjetivo) y que seran convertidos en tareas poor el manager
+     *
      */
-    public ArrayList<Tarea> backNivel(List<Ficha> fichas, Integer nivel, Tablero tablero, Integer nivelObjetivo) {
-        ArrayList<Tarea> resultado = new ArrayList<>();
+    public ArrayList<Estado> backNivel(List<Ficha> fichas, Integer nivel, Tablero tablero, Integer nivelObjetivo) {
+        ArrayList<Estado> resultado = new ArrayList<>();
         for (Ficha f : fichas) {
             tablero.insertarFinal(f);
             if(tablero.esSolucion()) {
-                ArrayList<Ficha> aux = new ArrayList<Ficha>();
+                ArrayList<Ficha> aux = new ArrayList<>();
                 for (Ficha e : fichas) {
                     if (e.getId() != f.getId()) {
                         aux.add(e);
@@ -55,7 +54,7 @@ public class CreadorTareas {
                 nivel += 1;
                 tablero.aumentarPosicion();
                 if (nivel.equals(nivelObjetivo)) {
-                    Tarea tarea = new Tarea(tablero.clone(), aux, String.valueOf(Tarea.NRO), nivel,manager);
+                    Estado tarea = new Estado(tablero.clone(), aux, nivel);
                     resultado.add(tarea);
                 } else {
                     resultado.addAll(backNivel(aux, nivel, tablero, nivelObjetivo));
@@ -69,7 +68,7 @@ public class CreadorTareas {
         return resultado;
     }
 
-    public ArrayList<Tarea> crearTareasIniciales(Tablero tablero, ArrayList<Ficha> fichas, int nivelInicial){
+    public ArrayList<Estado> crearTareasIniciales(Tablero tablero, ArrayList<Ficha> fichas, int nivelInicial){
         //nivelInicial = cantidad de fichas bien colocadas en los tableros devueltos
         return backNivel(fichas,0,tablero,nivelInicial);
     }

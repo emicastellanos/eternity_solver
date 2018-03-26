@@ -22,6 +22,8 @@ public class Tarea extends Thread {
     private Manager manager;
 
 
+    /**Es necesario realmente que haya una referencia al manager ? Podria reemplazarse por el uso de
+     * variables estaticas en el manager ? */
     public Tarea(Tablero tablero, ArrayList<Ficha> fichas, String nombre,Integer nivel,Manager manager) {
         this.tablero = tablero;
         this.nivelComienzo = nivel;
