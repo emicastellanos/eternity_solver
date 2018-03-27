@@ -73,11 +73,12 @@ public class CreadorTareas {
                     tablero.eliminarUltima();
                     f.rotar();
                 }
-                return resultado;
             }
-   }
+        }
+        return resultado;
+    }
 
-    public ArrayList<Estado> crearTareasIniciales(Tablero tablero, ArrayList<Ficha> fichas, int nivelInicial){
+    public ArrayList<Tarea> crearTareasIniciales(Tablero tablero, ArrayList<Ficha> fichas, int nivelInicial){
         //nivelInicial = cantidad de fichas bien colocadas en los tableros devueltos
         return backNivel(fichas,0,tablero,nivelInicial);
     }

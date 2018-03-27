@@ -173,7 +173,7 @@ public class Manager {
     public void ejecutar(ArrayList <Ficha> fichas, Tablero tablero )  {
         resultLog.info("manaager.Ejecutar () ");
 
-        pendientes = creadorTareas.crearEstadosIniciales(tablero, fichas, 2);
+        pendientes = creadorTareas.crearTareasIniciales(tablero, fichas, 2);
         resultLog.info("CrearTareasIniciales = " + pendientes.size());
         activarTareas();
         iniciarTareasActivas();
@@ -194,9 +194,9 @@ public class Manager {
     }
 
     public static void main(String[] args){
-        GeneradorFichas generadorFichas = new GeneradorFichas(10);
+        GeneradorFichas generadorFichas = new GeneradorFichas(7);
         ArrayList <Ficha> fichas = generadorFichas.getFichasUnicas();
-        Tablero tablero = new Tablero(10);
+        Tablero tablero = new Tablero(7);
         TareaRunnable tareaRunnable = new TareaRunnable(tablero.clone(), ListUtils.getCopia(fichas),null);
         tareaRunnable.backRichi();
 
@@ -225,7 +225,7 @@ public class Manager {
             }
             ArrayList<Ficha> todasFichas = t.getFichasUsadas();
             for(Ficha ficha : todasFichas){
-                todas+= String.valueOf(ficha.getId()) + "("+ ficha.getRot() +") - ";
+                todas+= String.valueOf(ficha.getId()) + "- ";
             }
             resultLog.info(todas);
         }

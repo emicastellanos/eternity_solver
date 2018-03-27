@@ -20,7 +20,7 @@ public class Estado {
         String todas ="";
         ArrayList<Ficha> todasFichas = tablero.getFichasUsadas();
         for(Ficha ficha : todasFichas){
-            todas+= String.valueOf(ficha.getId()) + "(" + ficha.getRot() + ") - ";
+            todas+= String.valueOf(ficha.getId()) + " - ";
         }
         resultLog.info(Thread.currentThread().getName() + " ESTADO (tablero): " + todas);
         todas="";

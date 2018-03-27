@@ -341,14 +341,21 @@ public class GeneradorFichas {
         return fichas;
     }
 
+    */
+
     public static void main(String[] args){
-        GeneradorFichas gf = new GeneradorFichas(5);
+        GeneradorFichas gf = new GeneradorFichas(8);
         ArrayList<Ficha> fichas = gf.getFichasUnicas();
-        for (int i=0 ; i< fichas.size() ;i++){
+
+        for (int i=0 ; i< gf.getColores().length ;i++){
+            System.out.println("color: " + i + " cant " +gf.getColores()[i] + "-");
+        }
+
+        /*for (int i=0 ; i< fichas.size() ;i++){
             Ficha f= fichas.get(i);
             System.out.println(f.getIzq() + " | " + f.getArr() + " | " + f.getDer() + " | " + f.getAbj() + " | ");
 
-        }
+        }*/
 
-    }*/
+    }
 }
