@@ -67,6 +67,7 @@ public class Manager {
                     break;
                 }else{
                     resultLog.error("ACTUAL " + Thread.currentThread().getName() +" NOOOOOO se pudo dividir " + tarea.getName());
+                    tarea.setDividir(false);
                 }
             }
         }
@@ -172,7 +173,6 @@ public class Manager {
 
     public void ejecutar(ArrayList <Ficha> fichas, Tablero tablero )  {
         resultLog.info("manaager.Ejecutar () ");
-
         pendientes = creadorTareas.crearTareasIniciales(tablero, fichas, 2);
         resultLog.info("CrearTareasIniciales = " + pendientes.size());
         activarTareas();
@@ -218,16 +218,12 @@ public class Manager {
         m.ejecutar(fichas,tablero);
 
         resultLog.info("PARALELIZADO: " + SOLUCIONES.size());
+        int i = 1;
         for(Tablero t : SOLUCIONES){
-            String todas ="";
-            if(t == null){
-                System.out.println("asd");
-            }
-            ArrayList<Ficha> todasFichas = t.getFichasUsadas();
-            for(Ficha ficha : todasFichas){
-                todas+= String.valueOf(ficha.getId()) + "- ";
-            }
-            resultLog.info(todas);
+            resultLog.info("SOLUCION # " + i);
+            resultLog.info(t.imprimirUsadas());
+            resultLog.info(t.imprimirse());
+            i ++;
         }
 
 

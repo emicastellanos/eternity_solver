@@ -351,11 +351,6 @@ public class GeneradorFichas {
             System.out.println("color: " + i + " cant " +gf.getColores()[i] + "-");
         }
 
-        /*for (int i=0 ; i< fichas.size() ;i++){
-            Ficha f= fichas.get(i);
-            System.out.println(f.getIzq() + " | " + f.getArr() + " | " + f.getDer() + " | " + f.getAbj() + " | ");
-
-        }*/
-
     }
+
 }

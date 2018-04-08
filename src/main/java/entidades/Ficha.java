@@ -102,4 +102,10 @@ public class Ficha {
         Ficha f =new Ficha(izq,arr,der,abj,id,usada);
         return f;
     }
+
+    public String imprimirse(){
+
+        return String.format("%1$2s", izq).replace(' ','0') + "-" + String.format("%1$2s", arr).replace(' ','0') + "-" +
+                String.format("%1$2s", der).replace(' ','0') + "-" + String.format("%1$2s", abj).replace(' ','0');
+    }
 }

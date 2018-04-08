@@ -128,10 +128,37 @@ public class Tablero {
     public void eliminarUltima() {
     	 tablero[fila][columna] = null;
     }
-    
-    //**---------------------------------------------------------***
 
-    public Boolean esSolucionVieja() {
+    public synchronized String imprimirse() {
+        String result = "\n";
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                if (tablero[i][j] != null) {
+                    result += tablero[i][j].imprimirse() + "|";
+                } else {
+                    result += "*-*-*-*|";
+                }
+
+            }
+            result += "\n";
+        }
+        return result;
+    }
+
+
+    public String imprimirUsadas(){
+        StringBuffer result = new StringBuffer();
+
+        ArrayList<Ficha> todasFichas = getFichasUsadas();
+        for(Ficha ficha : todasFichas) {
+            result.append(String.valueOf(ficha.getId()) + "- ");
+        }
+        return result.toString();
+    }
+    
+
+
+    /*public Boolean esSolucionVieja() {
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
                 if (tablero[i][j] != null) {
@@ -171,19 +198,19 @@ public class Tablero {
             }
         }
         return true;
-    }
+    }*/
 
-    public Boolean esSolucionFinalVieja() {
+    /*public Boolean esSolucionFinalVieja() {
         for (int i = 0; i < N; i++)
             for (int j = 0; j < N; j++)
                 if (tablero[i][j] == null)
                     return false;
 
         return true;
-    }
+    }*/
 
 
-    public void insertarFinalVieja(Ficha f) {
+    /*public void insertarFinalVieja(Ficha f) {
 
         boolean seguir = true;
         for (int i = 0; i < N && seguir; i++)
@@ -191,16 +218,16 @@ public class Tablero {
                 if (tablero[i][j] == null) {
                     tablero[i][j] = f;
                     seguir = false;
-                   // resultLog.info("\n"+Thread.currentThread().getName() + "\nPONER [" + i + "," + j + "] \n "+this.imprimirse());
-                    /*resultLog.info("PONER [" + i + "," + j + "] \n");
-                    resultLog.info(this.imprimirse());*/
+                    // resultLog.info("\n"+Thread.currentThread().getName() + "\nPONER [" + i + "," + j + "] \n "+this.imprimirse());
+                    resultLog.info("PONER [" + i + "," + j + "] \n");
+                    resultLog.info(this.imprimirse());
                 }
-    }
+    }*/
 
 
 
 
-    public void eliminarUltimaVieja() {
+    /*public void eliminarUltimaVieja() {
         boolean seguir = true;
         Ficha eliminada = null;
         for (int i = 0; i < N && seguir; i++) {
@@ -226,7 +253,7 @@ public class Tablero {
                 }
             }
         }
-    }
+    }*/
 
     public Ficha getPosicion(int fila, int col) {
         return tablero[fila][col];

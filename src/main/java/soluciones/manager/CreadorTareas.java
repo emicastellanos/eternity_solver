@@ -76,7 +76,7 @@ public class CreadorTareas {
             }
         }
         return resultado;
-    }
+   }
 
     public ArrayList<Tarea> crearTareasIniciales(Tablero tablero, ArrayList<Ficha> fichas, int nivelInicial){
         //nivelInicial = cantidad de fichas bien colocadas en los tableros devueltos
