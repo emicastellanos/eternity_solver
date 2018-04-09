@@ -20,6 +20,7 @@ public class Tarea extends Thread {
     private String nombre;
     static final Logger resultLog = Logger.getLogger("resultadoLogger");
     private Manager manager;
+    private long id ;
 
 
     /**Es necesario realmente que haya una referencia al manager ? Podria reemplazarse por el uso de
@@ -44,6 +45,7 @@ public class Tarea extends Thread {
         resultLog.info(this.nombre + " (para usar): " + todas);*/
         NRO++;
         this.manager = manager;
+        id = manager.getNextContador();
 
     }
 
@@ -75,6 +77,10 @@ public class Tarea extends Thread {
         return finalizado;
     }
 
+    @Override
+    public long getId() {
+        return id;
+    }
 
     public void backRichi(ArrayList<Ficha> fichas, Integer nivel){
         if(dividir && fichas.size()>1){ //porque si queda solo una ficha es mas facil que este thread termine
@@ -87,7 +93,7 @@ public class Tarea extends Thread {
             //desbloquea el manager
             dividir = false;
             bloqueado = true;
-            manager.setBloqueado(false);
+            manager.setBloqueado(0);
             resultLog.info(Thread.currentThread().getName() + " DESBLOQUEO AL MANAGER ");
             while (bloqueado){
                 //do nothing
@@ -140,19 +146,14 @@ public class Tarea extends Thread {
         backRichi(fichas,nivelComienzo);
         finalizado = true;
         resultLog.info("......... Finalizo " + Thread.currentThread().getName());
-        //esto.. mmm
+
         //SE PUSO ESTA CONSIDERACION PORQUE HABIA CASOS EN LOS QUE SE QUEDABA EL MANAGER BLOQUEADO
         // EN solicitarMas() Y SUPUSE QUE ERA PORQUE LA TAREA QUE TOMO PARA SUBDIVIDIR HABIA CONDUCE
         // A UN CAMINO QUE NUNCA VA A ENCONTRAR ALGUNA FICHA QUE ENCAJE DE SUS SIGUIENTES (o ya termino)
-        /*if(dividir == true){
-            resultLog.info("......... SE DIO EL CASO FLASHERO          " + Thread.currentThread().getName());
-            Manager.setBloqueado(false);
-        }*/
 
-        //
-        if(manager.isBloqueado() && dividir){
+        if(manager.getBloqueado()== this.getId() && dividir){
             System.out.println(Thread.currentThread().getName() + " TENIA QUE DIVIDIR PERO TERMINO, DESBLOQUEA EL MANAGER");
-            manager.setBloqueado(false);
+            manager.setBloqueado(0);
         }
     }
 }

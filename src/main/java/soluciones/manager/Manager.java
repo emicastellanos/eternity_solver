@@ -12,30 +12,41 @@ import java.util.Collections;
 import java.util.List;
 
 public class Manager {
-    private boolean bloqueado;
+    private long bloqueado; // Contiene el id del thread por el cual se bloqueo
     public static List<Tablero> SOLUCIONES;
     private CreadorTareas creadorTareas;
     private ArrayList<Tarea> pendientes;
     private ArrayList<Tarea> activas;
     private int windowSize ; //TODO Cambiar nombre -> refiere a la cantidad de threads que puede haber como maximo
     static final Logger resultLog = Logger.getLogger("resultadoLogger");
+    private long contadorThreads;
 
 
     public Manager () {
         creadorTareas = new CreadorTareas(this);
         activas = new ArrayList<>();
         pendientes = new ArrayList<>();
-        windowSize = 7;//Runtime.getRuntime().availableProcessors() -1 ;
+        windowSize = Runtime.getRuntime().availableProcessors() - 2;
         SOLUCIONES = Collections.synchronizedList(new ArrayList<>());
-        bloqueado = false;
+        bloqueado = 0;
+        contadorThreads = 0;
     }
 
-    public void setBloqueado(boolean e){
+    public void setBloqueado(long e){
         bloqueado = e;
     }
 
-    public boolean isBloqueado() {
+    public long getBloqueado() {
         return bloqueado;
+    }
+
+    public Long getContadorThreads(){
+        return contadorThreads;
+    }
+
+    public long getNextContador(){
+        contadorThreads +=1;
+        return contadorThreads;
     }
 
     /**
@@ -45,11 +56,11 @@ public class Manager {
         resultLog.info("ACTUAL " + Thread.currentThread().getName() + " solicitarMas()");
         for(Tarea tarea : activas){ //Podriamos tener alguna clase Filtro elija las tareas mas prometedoras
             if(tarea.isAlive()){// TODO EN lugar de agarrar solo uno, podriamos agarrar un par.
-                bloqueado = true;
+                bloqueado = tarea.getId();
                 //TODO preguntar si la tarea esa no esta finalizada
                 tarea.setDividir(true);
                 String msg = "";
-                while (bloqueado && !tarea.isFinalizado()){ //Busy waiting
+                while (bloqueado!=0 && !tarea.isFinalizado()){ //Busy waiting
                     //do nothing
                     msg = "BLOQUEADO Thread: " + Thread.currentThread().getName() + " TAREA NAME  "+ tarea.getName() ;
                     resultLog.error(msg);
@@ -67,7 +78,7 @@ public class Manager {
                     break;
                 }else{
                     resultLog.error("ACTUAL " + Thread.currentThread().getName() +" NOOOOOO se pudo dividir " + tarea.getName());
-                    tarea.setDividir(false);
+                    tarea.setDividir(false); // NO SE SI DEBE IR PERO SUPONGO QUE NO JODE.
                 }
             }
         }
