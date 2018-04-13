@@ -7,22 +7,23 @@ import java.util.ArrayList;
 
 public class GeneradorFichas {
 
-    private int colorMayor;
     private int N;
-    public static final int MAX_COLOR = 10;
-    public int[] colores = new int[MAX_COLOR+1];
+    public int cantidadColores = 10;
+    public int[] colores ;
     private Tablero tablero;
 
-    public GeneradorFichas(int N) {
+    public GeneradorFichas(int N, int cant_colores) {
         this.N = N;
-        colorMayor =1 ;
         tablero = new Tablero(N);
+        cantidadColores = cant_colores;
+        colores = new int[cantidadColores +1];
     }
 
     public int[] getColores() {
         return colores;
     }
 
+    /**@Return true si la ficha ya existe en el tablero**/
     public boolean existe (Ficha ficha){
         for(int i=0; i<N; i++){
             for(int j=0; j<N; j++){
@@ -39,9 +40,10 @@ public class GeneradorFichas {
         return false;
     }
 
+    /**@Return el valor del proximo color menos utilizado **/
     private int getColor(){
         int color = 1;
-        for(int i = 1; i<=MAX_COLOR; i++){
+        for(int i = 1; i<= cantidadColores; i++){
             if(colores[i]< colores[color]){
                 color=i;
             }
@@ -50,16 +52,18 @@ public class GeneradorFichas {
         return color;
     }
 
+    /**@Return un valor aleatorio dentro de los colores posibles para usar **/
     private int getColorAleatorio(){
-        Double i= Math.random()*MAX_COLOR;
+        Double i= Math.random()* cantidadColores;
         while (i.intValue()==0){
-            i= Math.random()*MAX_COLOR;
+            i= Math.random()* cantidadColores;
         }
         colores[i.intValue()]+=1;
         return i.intValue();
     }
 
-    public ArrayList<Ficha> getFichasUnicas() {
+
+    public ArrayList<Ficha> getFichasUnicasAleatorias() {
         ArrayList<Ficha> generadas = new ArrayList<>();
         int contador = 1;
         Ficha ficha ;
@@ -115,11 +119,17 @@ public class GeneradorFichas {
             }
         }
 
-        /*System.out.print("COLORES: ");
-        for (int i=0; i<=MAX_COLOR;i++){
-            System.out.print(colores[i] +" - " );
-        }*/
         return generadas;
+    }
+
+    public static void main(String[] args){
+        GeneradorFichas gf = new GeneradorFichas(8, 8);
+        ArrayList<Ficha> fichas = gf.getFichasUnicasAleatorias();
+
+        for (int i=0 ; i< gf.getColores().length ;i++){
+            System.out.println("color: " + i + " cant " +gf.getColores()[i] + "-");
+        }
+
     }
 
     /*private ArrayList<Ficha> rotarFichas(ArrayList<Ficha> fichastemp){
@@ -343,14 +353,6 @@ public class GeneradorFichas {
 
     */
 
-    public static void main(String[] args){
-        GeneradorFichas gf = new GeneradorFichas(8);
-        ArrayList<Ficha> fichas = gf.getFichasUnicas();
 
-        for (int i=0 ; i< gf.getColores().length ;i++){
-            System.out.println("color: " + i + " cant " +gf.getColores()[i] + "-");
-        }
-
-    }
 
 }

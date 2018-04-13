@@ -34,9 +34,9 @@ public class Tarea extends Thread {
         this.nombre = "Thread actual:" + currentThread().getName() + " va a correr en " + getName() + " TAREA " + nombre;
         String todas ="";
         ArrayList<Ficha> todasFichas = tablero.getFichasUsadas();
-        for(Ficha ficha : todasFichas){
+        /*for(Ficha ficha : todasFichas){
             todas+= String.valueOf(ficha.getId()) + " - ";
-        }
+        }*/
         /*resultLog.info(this.nombre + " (tablero): " + todas);
         todas="";
         for(Ficha ficha : fichas){
@@ -94,10 +94,10 @@ public class Tarea extends Thread {
             dividir = false;
             bloqueado = true;
             manager.setBloqueado(0);
-            resultLog.info(Thread.currentThread().getName() + " DESBLOQUEO AL MANAGER ");
+            //resultLog.info(Thread.currentThread().getName() + " DESBLOQUEO AL MANAGER ");
             while (bloqueado){
                 //do nothing
-                resultLog.info("BackRichi() BLOQUEADO " + Thread.currentThread().getName());
+                //resultLog.info("BackRichi() BLOQUEADO " + Thread.currentThread().getName());
                 try {
                     Thread.sleep(1);
                 } catch (InterruptedException e) {
@@ -111,7 +111,7 @@ public class Tarea extends Thread {
                         tablero.insertarFinal(f);
                         if(tablero.esSolucion()) {
                             if (tablero.esSolucionFinal()) {
-                                resultLog.info(" ---------------- SE ENCONTRO UNA SOLUCION " + Thread.currentThread().getName());
+                                //resultLog.info(" ---------------- SE ENCONTRO UNA SOLUCION " + Thread.currentThread().getName());
                                 Tablero resultado = tablero.clone();
                                 Manager.SOLUCIONES.add(resultado);
                                 /*String todas = "";
@@ -142,10 +142,10 @@ public class Tarea extends Thread {
     
     @Override
     public void run(){
-        resultLog.info("......... Comienza THREAD ACTUAL " + Thread.currentThread().getName() + " TAREA " + getNombre() + "con dividir = " + dividir);
+        //resultLog.info("......... Comienza THREAD ACTUAL " + Thread.currentThread().getName() + " TAREA " + getNombre() + "con dividir = " + dividir);
         backRichi(fichas,nivelComienzo);
         finalizado = true;
-        resultLog.info("......... Finalizo " + Thread.currentThread().getName());
+        //resultLog.info("......... Finalizo " + Thread.currentThread().getName());
 
         //SE PUSO ESTA CONSIDERACION PORQUE HABIA CASOS EN LOS QUE SE QUEDABA EL MANAGER BLOQUEADO
         // EN solicitarMas() Y SUPUSE QUE ERA PORQUE LA TAREA QUE TOMO PARA SUBDIVIDIR HABIA CONDUCE

@@ -25,7 +25,7 @@ public class CreadorTareas {
     * */
     public ArrayList<Tarea> crear(Estado estado){
         ArrayList<Tarea> resultado = new ArrayList<>();
-        resultLog.info("ENTRANDO A CREAR (TAREA) " + Thread.currentThread().getName() );
+        //resultLog.info("ENTRANDO A CREAR (TAREA) " + Thread.currentThread().getName() );
         for(Ficha ficha : estado.getFichas()){
             if(!ficha.isUsada()) {
                 for(int i=0; i<4;i++) {

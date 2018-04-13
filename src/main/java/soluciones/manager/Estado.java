@@ -17,7 +17,7 @@ public class Estado {
         this.tablero = t;
         this.nivel = new Integer(nivel);
         this.fichas = fichas;
-        String todas ="";
+        /*String todas ="";
         ArrayList<Ficha> todasFichas = tablero.getFichasUsadas();
         for(Ficha ficha : todasFichas){
             todas+= String.valueOf(ficha.getId()) + " - ";
@@ -27,7 +27,7 @@ public class Estado {
         for(Ficha ficha : this.fichas){
             todas+= String.valueOf(ficha.getId()) + " - ";
         }
-        resultLog.info(Thread.currentThread().getName() + " ESTADO  (para usar): " + todas);
+        resultLog.info(Thread.currentThread().getName() + " ESTADO  (para usar): " + todas);*/
     }
 
     public Tablero getTablero() {

@@ -23,8 +23,8 @@ public class HilosMain {
 
 
     public static void main(String[] args) {
-        GeneradorFichas generadorFichas = new GeneradorFichas(N);
-        fichas = generadorFichas.getFichasUnicas();
+        GeneradorFichas generadorFichas = new GeneradorFichas(N,N);
+        fichas = generadorFichas.getFichasUnicasAleatorias();
     
 
         Collections.shuffle(fichas);
