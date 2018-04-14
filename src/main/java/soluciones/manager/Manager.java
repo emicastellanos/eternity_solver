@@ -24,7 +24,8 @@ public class Manager {
     static final Logger resultLog = Logger.getLogger("resultadoLogger");
     private long contadorThreads;
     private static int N = 8;
-    private static int NIVEL_BACK_INICIAL = 2;
+    private static int NIVEL_BACK_INICIAL = 4;
+
 
 
     public Manager () {
@@ -35,6 +36,10 @@ public class Manager {
         SOLUCIONES = Collections.synchronizedList(new ArrayList<>());
         bloqueado = 0;
         contadorThreads = 0;
+    }
+
+    public int getWindowSize() {
+        return windowSize;
     }
 
     public void setBloqueado(long e){
@@ -229,10 +234,12 @@ public class Manager {
         BigDecimal durationSecs = duration.divide(new BigDecimal(1000000000));
 
         //TODO redondear a dos
-        resultLog.info("TIEMPO " + durationSecs.toString() + " SEGUNDOS");
 
+        resultLog.info("# nucleos usados " + m.getWindowSize() + " de " + Runtime.getRuntime().availableProcessors() );
+        resultLog.info("TIEMPO " + durationSecs.toString() + " SEGUNDOS");
         resultLog.info("CANTIDAD SOLUCIONES = " + SOLUCIONES.size()) ;
         resultLog.info("# THREADS INICIADOS " + m.getCantActivados());
+
 
     }
 
