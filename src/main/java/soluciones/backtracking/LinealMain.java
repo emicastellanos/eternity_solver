@@ -17,7 +17,7 @@ import java.util.List;
 public class LinealMain {
     public static ArrayList<Ficha> fichas;
 
-    private static final int N = 8;
+    private static final int N = 10;
     static final Logger fichasLog = Logger.getLogger("fichasLogger");
     static final Logger resultLog = Logger.getLogger("resultadoLogger");
 
@@ -37,10 +37,10 @@ public class LinealMain {
         long endTime = System.nanoTime();
 
         BigDecimal duration = new BigDecimal((endTime - startTime));
-        BigDecimal durationSecs = duration.divide(new BigDecimal(100000000));
+        BigDecimal durationSecs = duration.divide(new BigDecimal(1000000000));
         ZonedDateTime zdt ;
         resultLog.info(tarea.solucion);
-        resultLog.info("----- TERMINO "+ZonedDateTime.now());
+        resultLog.info("----- TERMINO " + ZonedDateTime.now());
 
         resultLog.info("TIEMPO " + durationSecs.toString() + " SEGUNDOS");
         resultLog.info("TIEMPO " + duration.toString() + " NANOSEGUNDOS");
