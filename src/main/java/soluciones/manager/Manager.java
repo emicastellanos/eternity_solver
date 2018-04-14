@@ -3,13 +3,10 @@ package soluciones.manager;
 import entidades.Ficha;
 import entidades.Tablero;
 import org.apache.log4j.Logger;
-import soluciones.master_slave.TareaRunnable;
 import utilidades.GeneradorFichas;
-import utilidades.ListUtils;
+import utilidades.GeneradorFichasAleatorio;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -24,7 +21,7 @@ public class Manager {
     static final Logger resultLog = Logger.getLogger("resultadoLogger");
     private long contadorThreads;
     private static int N = 8;
-    private static int NIVEL_BACK_INICIAL = 4;
+    private static int NIVEL_BACK_INICIAL = 3;
 
 
 
@@ -76,7 +73,7 @@ public class Manager {
                 String msg = "";
                 while (bloqueado!=0 && !tarea.isFinalizado()){ //Busy waiting
                     //do nothing
-                    //msg = "BLOQUEADO Thread: " + Thread.currentThread().getName() + " TAREA NAME  "+ tarea.getName() ;
+                    msg = "BLOQUEADO Thread: " + Thread.currentThread().getName() + " TAREA NAME  "+ tarea.getName() ;
                     resultLog.error(msg);
                     try {
                         Thread.sleep(1);
@@ -85,7 +82,7 @@ public class Manager {
                     }
                 }
                 if(!tarea.isDividir()){
-                    //resultLog.info(Thread.currentThread().getName() + " SE PUDO DIVIDIR " + tarea.getName());
+                    resultLog.info(Thread.currentThread().getName() + " SE PUDO DIVIDIR " + tarea.getName());
                     pendientes.addAll(creadorTareas.crear(tarea.getEstado()));
                     tarea.setBloqueado(false);
                     //resultLog.info(Thread.currentThread().getName() + " DESBLOQUEO A " + tarea.getName());
@@ -220,8 +217,8 @@ public class Manager {
     }
 
     public static void main(String[] args){
-        GeneradorFichas generadorFichas = new GeneradorFichas(N,N);
-        ArrayList <Ficha> fichas = generadorFichas.getFichasUnicasAleatorias();
+        GeneradorFichas generadorFichas = new GeneradorFichasAleatorio(N,N);
+        ArrayList <Ficha> fichas = generadorFichas.getFichasUnicas();
         Tablero tablero = new Tablero(N);
 
         System.out.println("EMPIEZA");
@@ -246,7 +243,7 @@ public class Manager {
 
     /*public static void main(String[] args){
         GeneradorFichas generadorFichas = new GeneradorFichas(8,8);
-        ArrayList <Ficha> fichas = generadorFichas.getFichasUnicasAleatorias();
+        ArrayList <Ficha> fichas = generadorFichas.getFichasUnicas();
         Tablero tablero = new Tablero(8);
         TareaRunnable tareaRunnable = new TareaRunnable(tablero.clone(), ListUtils.getCopia(fichas),null);
         tareaRunnable.backRichi();

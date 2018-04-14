@@ -5,12 +5,13 @@ import entidades.Tablero;
 
 import java.util.ArrayList;
 
-public class GeneradorFichas {
+public abstract class GeneradorFichas {
 
-    private int N;
-    public int cantidadColores = 10;
+    protected int N;
+    protected int cantidadColores = 10;
     public int[] colores ;
     private Tablero tablero;
+
 
     public GeneradorFichas(int N, int cant_colores) {
         this.N = N;
@@ -22,6 +23,11 @@ public class GeneradorFichas {
     public int[] getColores() {
         return colores;
     }
+
+    public Tablero getTablero() {
+        return tablero;
+    }
+
 
     /**@Return true si la ficha ya existe en el tablero**/
     public boolean existe (Ficha ficha){
@@ -40,8 +46,9 @@ public class GeneradorFichas {
         return false;
     }
 
+
     /**@Return el valor del proximo color menos utilizado **/
-    private int getColor(){
+    protected int getColor(){
         int color = 1;
         for(int i = 1; i<= cantidadColores; i++){
             if(colores[i]< colores[color]){
@@ -52,18 +59,13 @@ public class GeneradorFichas {
         return color;
     }
 
-    /**@Return un valor aleatorio dentro de los colores posibles para usar **/
-    private int getColorAleatorio(){
-        Double i= Math.random()* cantidadColores;
-        while (i.intValue()==0){
-            i= Math.random()* cantidadColores;
-        }
-        colores[i.intValue()]+=1;
-        return i.intValue();
-    }
+
+    public abstract void hacerValidacionesFicha  (Ficha ficha, int i, int j, ArrayList<Ficha> generadas) ;
 
 
-    public ArrayList<Ficha> getFichasUnicasAleatorias() {
+
+
+    public ArrayList<Ficha> getFichasUnicas() {
         ArrayList<Ficha> generadas = new ArrayList<>();
         int contador = 1;
         Ficha ficha ;
@@ -96,25 +98,8 @@ public class GeneradorFichas {
                 }
 
                 //reviso si la ficha generada existe dentro de las generadas
-                boolean corte = false;
-                while(!corte){
-                    if(existe(ficha)){
-                        //si la ficha generada ya existe, se libera los colores de izq y abajo y se eligen al azar hasta que se encuentre una ficha valida.
-                        if(j!=N-1){
-                            colores[ficha.getDer()]-=1;
-                            ficha.setDer(getColorAleatorio());
-                        }
-                        if(i!=N-1){
-                            colores[ficha.getAbj()]-=1;
-                            ficha.setAbj(getColorAleatorio());
-                        }
-                    }else{
-                        generadas.add(ficha);
-                        tablero.setPosicion(i,j,ficha);
-                        corte=true;
-                    }
-
-                }
+                hacerValidacionesFicha(ficha,i,j,generadas);
+                tablero.setPosicion(i,j,ficha);
                 contador++;
             }
         }
@@ -123,12 +108,15 @@ public class GeneradorFichas {
     }
 
     public static void main(String[] args){
-        GeneradorFichas gf = new GeneradorFichas(8, 8);
-        ArrayList<Ficha> fichas = gf.getFichasUnicasAleatorias();
+        GeneradorFichas gf = new GeneradorFichasUnicas(10, 7);
+        ArrayList<Ficha> fichas = gf.getFichasUnicas();
 
         for (int i=0 ; i< gf.getColores().length ;i++){
             System.out.println("color: " + i + " cant " +gf.getColores()[i] + "-");
         }
+
+        System.out.println("TABLERO: ");
+        System.out.println(gf.getTablero().imprimirse());
 
     }
 

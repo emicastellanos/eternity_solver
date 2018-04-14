@@ -5,13 +5,12 @@ import entidades.Tablero;
 import org.apache.log4j.Logger;
 import soluciones.master_slave.TareaRunnable;
 import utilidades.GeneradorFichas;
+import utilidades.GeneradorFichasAleatorio;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.BitSet;
 import java.util.Collections;
-import java.util.List;
 
 
 public class LinealMain {
@@ -23,8 +22,8 @@ public class LinealMain {
 
 
     public static void main(String[] args) {
-        GeneradorFichas generadorFichas = new GeneradorFichas(N,N);
-        fichas = generadorFichas.getFichasUnicasAleatorias();
+        GeneradorFichas generadorFichas = new GeneradorFichasAleatorio(N,N);
+        fichas = generadorFichas.getFichasUnicas();
 
         Collections.shuffle(fichas);
 
