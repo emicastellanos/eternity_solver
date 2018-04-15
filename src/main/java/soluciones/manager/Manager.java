@@ -22,7 +22,7 @@ public class Manager {
     private int windowSize ; //TODO Cambiar nombre -> refiere a la cantidad de threads que puede haber como maximo
     static final Logger resultLog = Logger.getLogger("resultadoLogger");
     private long contadorThreads;
-    private static int N = 8;
+    private static int N = 9;
     private static int NIVEL_BACK_INICIAL = 2;
 
 
@@ -219,7 +219,8 @@ public class Manager {
     }
 
     public static void main(String[] args){
-        GeneradorFichas generadorFichas = new GeneradorFichasUnicas(N,N+1);
+        int colores = N+1;
+        GeneradorFichas generadorFichas = new GeneradorFichasUnicas(N,colores);
         ArrayList <Ficha> fichas = generadorFichas.getFichasUnicas();
         Tablero tablero = new Tablero(N);
 
@@ -234,6 +235,9 @@ public class Manager {
 
         //TODO redondear a dos
 
+        resultLog.info("********************************");
+        resultLog.info("TAMAÑO TABLERO= " + N);
+        resultLog.info("COLORES = " + colores) ;
         resultLog.info("# nucleos usados " + m.getWindowSize() + " de " + Runtime.getRuntime().availableProcessors() );
         resultLog.info("TIEMPO " + durationSecs.toString().replace('.',',') + " SEGUNDOS");
         resultLog.info("CANTIDAD SOLUCIONES = " + SOLUCIONES.size()) ;
