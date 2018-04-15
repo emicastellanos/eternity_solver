@@ -60,7 +60,7 @@ public abstract class GeneradorFichas {
     }
 
 
-    public abstract void hacerValidacionesFicha  (Ficha ficha, int i, int j, ArrayList<Ficha> generadas) ;
+    public abstract boolean hacerValidacionesFicha  (Ficha ficha, int i, int j, ArrayList<Ficha> generadas) ;
 
 
 
@@ -98,9 +98,21 @@ public abstract class GeneradorFichas {
                 }
 
                 //reviso si la ficha generada existe dentro de las generadas
-                hacerValidacionesFicha(ficha,i,j,generadas);
-                tablero.setPosicion(i,j,ficha);
-                contador++;
+                if(!hacerValidacionesFicha(ficha,i,j,generadas)){
+	                	colores[generadas.get(generadas.size()-1).getDer()]-=1;
+	                	colores[generadas.get(generadas.size()-1).getArr()]-=1;
+	                	colores[generadas.get(generadas.size()-1).getIzq()]-=1;
+	    				colores[ficha.getArr()]-=1;
+	    				colores[ficha.getIzq()]-=1;
+	    				generadas.remove(generadas.size()-1);
+	                	j=j-2;
+	                	contador--;
+                }
+                else {	
+	                tablero.setPosicion(i,j,ficha);
+	                contador++;
+	                
+                }
             }
         }
 
@@ -108,12 +120,16 @@ public abstract class GeneradorFichas {
     }
 
     public static void main(String[] args){
-        GeneradorFichas gf = new GeneradorFichasUnicas(10, 7);
+        GeneradorFichas gf = new GeneradorFichasUnicas(10,9);
         ArrayList<Ficha> fichas = gf.getFichasUnicas();
 
         for (int i=0 ; i< gf.getColores().length ;i++){
             System.out.println("color: " + i + " cant " +gf.getColores()[i] + "-");
         }
+        
+        for (Ficha f : fichas)
+            System.out.println( f.getId()+"-");
+        
 
         System.out.println("TABLERO: ");
         System.out.println(gf.getTablero().imprimirse());

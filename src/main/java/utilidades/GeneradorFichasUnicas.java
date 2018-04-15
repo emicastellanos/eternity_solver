@@ -21,7 +21,7 @@ public class GeneradorFichasUnicas extends GeneradorFichas {
     }
 
 
-    public void hacerValidacionesFicha (Ficha ficha, int i, int j, ArrayList<Ficha> generadas){
+    public boolean hacerValidacionesFicha (Ficha ficha, int i, int j, ArrayList<Ficha> generadas){
         boolean corte = false;
         while(!corte){
             if(existe(ficha)){
@@ -34,16 +34,15 @@ public class GeneradorFichasUnicas extends GeneradorFichas {
                     colores[ficha.getAbj()]-=1;
                     ficha.setAbj(getColorUnico());
                 }
-                if(j==N-1 && i == N-1){
-                    j=j-2;
-                    generadas.remove(generadas.size());
-                    corte=true;
+                if(i==N-1 && j==N-1){
+                    return false;
                 }
             }else{
                 generadas.add(ficha);
-                corte=true;
+                return true;
             }
         }
+		return true;
     }
 
 }
