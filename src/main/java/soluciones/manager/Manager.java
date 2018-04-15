@@ -5,8 +5,10 @@ import entidades.Tablero;
 import org.apache.log4j.Logger;
 import utilidades.GeneradorFichas;
 import utilidades.GeneradorFichasAleatorio;
+import utilidades.GeneradorFichasUnicas;
 
 import java.math.BigDecimal;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -21,7 +23,7 @@ public class Manager {
     static final Logger resultLog = Logger.getLogger("resultadoLogger");
     private long contadorThreads;
     private static int N = 8;
-    private static int NIVEL_BACK_INICIAL = 3;
+    private static int NIVEL_BACK_INICIAL = 2;
 
 
 
@@ -64,7 +66,7 @@ public class Manager {
      * toma una Tarea de la lista de activas, la subdivide.
      * */
     public void solicitarMas(){
-        resultLog.info("ACTUAL " + Thread.currentThread().getName() + " solicitarMas()");
+        //resultLog.info("ACTUAL " + Thread.currentThread().getName() + " solicitarMas()");
         for(Tarea tarea : activas){ //Podriamos tener alguna clase Filtro elija las tareas mas prometedoras
             if(tarea.isAlive()){// TODO EN lugar de agarrar solo uno, podriamos agarrar un par.
                 bloqueado = tarea.getId();
@@ -74,7 +76,7 @@ public class Manager {
                 while (bloqueado!=0 && !tarea.isFinalizado()){ //Busy waiting
                     //do nothing
                     msg = "BLOQUEADO Thread: " + Thread.currentThread().getName() + " TAREA NAME  "+ tarea.getName() ;
-                    resultLog.error(msg);
+                    //resultLog.error(msg);
                     try {
                         Thread.sleep(1);
                     } catch (InterruptedException e) {
@@ -82,13 +84,13 @@ public class Manager {
                     }
                 }
                 if(!tarea.isDividir()){
-                    resultLog.info(Thread.currentThread().getName() + " SE PUDO DIVIDIR " + tarea.getName());
+                    //resultLog.info(Thread.currentThread().getName() + " SE PUDO DIVIDIR " + tarea.getName());
                     pendientes.addAll(creadorTareas.crear(tarea.getEstado()));
                     tarea.setBloqueado(false);
                     //resultLog.info(Thread.currentThread().getName() + " DESBLOQUEO A " + tarea.getName());
                     break;
                 }else{
-                    resultLog.error("ACTUAL " + Thread.currentThread().getName() +" NOOOOOO se pudo dividir " + tarea.getName());
+                    //resultLog.error("ACTUAL " + Thread.currentThread().getName() +" NOOOOOO se pudo dividir " + tarea.getName());
                     tarea.setDividir(false); // NO SE SI DEBE IR PERO SUPONGO QUE NO JODE.
                 }
             }
@@ -217,11 +219,11 @@ public class Manager {
     }
 
     public static void main(String[] args){
-        GeneradorFichas generadorFichas = new GeneradorFichasAleatorio(N,N);
+        GeneradorFichas generadorFichas = new GeneradorFichasUnicas(N,N+1);
         ArrayList <Ficha> fichas = generadorFichas.getFichasUnicas();
         Tablero tablero = new Tablero(N);
 
-        System.out.println("EMPIEZA");
+        resultLog.info("----- INICIO  " + ZonedDateTime.now());
         Manager m = new Manager();
         long startTime = System.nanoTime();
         m.ejecutar(fichas,tablero, NIVEL_BACK_INICIAL);
@@ -233,7 +235,7 @@ public class Manager {
         //TODO redondear a dos
 
         resultLog.info("# nucleos usados " + m.getWindowSize() + " de " + Runtime.getRuntime().availableProcessors() );
-        resultLog.info("TIEMPO " + durationSecs.toString() + " SEGUNDOS");
+        resultLog.info("TIEMPO " + durationSecs.toString().replace('.',',') + " SEGUNDOS");
         resultLog.info("CANTIDAD SOLUCIONES = " + SOLUCIONES.size()) ;
         resultLog.info("# THREADS INICIADOS " + m.getCantActivados());
 

@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import soluciones.master_slave.TareaRunnable;
 import utilidades.GeneradorFichas;
 import utilidades.GeneradorFichasAleatorio;
+import utilidades.GeneradorFichasUnicas;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
@@ -16,13 +17,13 @@ import java.util.Collections;
 public class LinealMain {
     public static ArrayList<Ficha> fichas;
 
-    private static final int N = 10;
+    private static final int N = 8;
     static final Logger fichasLog = Logger.getLogger("fichasLogger");
     static final Logger resultLog = Logger.getLogger("resultadoLogger");
 
 
     public static void main(String[] args) {
-        GeneradorFichas generadorFichas = new GeneradorFichasAleatorio(N,N);
+        GeneradorFichas generadorFichas = new GeneradorFichasUnicas(N,N);
         fichas = generadorFichas.getFichasUnicas();
 
         Collections.shuffle(fichas);
@@ -41,9 +42,7 @@ public class LinealMain {
         resultLog.info(tarea.solucion);
         resultLog.info("----- TERMINO " + ZonedDateTime.now());
 
-        resultLog.info("TIEMPO " + durationSecs.toString() + " SEGUNDOS");
-        resultLog.info("TIEMPO " + duration.toString() + " NANOSEGUNDOS");
-
+        resultLog.info("TIEMPO " + durationSecs.toString().replace('.',',') + " SEGUNDOS");
 
     }
 }

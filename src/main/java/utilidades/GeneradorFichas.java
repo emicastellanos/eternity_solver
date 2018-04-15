@@ -3,7 +3,12 @@ package utilidades;
 import entidades.Ficha;
 import entidades.Tablero;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Locale;
 
 public abstract class GeneradorFichas {
 
@@ -109,7 +114,14 @@ public abstract class GeneradorFichas {
 
     public static void main(String[] args){
         GeneradorFichas gf = new GeneradorFichasUnicas(10, 7);
+
+        long startTime = System.nanoTime();
         ArrayList<Ficha> fichas = gf.getFichasUnicas();
+        long endTime = System.nanoTime();
+
+        BigDecimal duration = new BigDecimal((endTime - startTime));
+        BigDecimal durationSecs = duration.divide(new BigDecimal(1000000000)).setScale(2, RoundingMode.HALF_UP);
+
 
         for (int i=0 ; i< gf.getColores().length ;i++){
             System.out.println("color: " + i + " cant " +gf.getColores()[i] + "-");
@@ -117,6 +129,8 @@ public abstract class GeneradorFichas {
 
         System.out.println("TABLERO: ");
         System.out.println(gf.getTablero().imprimirse());
+
+        System.out.println("TIEMPO: " + durationSecs.toString().replace('.',','));
 
     }
 
