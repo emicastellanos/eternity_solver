@@ -20,16 +20,23 @@ public class LinealMain {
     private static final int N = 8;
     static final Logger fichasLog = Logger.getLogger("fichasLogger");
     static final Logger resultLog = Logger.getLogger("resultadoLogger");
+    private static boolean primeraPuesta = true;
 
 
     public static void main(String[] args) {
         GeneradorFichas generadorFichas = new GeneradorFichasUnicas(N,N);
         fichas = generadorFichas.getFichasUnicas();
+        Tablero tablero = new Tablero(N);
+        if(primeraPuesta) {
+        	tablero.insertarFinal(fichas.get(0));
+        	tablero.aumentarPosicion();
+        	fichas.get(0).setUsada(true);
+        }
 
         Collections.shuffle(fichas);
 
         int nhilo= 1;
-        TareaRunnable tarea = new TareaRunnable(new Tablero(N),fichas,String.valueOf(nhilo));
+        TareaRunnable tarea = new TareaRunnable(tablero,fichas,String.valueOf(nhilo));
         resultLog.info("----- INICIO  " + ZonedDateTime.now());
 
         long startTime = System.nanoTime();

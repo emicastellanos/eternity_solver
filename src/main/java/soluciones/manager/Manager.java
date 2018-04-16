@@ -24,6 +24,7 @@ public class Manager {
     private long contadorThreads;
     private static int N = 9;
     private static int NIVEL_BACK_INICIAL = 2;
+    private static boolean primeraPuesta = true;
 
 
 
@@ -223,7 +224,13 @@ public class Manager {
         GeneradorFichas generadorFichas = new GeneradorFichasUnicas(N,colores);
         ArrayList <Ficha> fichas = generadorFichas.getFichasUnicas();
         Tablero tablero = new Tablero(N);
-
+        
+        if(primeraPuesta) {
+        	tablero.insertarFinal(fichas.get(0));
+        	tablero.aumentarPosicion();
+        	fichas.get(0).setUsada(true);
+        }
+        Collections.shuffle(fichas);
         resultLog.info("----- INICIO  " + ZonedDateTime.now());
         Manager m = new Manager();
         long startTime = System.nanoTime();
