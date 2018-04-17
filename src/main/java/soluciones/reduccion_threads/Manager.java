@@ -144,7 +144,7 @@ public class Manager {
                     Tarea.setDividir(true);
                     try {
                         System.out.println(Thread.currentThread().getName() + " SE VA A DORMIR mas tiempo");
-                        Thread.sleep(1000 * N); //milisegundos -> 60000 = 1 minuto
+                        Thread.sleep(1000); //milisegundos -> 60000 = 1 minuto
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -152,7 +152,7 @@ public class Manager {
             } // Algun if (pendientes.size()-indice > )
 
             /** (windowSize - cantActivas() == #OCIOSOS **/
-            while (( cantActivas() < windowSize ) && ((windowSize - cantActivas()) > (pendientes.size() -indice))){
+            while (( cantActivas() < windowSize ) && ((windowSize - cantActivas()) > (pendientes.size() -indice)) && (pendientes.size() -indice) > 0){
                 if(!Tarea.isDividir()){
                     Tarea.setDividir(true);
                     try {
@@ -165,7 +165,7 @@ public class Manager {
             }
 
             if(activas.size() < windowSize && indice < pendientes.size()){
-                System.out.println("CARGA THREADS Y LOS INICIAR");
+                System.out.println("CARGA THREADS Y LOS INICIAR - SOLO SI HABIA MENOS PENDIENTES QUE WINDOWS SIZE AL COMIENZO");
                 cargarThreads();
                 iniciarTareas();
             }
@@ -187,7 +187,7 @@ public class Manager {
         GeneradorFichas generadorFichas = new GeneradorFichasUnicas(N,colores);
         ArrayList <Ficha> fichas = generadorFichas.getFichasUnicas();
         //TODO Desordenar fichas
-        Collections.shuffle(fichas);
+        //Collections.shuffle(fichas);
         Tablero tablero = new Tablero(N);
         resultLog.info("----- INICIO  " + ZonedDateTime.now());
         Manager m = new Manager();
