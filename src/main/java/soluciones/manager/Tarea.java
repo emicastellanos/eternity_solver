@@ -3,10 +3,9 @@ package soluciones.manager;
 import entidades.Ficha;
 import entidades.Tablero;
 import org.apache.log4j.Logger;
-import utilidades.ListUtils;
+import utilidades.Utils;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 public class Tarea extends Thread {
     public static int NRO = 1;
@@ -30,7 +29,7 @@ public class Tarea extends Thread {
         this.nivelComienzo = nivel;
         this.finalizado = false;
         this.dividir = false;
-        this.fichas = ListUtils.getCopia(fichas);
+        this.fichas = Utils.getCopia(fichas);
         this.nombre = "Thread actual:" + currentThread().getName() + " va a correr en " + getName() + " TAREA " + nombre;
         String todas ="";
         ArrayList<Ficha> todasFichas = tablero.getFichasUsadas();
@@ -86,7 +85,7 @@ public class Tarea extends Thread {
         if(dividir && fichas.size()>1){ //porque si queda solo una ficha es mas facil que este thread termine
             //ademas si hay soo una ficha, el creador va a ser el que "encuentre" la solucion
             //resultLog.info(Thread.currentThread().getName() +" entro al dividir " + getNombre());
-            this.estado = new Estado(tablero.clone(),ListUtils.getCopia(fichas),nivel);
+            this.estado = new Estado(tablero.clone(), Utils.getCopia(fichas),nivel);
             /**Quizas haya alguna forma de no crear una tarea si despues el thread padre
              * no va a conseguir una tarea para continuar**/
             /**Quizas se conveniente devolver mas de un estado.. una lista **/

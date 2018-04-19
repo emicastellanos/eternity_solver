@@ -26,7 +26,6 @@ public class TareaRunnable extends Thread {
         this.nombreThread = nombre;
     }
 
-    
     public void backRichi(){
         for (Ficha f : fichas) {
             if (!f.isUsada()) {
@@ -38,7 +37,6 @@ public class TareaRunnable extends Thread {
                             //threadsLogger.info("SOLUCION");
                             //resultLog.info(tablero.imprimirse());
                             //listaSoluciones.add(tablero.clone());
-
                         } else {
                             f.setUsada(true);
                             tablero.aumentarPosicion();
@@ -56,7 +54,6 @@ public class TareaRunnable extends Thread {
 
     @Override
     public void run() {
-        ZonedDateTime zdt ;
         threadsLogger.info("\n----- ARRANCA EL THREAD " + nombreThread + " " + ZonedDateTime.now());
         backRichi();
         threadsLogger.info("\n----- TERMINO EL THREAD " + nombreThread+" "+ZonedDateTime.now());

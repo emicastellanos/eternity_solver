@@ -251,7 +251,7 @@ public class Manager {
         GeneradorFichas generadorFichas = new GeneradorFichas(8,8);
         ArrayList <Ficha> fichas = generadorFichas.getFichasUnicas();
         Tablero tablero = new Tablero(8);
-        TareaRunnable tareaRunnable = new TareaRunnable(tablero.clone(), ListUtils.getCopia(fichas),null);
+        TareaRunnable tareaRunnable = new TareaRunnable(tablero.clone(), Utils.getCopia(fichas),null);
         tareaRunnable.backRichi();
 
         resultLog.info("LINEAL #Soluciones: " + tareaRunnable.solucion);

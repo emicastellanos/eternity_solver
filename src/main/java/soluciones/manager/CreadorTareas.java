@@ -3,11 +3,9 @@ package soluciones.manager;
 import entidades.Ficha;
 import entidades.Tablero;
 import org.apache.log4j.Logger;
-import utilidades.GeneradorFichas;
-import utilidades.ListUtils;
+import utilidades.Utils;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class CreadorTareas {
 
@@ -34,7 +32,7 @@ public class CreadorTareas {
                         ficha.setUsada(true);
                         Tablero clonado = estado.getTablero().clone();
                         clonado.aumentarPosicion();
-                        resultado.add(new Tarea(clonado, ListUtils.getCopia(estado.getFichas()), null, estado.getNivel(), manager));
+                        resultado.add(new Tarea(clonado, Utils.getCopia(estado.getFichas()), null, estado.getNivel(), manager));
                         ficha.setUsada(false);
                     }
                     estado.getTablero().eliminarUltima();
@@ -61,7 +59,7 @@ public class CreadorTareas {
                         f.setUsada(true);
                         tablero.aumentarPosicion();
                         if (nivel.equals(nivelObjetivo)) {
-                            Tarea estado = new Tarea(tablero.clone(), ListUtils.getCopia(fichas), null, nivel, manager);
+                            Tarea estado = new Tarea(tablero.clone(), Utils.getCopia(fichas), null, nivel, manager);
                             resultado.add(estado);
                         } else {
                             resultado.addAll(backNivel(fichas, nivel, tablero, nivelObjetivo));

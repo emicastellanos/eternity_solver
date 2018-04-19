@@ -1,10 +1,11 @@
 package utilidades;
 
 import entidades.Ficha;
+import entidades.Tablero;
 
 import java.util.ArrayList;
 
-public class ListUtils {
+public class Utils {
 
     /*public static ArrayList<Ficha> getCopiaSin(ArrayList<Ficha> listaFichas, Ficha objetivo){
         ArrayList<Ficha> resultado = new ArrayList<>();
@@ -22,6 +23,21 @@ public class ListUtils {
             resultado.add(f.clone());
         }
         return resultado;
+    }
+
+    public static void backUbicarPrimera(Tablero tablero, ArrayList<Ficha> fichas) {
+        for (Ficha f : fichas) {
+            if (!f.isUsada()) {
+                for (int i = 0; i < 4; i++) {
+                    tablero.insertarFinal(f);
+                    if (tablero.esSolucion()) {
+                        f.setUsada(true);
+                        tablero.aumentarPosicion();
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     public static ArrayList<Ficha> getCopiaSin(){
