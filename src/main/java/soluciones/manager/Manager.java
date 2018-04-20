@@ -22,7 +22,7 @@ public class Manager {
     private int windowSize ; //TODO Cambiar nombre -> refiere a la cantidad de threads que puede haber como maximo
     static final Logger resultLog = Logger.getLogger("resultadoLogger");
     private long contadorThreads;
-    private static int N = 9;
+    private static int N = 8;
     private static int NIVEL_BACK_INICIAL = 2;
 
 
@@ -219,7 +219,7 @@ public class Manager {
     }
 
     public static void main(String[] args){
-        int colores = N+1;
+        int colores = N;
         GeneradorFichas generadorFichas = new GeneradorFichasUnicas(N,colores);
         ArrayList <Ficha> fichas = generadorFichas.getFichasUnicas();
         Tablero tablero = new Tablero(N);

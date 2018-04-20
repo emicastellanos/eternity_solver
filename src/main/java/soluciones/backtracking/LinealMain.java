@@ -19,7 +19,7 @@ import java.util.Collections;
 public class LinealMain {
     public static ArrayList<Ficha> fichas;
 
-    private static final int N = 7;
+    private static final int N = 8;
     private static Boolean UBICAR_PRIMERA = Boolean.TRUE;
 
     static final Logger resultLog = Logger.getLogger("resultadoLogger");

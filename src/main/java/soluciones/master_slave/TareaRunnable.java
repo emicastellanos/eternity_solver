@@ -15,8 +15,7 @@ public class TareaRunnable extends Thread {
     public int nivelComienzo;
     public String nombreThread;
     public static int solucion;
-    final Logger threadsLogger = Logger.getLogger("threadLogger");
-
+    static final Logger resultLog = Logger.getLogger("resultadoLogger");
 
     public TareaRunnable(Tablero tablero, ArrayList<Ficha> fichas, String nombre) {
         this.tablero = tablero;
@@ -34,8 +33,8 @@ public class TareaRunnable extends Thread {
                     if (tablero.esSolucion()) {
                         if (tablero.esSolucionFinal()) {
                             solucion++;
-                            //threadsLogger.info("SOLUCION");
-                            //resultLog.info(tablero.imprimirse());
+                            resultLog.info("SOLUCION");
+                            resultLog.info(tablero.imprimirse());
                             //listaSoluciones.add(tablero.clone());
                         } else {
                             f.setUsada(true);
@@ -54,9 +53,9 @@ public class TareaRunnable extends Thread {
 
     @Override
     public void run() {
-        threadsLogger.info("\n----- ARRANCA EL THREAD " + nombreThread + " " + ZonedDateTime.now());
+        resultLog.info("\n----- ARRANCA EL THREAD " + nombreThread + " " + ZonedDateTime.now());
         backRichi();
-        threadsLogger.info("\n----- TERMINO EL THREAD " + nombreThread+" "+ZonedDateTime.now());
+        resultLog.info("\n----- TERMINO EL THREAD " + nombreThread+" "+ZonedDateTime.now());
         
     }
 }

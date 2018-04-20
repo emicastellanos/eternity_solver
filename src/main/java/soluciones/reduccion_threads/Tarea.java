@@ -52,7 +52,7 @@ public class Tarea extends Thread {
     /** Metodo de inicializacion toma el estado definido como actual y obtiene de el un tablero y una lista
      * de fichas para comenzar la ejecucion. Luego actual = null */
     public void inicializar (){
-        resultLog.info(" --------- INICIALIZA EL " + ((Tarea)Thread.currentThread()).getNombre());
+        resultLog.info(" --------- INICIALIZA EL THREAD: " + ((Tarea)Thread.currentThread()).getNombre());
         tablero = actual.getTablero(); //TODO o una copia de tablero y fichas ????
         fichas = actual.getFichas();
         nivelComienzo = actual.getNivel();

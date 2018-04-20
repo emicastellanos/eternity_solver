@@ -27,7 +27,8 @@ public class Manager {
 
     static final Logger resultLog = Logger.getLogger("resultadoLogger");
 
-    private static int N = 7;
+    private static int N = 8;
+
     private static int NIVEL_BACK_INICIAL = 2;
 
 
@@ -122,7 +123,7 @@ public class Manager {
     }
 
     public void ejecutar(ArrayList <Ficha> fichas, Tablero tablero, int nivelBackInicial)  {
-        boolean primera_ficha_colocada = Boolean.TRUE;
+        boolean primera_ficha_colocada = Boolean.FALSE;
         pendientes = creadorTareas.crearTareasIniciales(tablero, fichas, nivelBackInicial,primera_ficha_colocada);
         cargarThreadsIniciales();
 
@@ -133,16 +134,42 @@ public class Manager {
         //TODO indice == pendientes.size podria reemplazarse por pendientes.size -4 <indice < pendientes.size() o algo asi
         //(o directamente while cantActivas()>0 ??)
         while (cantActivas()>0 || indice < pendientes.size()){
-            System.out.println(Thread.currentThread().getName() + " INDICE " + indice + " / " + pendientes.size());
-            if(!Tarea.isDividir()){
+            System.out.println(Thread.currentThread().getName() + " INDICE " + indice + " / " + pendientes.size() + " / CANT " + cantActivas());
+            /*if(!Tarea.isDividir() && (pendientes.size() - indice < 20 )){
+                // relacionar con la cantActivadas tmb
                 Tarea.setDividir(true);
+            }*/
+            if(indice ==pendientes.size()){
+                if(!Tarea.isDividir()){
+                    Tarea.setDividir(true);
+                    try {
+                        System.out.println(Thread.currentThread().getName() + " SE VA A DORMIR mas tiempo");
+                        Thread.sleep(1000 * N); //milisegundos -> 60000 = 1 minuto
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            } // Algun if (pendientes.size()-indice > )
+
+            /** (windowSize - cantActivas() == #OCIOSOS **/
+            while (( cantActivas() < windowSize ) && ((windowSize - cantActivas()) > (pendientes.size() -indice))){
+                if(!Tarea.isDividir()){
+                    Tarea.setDividir(true);
+                    try {
+                        System.out.println(Thread.currentThread().getName() + " SE VA A DORMIR porque somos pocos laburando, loco");
+                        //Thread.sleep(10 * N); //milisegundos -> 60000 = 1 minuto
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
             }
-            if(cantActivas() < windowSize && indice!=pendientes.size()){
+
+            if(activas.size() < windowSize && indice < pendientes.size()){
+                System.out.println("CARGA THREADS Y LOS INICIAR");
                 cargarThreads();
                 iniciarTareas();
-                System.out.println("INICIA");
             }
-            try {
+            try {//TODO podria decir si hay 10 pendientes, dormir 10 ms si hay 40 dormir 100 ms o algo asi
                 System.out.println(Thread.currentThread().getName() + " SE VA A DORMIR ");
                 Thread.sleep(100 * N); //milisegundos -> 60000 = 1 minuto
             } catch (Exception e){
@@ -152,16 +179,7 @@ public class Manager {
         //PARA CORTAR LOS THREADS
         //if(cantActivas()==0 && indice==pendientes.size()){
         TIENE_TAREAS = false;
-        //}
-        //ESPERAR A QUE TODOS LOS THREADS TERMINEN:
-        /*while(cantActivas()>0){
-            try {
-                System.out.println(Thread.currentThread().getName() + " ESPERO QUE TERMINEN LOS THREADS");
-                Thread.sleep(100 * N); //milisegundos -> 60000 = 1 minuto
-            } catch (Exception e){
-                e.printStackTrace();
-            }
-        }*/
+
     }
 
     public static void main(String[] args){

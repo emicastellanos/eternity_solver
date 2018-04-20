@@ -26,6 +26,8 @@ public class Utils {
     }
 
     public static void backUbicarPrimera(Tablero tablero, ArrayList<Ficha> fichas) {
+        boolean termino = false;
+
         for (Ficha f : fichas) {
             if (!f.isUsada()) {
                 for (int i = 0; i < 4; i++) {
@@ -33,9 +35,16 @@ public class Utils {
                     if (tablero.esSolucion()) {
                         f.setUsada(true);
                         tablero.aumentarPosicion();
+                        termino = true;
                         break;
+                    } else {
+                        f.rotar();
+                        tablero.eliminarUltima();
                     }
                 }
+            }
+            if(termino){
+                break;
             }
         }
     }
