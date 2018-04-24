@@ -12,6 +12,7 @@ public class Tarea extends Thread {
     private Tablero tablero;
     private ArrayList<Ficha> fichas;
     private Estado actual;
+    private Manager manager ;
 
 
     private Integer nivelComienzo;
@@ -22,11 +23,12 @@ public class Tarea extends Thread {
     private long id ;
 
 
-    public Tarea(Estado estado) {
+    public Tarea(Estado estado,Manager m) {
         this.actual = estado;
         this.dividir = false;
         this.id = Manager.getNextContador();
         this.nombre = "TAREA-" + this.id;
+        this.manager = m;
     }
 
     public String getNombre() {
@@ -48,6 +50,10 @@ public class Tarea extends Thread {
     public Estado getActual(){
         return actual;
     }
+    
+    public synchronized void despertar() {
+ 	   notify();
+    }
 
     /** Metodo de inicializacion toma el estado definido como actual y obtiene de el un tablero y una lista
      * de fichas para comenzar la ejecucion. Luego actual = null */
@@ -62,14 +68,15 @@ public class Tarea extends Thread {
 
     public void backRichi(ArrayList<Ficha> fichas, Integer nivel){
         boolean encontro = false;
-        synchronized (this){
+        //synchronized (this){
             if(isDividir() && fichas.size()>1){
                 this.setDividir(false);
                 encontro = true;
             }
-        }
+       //}
         if(encontro){
             Manager.addEstado(new Estado(tablero.clone(), Utils.getCopia(fichas),nivel));
+            resultLog.info("dividi" + Thread.currentThread().getName());
         }else{
             for (Ficha f : fichas) {
                 if(!f.isUsada()) {
@@ -106,20 +113,11 @@ public class Tarea extends Thread {
                 inicializar();
                 backRichi(this.fichas, nivelComienzo);
                 finalizado = true;
-            } else {
-                try {
-                    Thread.sleep(10);
-                } catch (Exception e){
-                    e.printStackTrace();
-                }
-            }
-            try {
-                if (actual == null){
-                    actual = Manager.getProximoEstado();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+                manager.despertar();
+                resultLog.info("SALIENDO DEL BACK " + Thread.currentThread().getName());
+            } 
+            actual = Manager.getProximoEstado();
         }
+        resultLog.info("SALIENDO DEL BACK " + Thread.currentThread().getName());
     }
 }
