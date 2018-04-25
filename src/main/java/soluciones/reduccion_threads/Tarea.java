@@ -29,6 +29,7 @@ public class Tarea extends Thread {
         this.id = Manager.getNextContador();
         this.nombre = "TAREA-" + this.id;
         this.manager = m;
+        this.finalizado = true;
     }
 
     public String getNombre() {
@@ -58,7 +59,7 @@ public class Tarea extends Thread {
     /** Metodo de inicializacion toma el estado definido como actual y obtiene de el un tablero y una lista
      * de fichas para comenzar la ejecucion. Luego actual = null */
     public void inicializar (){
-        resultLog.info(" --------- INICIALIZA EL THREAD: " + Thread.currentThread().getName());
+        //resultLog.info(" --------- INICIALIZA EL THREAD: " + Thread.currentThread().getName());
         tablero = actual.getTablero(); //TODO o una copia de tablero y fichas ????
         fichas = actual.getFichas();
         nivelComienzo = actual.getNivel();
@@ -76,7 +77,7 @@ public class Tarea extends Thread {
        //}
         if(encontro){
             Manager.addEstado(new Estado(tablero.clone(), Utils.getCopia(fichas),nivel));
-            resultLog.info("dividi" + Thread.currentThread().getName());
+            //resultLog.info("dividi" + Thread.currentThread().getName());
         }else{
             for (Ficha f : fichas) {
                 if(!f.isUsada()) {
@@ -112,7 +113,7 @@ public class Tarea extends Thread {
             if (actual != null) {
                 inicializar();
                 backRichi(this.fichas, nivelComienzo);
-                resultLog.info("SALIENDO DEL BACK " + Thread.currentThread().getName());
+                //resultLog.info("SALIENDO DEL BACK " + Thread.currentThread().getName());
                 finalizado = true;
                 
             } 

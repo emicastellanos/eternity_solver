@@ -37,7 +37,7 @@ public class Manager extends Thread {
         creadorTareas = new CreadorTareas();
         pendientes = Collections.synchronizedList(new ArrayList<Estado>());
         activas = new ArrayList<>();
-        windowSize = Runtime.getRuntime().availableProcessors() - 2;
+        windowSize = 6;
         SOLUCIONES = Collections.synchronizedList(new ArrayList<>());
         bloqueado = 0;
         contadorThreads = 0;
@@ -113,7 +113,7 @@ public class Manager extends Thread {
 
     //TODO cargar tareas hasta windowsSize siempre?
     public void cargarThreadsIniciales(){
-        for (int i=0; (i< windowSize && i<pendientes.size()) ; i++){
+        for (int i=0; i< windowSize ; i++){
             Tarea tarea = new Tarea(getProximoEstado(),this);
             activas.add(tarea);
         }
@@ -124,13 +124,15 @@ public class Manager extends Thread {
         pendientes = creadorTareas.crearTareasIniciales(tablero, fichas, nivelBackInicial,primera_ficha_colocada);
         cargarThreadsIniciales();
 
-        resultLog.info("SE ACTIVAN  " + activas.size() + " / PENDIENTES " + pendientes.size() +" / INDICE "+ indice);
+        //resultLog.info("SE ACTIVAN  " + activas.size() + " / PENDIENTES " + pendientes.size() +" / INDICE "+ indice);
         iniciarTareas();
 
         while (cantActivas()>0 || pendientes.size() > indice){
-           System.out.println(Thread.currentThread().getName() + " INDICE " + indice + " / PENDIENTES TOTALES" + pendientes.size() + " / CANT ACTIVAS " + cantActivas()+ " / TOTAL HILOS " + activas.size());
+           //System.out.println( "PENDIENTES TOTALES " + (pendientes.size()-indice) + " / CANT ACTIVAS " + cantActivas()+ " / TOTAL HILOS " + windowSize);
           
             if(cantActivas() == windowSize){
+            	//System.out.println( "PENDIENTES TOTALES " + (pendientes.size()-indice) + " / CANT ACTIVAS " + cantActivas()+ " / TOTAL HILOS " + windowSize);
+                
 	            try {
 	              wait();
 	            } catch (Exception e) {
@@ -161,7 +163,7 @@ public class Manager extends Thread {
         GeneradorFichas generadorFichas = new GeneradorFichasUnicas(N,colores);
         ArrayList <Ficha> fichas = generadorFichas.getFichasUnicas();
         //TODO Desordenar fichas
-        //Collections.shuffle(fichas);
+        Collections.shuffle(fichas);
         Tablero tablero = new Tablero(N);
         resultLog.info("----- INICIO  " + ZonedDateTime.now());
         Manager m = new Manager();
