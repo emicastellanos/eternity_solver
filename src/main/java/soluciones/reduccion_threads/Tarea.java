@@ -58,7 +58,7 @@ public class Tarea extends Thread {
     /** Metodo de inicializacion toma el estado definido como actual y obtiene de el un tablero y una lista
      * de fichas para comenzar la ejecucion. Luego actual = null */
     public void inicializar (){
-        resultLog.info(" --------- INICIALIZA EL THREAD: " + ((Tarea)Thread.currentThread()).getNombre());
+        resultLog.info(" --------- INICIALIZA EL THREAD: " + Thread.currentThread().getName());
         tablero = actual.getTablero(); //TODO o una copia de tablero y fichas ????
         fichas = actual.getFichas();
         nivelComienzo = actual.getNivel();
@@ -84,7 +84,7 @@ public class Tarea extends Thread {
                         tablero.insertarFinal(f);
                         if(tablero.esSolucion()) {
                             if (tablero.esSolucionFinal()) {
-                                resultLog.info(" ---------------- SE ENCONTRO UNA SOLUCION " + ((Tarea)Thread.currentThread()).getNombre());
+                                resultLog.info(" ---------------- SE ENCONTRO UNA SOLUCION " + Thread.currentThread().getName());
                                 Tablero resultado = tablero.clone();
                                 Manager.SOLUCIONES.add(resultado);
                             } else {
@@ -112,12 +112,14 @@ public class Tarea extends Thread {
             if (actual != null) {
                 inicializar();
                 backRichi(this.fichas, nivelComienzo);
-                finalizado = true;
-                manager.despertar();
                 resultLog.info("SALIENDO DEL BACK " + Thread.currentThread().getName());
+                finalizado = true;
+                
             } 
+            else {
+            manager.despertar();
+            }
             actual = Manager.getProximoEstado();
         }
-        resultLog.info("SALIENDO DEL BACK " + Thread.currentThread().getName());
     }
 }

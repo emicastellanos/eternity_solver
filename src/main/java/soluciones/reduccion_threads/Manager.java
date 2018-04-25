@@ -161,7 +161,7 @@ public class Manager extends Thread {
         GeneradorFichas generadorFichas = new GeneradorFichasUnicas(N,colores);
         ArrayList <Ficha> fichas = generadorFichas.getFichasUnicas();
         //TODO Desordenar fichas
-        Collections.shuffle(fichas);
+        //Collections.shuffle(fichas);
         Tablero tablero = new Tablero(N);
         resultLog.info("----- INICIO  " + ZonedDateTime.now());
         Manager m = new Manager();
