@@ -13,6 +13,7 @@ public class Tarea extends Thread {
     private ArrayList<Ficha> fichas;
     private Estado actual;
     private Manager manager ;
+    //public static long it;
 
 
     private Integer nivelComienzo;
@@ -55,6 +56,10 @@ public class Tarea extends Thread {
     public synchronized void despertar() {
  	   notify();
     }
+    
+//    public static synchronized void sumar() {
+//  	   it++;
+//     }
 
     /** Metodo de inicializacion toma el estado definido como actual y obtiene de el un tablero y una lista
      * de fichas para comenzar la ejecucion. Luego actual = null */
@@ -69,20 +74,22 @@ public class Tarea extends Thread {
 
     public void backRichi(ArrayList<Ficha> fichas, Integer nivel){
         boolean encontro = false;
-        //synchronized (this){
+        synchronized (this){
             if(isDividir() && fichas.size()>1){
                 this.setDividir(false);
                 encontro = true;
             }
-       //}
+        }
         if(encontro){
             Manager.addEstado(new Estado(tablero.clone(), Utils.getCopia(fichas),nivel));
-            //resultLog.info("dividi" + Thread.currentThread().getName());
+            resultLog.info("dividi" + Thread.currentThread().getName());
         }else{
             for (Ficha f : fichas) {
                 if(!f.isUsada()) {
                     for(int i=0; i<4;i++) {
                         tablero.insertarFinal(f);
+                        //sumar();
+                        
                         if(tablero.esSolucion()) {
                             if (tablero.esSolucionFinal()) {
                                 resultLog.info(" ---------------- SE ENCONTRO UNA SOLUCION " + Thread.currentThread().getName());
@@ -115,12 +122,12 @@ public class Tarea extends Thread {
                 backRichi(this.fichas, nivelComienzo);
                 //resultLog.info("SALIENDO DEL BACK " + Thread.currentThread().getName());
                 finalizado = true;
-                
             } 
             else {
-            manager.despertar();
+            	manager.despertar();
             }
             actual = Manager.getProximoEstado();
         }
+        resultLog.info( "MUERE" + Thread.currentThread().getName());
     }
 }

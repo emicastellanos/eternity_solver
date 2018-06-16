@@ -21,23 +21,31 @@ public class Manager extends Thread {
     public static int indice = 0;
     private static long contadorThreads;
 
-    private CreadorTareas creadorTareas;
-    private ArrayList<Tarea> activas;
-    private int windowSize ;
 
+    private CreadorTareas creadorTareas;
+    private ArrayList<Tarea> hilos;
     static final Logger resultLog = Logger.getLogger("resultadoLogger");
+    
+   
+    private int windowSize = 8  ;
+
+    private boolean desordenar = true;
 
     private static int N = 8;
 
-    private static int NIVEL_BACK_INICIAL = 2;
+    private static int NIVEL_BACK_INICIAL =4;
+    
+    private static int colores = 8;
+    
+    boolean primera_ficha_colocada = false;
+    
 
 
 
     public Manager() {
         creadorTareas = new CreadorTareas();
         pendientes = Collections.synchronizedList(new ArrayList<Estado>());
-        activas = new ArrayList<>();
-        windowSize = 6;
+        hilos = new ArrayList<>();
         SOLUCIONES = Collections.synchronizedList(new ArrayList<>());
         bloqueado = 0;
         contadorThreads = 0;
@@ -60,7 +68,7 @@ public class Manager extends Thread {
     }
 
     public int getCantActivados(){
-        return activas.size();
+        return hilos.size();
     }
 
     public static long getNextContador(){
@@ -81,6 +89,8 @@ public class Manager extends Thread {
 
         return result;
     }
+    
+
 
     /**
      * Considera activas a las tareas que estan en etapa de carga (actual!=null)
@@ -88,19 +98,17 @@ public class Manager extends Thread {
      * */
     public int cantActivas(){
         int c = 0;
-        for(Tarea tarea: activas){
-            /*if (tarea.getActual()!=null && !tarea.isFinalizado()){
-                c+=1;
-            }*/
+        for(Tarea tarea: hilos){
             if (!(tarea.getActual()==null && tarea.isFinalizado())){
                 c+=1;
             }
+        	
         }
         return c;
     }
 
     public void iniciarTareas(){
-        for (Tarea tarea: activas){
+        for (Tarea tarea: hilos){
             if(!tarea.isAlive()){
                 tarea.start();
             }
@@ -115,55 +123,43 @@ public class Manager extends Thread {
     public void cargarThreadsIniciales(){
         for (int i=0; i< windowSize ; i++){
             Tarea tarea = new Tarea(getProximoEstado(),this);
-            activas.add(tarea);
+            hilos.add(tarea);
         }
     }
 
     public synchronized void ejecutar(ArrayList <Ficha> fichas, Tablero tablero, int nivelBackInicial)  {
-        boolean primera_ficha_colocada = Boolean.TRUE;
+       
         pendientes = creadorTareas.crearTareasIniciales(tablero, fichas, nivelBackInicial,primera_ficha_colocada);
         cargarThreadsIniciales();
 
-        //resultLog.info("SE ACTIVAN  " + activas.size() + " / PENDIENTES " + pendientes.size() +" / INDICE "+ indice);
+        resultLog.info("SE ACTIVAN  " + hilos.size() + " / PENDIENTES " + (pendientes.size() - indice));
         iniciarTareas();
 
         while (cantActivas()>0 || pendientes.size() > indice){
-           //System.out.println( "PENDIENTES TOTALES " + (pendientes.size()-indice) + " / CANT ACTIVAS " + cantActivas()+ " / TOTAL HILOS " + windowSize);
-          
-            if(cantActivas() == windowSize){
-            	//System.out.println( "PENDIENTES TOTALES " + (pendientes.size()-indice) + " / CANT ACTIVAS " + cantActivas()+ " / TOTAL HILOS " + windowSize);
-                
-	            try {
-	              wait();
-	            } catch (Exception e) {
-	                e.printStackTrace();
-	            }
-                
+        	if(cantActivas() < windowSize && pendientes.size() == indice) { // si hay pendientes no divido
+        		Tarea.setDividir(true);
+	            resultLog.info("manager setea dividir");
+        	}
+        	
+        	try {
+               wait();
+            } 
+        	catch (Exception e) {
+                e.printStackTrace();
             }
-            else {
-            	if(indice == pendientes.size()) {
-            		Tarea.setDividir(true);
-            		
-            	}
-            	  try {
-   	               wait();
-   	            } catch (Exception e) {
-   	                e.printStackTrace();
-   	            }
-            }
-        
-        
         }
+        
         TIENE_TAREAS = false;
     }
     
     @Override
     public void run(){
-    	int colores = N;
+    	//Tarea.it=0;
         GeneradorFichas generadorFichas = new GeneradorFichasUnicas(N,colores);
         ArrayList <Ficha> fichas = generadorFichas.getFichasUnicas();
         //TODO Desordenar fichas
-        Collections.shuffle(fichas);
+        if(desordenar)
+        	Collections.shuffle(fichas);
         Tablero tablero = new Tablero(N);
         resultLog.info("----- INICIO  " + ZonedDateTime.now());
         Manager m = new Manager();
@@ -189,12 +185,14 @@ public class Manager extends Thread {
         //TODO redondear a dos
 
         resultLog.info("********************************");
-        resultLog.info("TAMAÃ‘O TABLERO= " + N);
+        resultLog.info("TAMAÑO TABLERO= " + N);
         resultLog.info("COLORES = " + colores) ;
-        resultLog.info("# nucleos usados " + m.getWindowSize() + " de " + Runtime.getRuntime().availableProcessors() );
+        resultLog.info("# hilos usados " +( m.getWindowSize() +1));
+        resultLog.info("cantidad de nucleos del procesador "+Runtime.getRuntime().availableProcessors() );
         resultLog.info("TIEMPO " + durationSecs.toString().replace('.',',') + " SEGUNDOS");
         resultLog.info("CANTIDAD SOLUCIONES = " + SOLUCIONES.size()) ;
-        resultLog.info("# THREADS INICIADOS " + m.getCantActivados());
+        resultLog.info("# tareas totales que se ejecutaron " + m.pendientes.size());
+        // resultLog.info("# iteraciones totales "+Tarea.it);
 
     }
 

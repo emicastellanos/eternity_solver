@@ -20,6 +20,7 @@ public class CreadorTareas {
             if (!f.isUsada()) {
                 for (int i = 0; i < 4; i++) {
                     tablero.insertarFinal(f);
+                    //Tarea.sumar();
                     if (tablero.esSolucion()) {
                         nivel += 1;
                         f.setUsada(true);
