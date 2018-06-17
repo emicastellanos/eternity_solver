@@ -24,13 +24,13 @@ public class Manager extends Thread {
 
 
     private CreadorTareas creadorTareas;
-    private ArrayList<Tarea> hilos;
+    private ArrayList<TareaAbs> hilos;
     static final Logger resultLog = Logger.getLogger("resultadoLogger");
     
    
     private int hilosParalelos = 4;
 
-    private boolean desordenar = true;
+    private boolean desordenar = false;
 
     private static int N = 7;
 
@@ -39,6 +39,7 @@ public class Manager extends Thread {
     private static int colores = 7;
     
     boolean primera_ficha_colocada = false;
+
     
 
 
@@ -89,6 +90,10 @@ public class Manager extends Thread {
         pendientes.add(proximo);
     }
 
+    public static synchronized void addAllEstado(List<Estado> proximos){
+        pendientes.addAll(proximos);
+    }
+
     public static synchronized Estado getProximoEstado(){
         Estado result = null;
         if(pendientes.size()>indice){
@@ -107,8 +112,8 @@ public class Manager extends Thread {
      * */
     public int cantActivas(){
         int c = 0;
-        for(Tarea tarea: hilos){
-            if (!(tarea.getActual()==null && tarea.isFinalizado())){
+        for(TareaAbs tareaAbs : hilos){
+            if (!(tareaAbs.getActual()==null && tareaAbs.isFinalizado())){
                 c+=1;
             }
         	
@@ -117,9 +122,9 @@ public class Manager extends Thread {
     }
 
     public void iniciarTareas(){
-        for (Tarea tarea: hilos){
-            if(!tarea.isAlive()){
-                tarea.start();
+        for (TareaAbs tareaAbs : hilos){
+            if(!tareaAbs.isAlive()){
+                tareaAbs.start();
             }
         }
     }
@@ -131,8 +136,8 @@ public class Manager extends Thread {
     //TODO cargar tareas hasta windowsSize siempre?
     public void cargarThreadsIniciales(){
         for (int i = 0; i< hilosParalelos; i++){
-            Tarea tarea = new Tarea(getProximoEstado(),this);
-            hilos.add(tarea);
+            TareaAbs tareaAbs = new TareaDFS(getProximoEstado(),this);
+            hilos.add(tareaAbs);
         }
     }
 
@@ -147,7 +152,7 @@ public class Manager extends Thread {
 
         while (cantActivas()>0 || pendientes.size() > indice){
         	if(cantActivas() < hilosParalelos && pendientes.size() == indice) { // si hay pendientes no divido
-        		Tarea.setDividir(true);
+        		TareaAbs.setDividir(true);
 	            resultLog.info("manager setea dividir");
         	}
         	
@@ -164,7 +169,7 @@ public class Manager extends Thread {
     
     @Override
     public void run(){
-    	//Tarea.it=0;
+    	//TareaAbs.it=0;
         GeneradorFichas generadorFichas = new GeneradorFichasUnicas(N,colores);
         ArrayList <Ficha> fichas = generadorFichas.getFichasUnicas();
         //TODO Desordenar fichas
@@ -206,7 +211,7 @@ public class Manager extends Thread {
         resultLog.info("CANTIDAD TAREAS INICIALES       = "+ getCantTareasIniciales());
         resultLog.info("TIEMPO                          = " + durationSecs.toString().replace('.',',') + " SEGUNDOS");
         resultLog.info("# tareas totales que se ejecutaron " + m.pendientes.size());
-        // resultLog.info("# iteraciones totales "+Tarea.it);
+        // resultLog.info("# iteraciones totales "+TareaAbs.it);
 
     }
 

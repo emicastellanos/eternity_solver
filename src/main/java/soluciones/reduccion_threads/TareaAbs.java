@@ -6,13 +6,14 @@ import org.apache.log4j.Logger;
 import utilidades.Utils;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class Tarea extends Thread {
-    private boolean finalizado; // cuando llega al final del metodo run ()
-    private Tablero tablero;
-    private ArrayList<Ficha> fichas;
+public abstract class TareaAbs extends Thread {
+    protected boolean finalizado; // cuando llega al final del metodo run ()
+    protected Tablero tablero;
+    protected ArrayList<Ficha> fichas;
     private Estado actual;
-    private Manager manager ;
+    protected Manager manager ;
     //public static long it;
 
 
@@ -23,8 +24,12 @@ public class Tarea extends Thread {
     static final Logger resultLog = Logger.getLogger("resultadoLogger");
     private long id ;
 
+    public TareaAbs(){
 
-    public Tarea(Estado estado,Manager m) {
+    }
+
+
+    public TareaAbs(Estado estado, Manager m) {
         this.actual = estado;
         this.dividir = false;
         this.id = Manager.getNextContador();
@@ -72,47 +77,7 @@ public class Tarea extends Thread {
         actual = null;
     }
 
-    public void backRichi(ArrayList<Ficha> fichas, Integer nivel){
-        boolean encontro = false;
-        synchronized (this){
-            if(isDividir() && fichas.size()>1){
-                this.setDividir(false);
-                encontro = true;
-            }
-        }
-        if(encontro){
-            Manager.addEstado(new Estado(tablero.clone(), Utils.getCopia(fichas),nivel));
-            resultLog.info("dividi" + Thread.currentThread().getName());
-        }else{
-            for (Ficha f : fichas) {
-                if(!f.isUsada()) {
-                    for(int i=0; i<4;i++) {
-                        tablero.insertarFinal(f);
-                        //sumar();
-                        
-                        if(tablero.esSolucion()) {
-                            if (tablero.esSolucionFinal()) {
-                                resultLog.info(" ---------------- SE ENCONTRO UNA SOLUCION " + Thread.currentThread().getName());
-                                Tablero resultado = tablero.clone();
-                                Manager.SOLUCIONES.add(resultado);
-                            } else {
-                                nivel += 1;
-                                f.setUsada(true);
-                                tablero.aumentarPosicion();
-                                backRichi(fichas, nivel);
-                                tablero.retrocederPosicion();
-                                f.setUsada(false);
-                                nivel -= 1;
-                            }
-                        }
-                        tablero.eliminarUltima();
-                        f.rotar();
-                    }
-                }
-            }
-        }
-        //resultLog.info("SALIENDO DEL BACK " + Thread.currentThread().getName());
-    }
+    public abstract void backRichi(ArrayList<Ficha> fichas, Integer nivel);
 
     @Override
     public void run(){
