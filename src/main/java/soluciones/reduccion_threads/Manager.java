@@ -21,8 +21,7 @@ public class Manager extends Thread {
     public static int indice = 0;
     private static long contadorThreads;
     public static int cantTareasIniciales;
-
-
+    public TareaFactoryMethod tareaFactory ;
     private CreadorTareas creadorTareas;
     private ArrayList<TareaAbs> hilos;
     static final Logger resultLog = Logger.getLogger("resultadoLogger");
@@ -40,6 +39,7 @@ public class Manager extends Thread {
     
     boolean primera_ficha_colocada = false;
 
+    private final String TIPO_BACK = "BFS";
     
 
 
@@ -51,6 +51,7 @@ public class Manager extends Thread {
         SOLUCIONES = Collections.synchronizedList(new ArrayList<>());
         bloqueado = 0;
         contadorThreads = 0;
+        tareaFactory = new TareaFactory(TIPO_BACK);
     }
 
     public int getHilosParalelos() {
@@ -136,7 +137,7 @@ public class Manager extends Thread {
     //TODO cargar tareas hasta windowsSize siempre?
     public void cargarThreadsIniciales(){
         for (int i = 0; i< hilosParalelos; i++){
-            TareaAbs tareaAbs = new TareaDFS(getProximoEstado(),this);
+            TareaAbs tareaAbs = tareaFactory.crearTarea(getProximoEstado(),this);
             hilos.add(tareaAbs);
         }
     }

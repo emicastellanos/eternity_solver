@@ -3,10 +3,8 @@ package soluciones.reduccion_threads;
 import entidades.Ficha;
 import entidades.Tablero;
 import org.apache.log4j.Logger;
-import utilidades.Utils;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public abstract class TareaAbs extends Thread {
     protected boolean finalizado; // cuando llega al final del metodo run ()

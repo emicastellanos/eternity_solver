@@ -14,7 +14,6 @@ public class TareaBFS extends TareaAbs {
 
     public TareaBFS (Estado estado, Manager m){
         super(estado,m);
-
     }
 
     public void backRichi(ArrayList<Ficha> fichas, Integer nivel){
