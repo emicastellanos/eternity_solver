@@ -20,6 +20,7 @@ public class Manager extends Thread {
     public static List<Estado> pendientes;
     public static int indice = 0;
     private static long contadorThreads;
+    public static int cantTareasIniciales;
 
 
     private CreadorTareas creadorTareas;
@@ -27,15 +28,15 @@ public class Manager extends Thread {
     static final Logger resultLog = Logger.getLogger("resultadoLogger");
     
    
-    private int windowSize = 8  ;
+    private int hilosParalelos = 4;
 
     private boolean desordenar = true;
 
-    private static int N = 8;
+    private static int N = 7;
 
     private static int NIVEL_BACK_INICIAL =4;
     
-    private static int colores = 8;
+    private static int colores = 7;
     
     boolean primera_ficha_colocada = false;
     
@@ -51,8 +52,8 @@ public class Manager extends Thread {
         contadorThreads = 0;
     }
 
-    public int getWindowSize() {
-        return windowSize;
+    public int getHilosParalelos() {
+        return hilosParalelos;
     }
 
     public void setBloqueado(long e){
@@ -69,6 +70,14 @@ public class Manager extends Thread {
 
     public int getCantActivados(){
         return hilos.size();
+    }
+
+    public static int getCantTareasIniciales() {
+        return cantTareasIniciales;
+    }
+
+    public static void setCantTareasIniciales(int cantTareasIniciales) {
+        Manager.cantTareasIniciales = cantTareasIniciales;
     }
 
     public static long getNextContador(){
@@ -121,7 +130,7 @@ public class Manager extends Thread {
 
     //TODO cargar tareas hasta windowsSize siempre?
     public void cargarThreadsIniciales(){
-        for (int i=0; i< windowSize ; i++){
+        for (int i = 0; i< hilosParalelos; i++){
             Tarea tarea = new Tarea(getProximoEstado(),this);
             hilos.add(tarea);
         }
@@ -130,13 +139,14 @@ public class Manager extends Thread {
     public synchronized void ejecutar(ArrayList <Ficha> fichas, Tablero tablero, int nivelBackInicial)  {
        
         pendientes = creadorTareas.crearTareasIniciales(tablero, fichas, nivelBackInicial,primera_ficha_colocada);
+        setCantTareasIniciales(pendientes.size());
         cargarThreadsIniciales();
 
         resultLog.info("SE ACTIVAN  " + hilos.size() + " / PENDIENTES " + (pendientes.size() - indice));
         iniciarTareas();
 
         while (cantActivas()>0 || pendientes.size() > indice){
-        	if(cantActivas() < windowSize && pendientes.size() == indice) { // si hay pendientes no divido
+        	if(cantActivas() < hilosParalelos && pendientes.size() == indice) { // si hay pendientes no divido
         		Tarea.setDividir(true);
 	            resultLog.info("manager setea dividir");
         	}
@@ -185,12 +195,16 @@ public class Manager extends Thread {
         //TODO redondear a dos
 
         resultLog.info("********************************");
-        resultLog.info("TAMAÑO TABLERO= " + N);
-        resultLog.info("COLORES = " + colores) ;
-        resultLog.info("# hilos usados " +( m.getWindowSize() +1));
-        resultLog.info("cantidad de nucleos del procesador "+Runtime.getRuntime().availableProcessors() );
-        resultLog.info("TIEMPO " + durationSecs.toString().replace('.',',') + " SEGUNDOS");
-        resultLog.info("CANTIDAD SOLUCIONES = " + SOLUCIONES.size()) ;
+        resultLog.info("TAMANO TABLERO                  = " + N);
+        resultLog.info("CANTIDAD COLORES                = " + colores) ;
+        resultLog.info("PRIMERA COLOCADA?               = " + primera_ficha_colocada) ;
+        resultLog.info("FICHAS MEZCLADAS?               = " + desordenar) ;
+        resultLog.info("CANTIDAD HILOS USADOS           = " +( m.getHilosParalelos() +1));
+        resultLog.info("CANTIDAD NUCLEOS DEL PROCESADOR = "+Runtime.getRuntime().availableProcessors() );
+        resultLog.info("CANTIDAD SOLUCIONES             = " + SOLUCIONES.size()) ;
+        resultLog.info("NIVEL DE BACK INICIAL           = " + NIVEL_BACK_INICIAL);
+        resultLog.info("CANTIDAD TAREAS INICIALES       = "+ getCantTareasIniciales());
+        resultLog.info("TIEMPO                          = " + durationSecs.toString().replace('.',',') + " SEGUNDOS");
         resultLog.info("# tareas totales que se ejecutaron " + m.pendientes.size());
         // resultLog.info("# iteraciones totales "+Tarea.it);
 
