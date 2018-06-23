@@ -293,4 +293,19 @@ public class Tablero {
         }
         return true;
     }
+
+    public void limpiarTablero(){
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                if(getPosicion(i, j) != null) {
+                    getPosicion(i, j).setUsada(false);
+                    tablero[i][j] = null;
+                }else {
+                    break;
+                }
+            }
+        }
+        fila = 0;
+        columna = 0;
+    }
 }

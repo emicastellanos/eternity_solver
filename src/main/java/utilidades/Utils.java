@@ -61,4 +61,13 @@ public class Utils {
          * */
         return null;
     }
+
+    public Boolean validarSoluciones (ArrayList<Tablero> soluciones){
+        for(Tablero solucion : soluciones) {
+            if(solucion.esSolucionFinal()){
+                return Boolean.FALSE;
+            }
+        }
+        return Boolean.TRUE;
+    }
 }
