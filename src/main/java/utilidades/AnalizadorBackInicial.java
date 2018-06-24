@@ -96,10 +96,8 @@ public class AnalizadorBackInicial {
         Set<Integer> a = analizadorBackInicial.getMapResultados().keySet();
         resultLog.info("TAMAÑO TABLERO: " + N + "       -   COLORES: "+COLORES);
         for (Integer i : a ){
-            resultLog.info("BACK_INICIAL N  : "+ i);
-            resultLog.info("CANT PEND       : "+ analizadorBackInicial.getMapResultados().get(i).getCantidadEstados());
-            resultLog.info("TIEMPO          : "+ analizadorBackInicial.getMapResultados().get(i).getTiempo());
-            resultLog.info("******************************* ");
+            resultLog.info("BACK_INICIAL N  |   CANT PEND   |   TIEMPO     ");
+            resultLog.info(i +"  | " + analizadorBackInicial.getMapResultados().get(i).getCantidadEstados() + " | " + analizadorBackInicial.getMapResultados().get(i).getTiempo()) ;
         }
 
 
