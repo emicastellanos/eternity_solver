@@ -2,15 +2,17 @@ package utilidades;
 
 import entidades.Ficha;
 import entidades.Tablero;
+import org.apache.log4j.Logger;
 import soluciones.reduccion_threads.CreadorTareas;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
 public class AnalizadorBackInicial {
-
+    static final Logger resultLog = Logger.getLogger("analizadorLogger");
     private HashMap<Integer, TiempoCantidad> mapResultados;
     private CreadorTareas creadorTareas;
     private ArrayList<Ficha> fichas;
@@ -69,7 +71,7 @@ public class AnalizadorBackInicial {
             long fin = System.nanoTime();
 
             BigDecimal duracion = new BigDecimal((fin - inicio));
-            BigDecimal duracionSeg = (duracion.divide(new BigDecimal(1000000000))).setScale(3, RoundingMode.HALF_UP);
+            BigDecimal duracionSeg = (duracion.divide(new BigDecimal(1000000000))).setScale(5, RoundingMode.HALF_UP);
 
             mapResultados.put(i,new TiempoCantidad(duracionSeg,cantEstados));
 
@@ -83,9 +85,19 @@ public class AnalizadorBackInicial {
 
     public static void main (String[] args){
         int N = 5; /*** TAMAÑO DEL TABLERO ***/
-        GeneradorFichas generadorFichas = new GeneradorFichasUnicas(N,N);
+        int COLORES = N;
+        GeneradorFichas generadorFichas = new GeneradorFichasUnicas(N,COLORES);
         AnalizadorBackInicial analizadorBackInicial = new AnalizadorBackInicial(new Tablero(N),generadorFichas.getFichasUnicas());
         analizadorBackInicial.analizarNiveles(true);
+
+        Set<Integer> a = analizadorBackInicial.getMapResultados().keySet();
+        resultLog.info("TAMAÑO TABLERO: " + N + "       -   COLORES: "+COLORES);
+        for (Integer i : a ){
+            resultLog.info("BACK_INICIAL N  : "+ i);
+            resultLog.info("CANT PEND       : "+ analizadorBackInicial.getMapResultados().get(i).getCantidadEstados());
+            resultLog.info("TIEMPO          : "+ analizadorBackInicial.getMapResultados().get(i).getTiempo());
+            resultLog.info("******************************* ");
+        }
 
 
     }
