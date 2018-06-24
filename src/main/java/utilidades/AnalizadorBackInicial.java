@@ -4,6 +4,7 @@ import entidades.Ficha;
 import entidades.Tablero;
 import org.apache.log4j.Logger;
 import soluciones.reduccion_threads.CreadorTareas;
+import soluciones.reduccion_threads.Estado;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -65,9 +66,10 @@ public class AnalizadorBackInicial {
 
     public void analizarNiveles(boolean ponerPrimera){
 
-        for (int i=0; i < 6; i++){
+        for (int i=2; i <50; i++){
             long inicio = System.nanoTime();
-            int cantEstados = creadorTareas.crearTareasIniciales(tablero,fichas,i,ponerPrimera).size();
+            System.out.println("nivel " + i);
+            int cantEstados = creadorTareas.crearTareasInicialesParaAnalisis(tablero, fichas, i, ponerPrimera);
             long fin = System.nanoTime();
 
             BigDecimal duracion = new BigDecimal((fin - inicio));
@@ -77,6 +79,7 @@ public class AnalizadorBackInicial {
 
             reiniciarEstructuras();
 
+
         }
 
 
@@ -84,7 +87,7 @@ public class AnalizadorBackInicial {
     }
 
     public static void main (String[] args){
-        int N = 5; /*** TAMAÑO DEL TABLERO ***/
+        int N = 7; /*** TAMAÑO DEL TABLERO ***/
         int COLORES = N;
         GeneradorFichas generadorFichas = new GeneradorFichasUnicas(N,COLORES);
         AnalizadorBackInicial analizadorBackInicial = new AnalizadorBackInicial(new Tablero(N),generadorFichas.getFichasUnicas());
