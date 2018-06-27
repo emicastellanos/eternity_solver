@@ -4,7 +4,6 @@ import entidades.Ficha;
 import entidades.Tablero;
 import org.apache.log4j.Logger;
 import soluciones.reduccion_threads.CreadorTareas;
-import soluciones.reduccion_threads.Estado;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
