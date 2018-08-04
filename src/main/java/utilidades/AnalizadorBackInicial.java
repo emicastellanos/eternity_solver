@@ -4,7 +4,6 @@ import entidades.Ficha;
 import entidades.Tablero;
 import org.apache.log4j.Logger;
 import soluciones.reduccion_threads.CreadorTareas;
-import soluciones.reduccion_threads.Estado;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -66,7 +65,7 @@ public class AnalizadorBackInicial {
 
     public void analizarNiveles(boolean ponerPrimera){
 
-        for (int i=2; i <50; i++){
+        for (int i=2; i <65; i++){
             long inicio = System.nanoTime();
             System.out.println("nivel " + i);
             int cantEstados = creadorTareas.crearTareasInicialesParaAnalisis(tablero, fichas, i, ponerPrimera);
@@ -87,17 +86,17 @@ public class AnalizadorBackInicial {
     }
 
     public static void main (String[] args){
-        int N = 7; /*** TAMAÑO DEL TABLERO ***/
+        int N = 8; /*** TAMAÑO DEL TABLERO ***/
         int COLORES = N;
         GeneradorFichas generadorFichas = new GeneradorFichasUnicas(N,COLORES);
         AnalizadorBackInicial analizadorBackInicial = new AnalizadorBackInicial(new Tablero(N),generadorFichas.getFichasUnicas());
         analizadorBackInicial.analizarNiveles(true);
 
         Set<Integer> a = analizadorBackInicial.getMapResultados().keySet();
-        resultLog.info("TAMAÑO TABLERO: " + N + "       -   COLORES: "+COLORES);
+        resultLog.info("TAMAÑO TABLERO: " + N + "       -   COLORES: " + COLORES);
+        resultLog.info("BACK_INICIAL N  |   CANT PEND   |   TIEMPO     ");
         for (Integer i : a ){
-            resultLog.info("BACK_INICIAL N  |   CANT PEND   |   TIEMPO     ");
-            resultLog.info(i +"  | " + analizadorBackInicial.getMapResultados().get(i).getCantidadEstados() + " | " + analizadorBackInicial.getMapResultados().get(i).getTiempo()) ;
+            resultLog.info(i +"  | " + analizadorBackInicial.getMapResultados().get(i).getCantidadEstados() + " | " + analizadorBackInicial.getMapResultados().get(i).getTiempo().toString().replace('.',',')) ;
         }
 
 
