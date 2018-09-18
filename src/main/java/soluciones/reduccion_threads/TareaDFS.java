@@ -23,7 +23,7 @@ public class TareaDFS extends TareaAbs {
         }
         if(encontro){
             Manager.addEstado(new Estado(tablero.clone(), Utils.getCopia(fichas),nivel));
-            resultLog.info("dividi" + Thread.currentThread().getName());
+            //resultLog.info("dividi" + Thread.currentThread().getName());
         }else{
             for (Ficha f : fichas) {
                 if(!f.isUsada()) {

@@ -20,7 +20,7 @@ public class LinealMain {
     public static ArrayList<Ficha> fichas;
 
     private static final int N = 8;
-    private static Boolean UBICAR_PRIMERA = Boolean.TRUE;
+    private static Boolean UBICAR_PRIMERA = Boolean.FALSE;
 
     static final Logger resultLog = Logger.getLogger("resultadoLogger");
 
@@ -29,13 +29,20 @@ public class LinealMain {
         GeneradorFichas generadorFichas = new GeneradorFichasUnicas(N,N);
         fichas = generadorFichas.getFichasUnicas();
 
-        Collections.shuffle(fichas);
-
         Tablero tablero = new Tablero(N);
 
-        if(UBICAR_PRIMERA){
-            Utils.backUbicarPrimera(tablero,fichas);
+        if(UBICAR_PRIMERA) {
+            tablero.insertarFinal(fichas.get(0));
+            tablero.aumentarPosicion();
+            fichas.get(0).setUsada(true);
         }
+        Collections.shuffle(fichas);
+
+
+
+        /*if(UBICAR_PRIMERA){
+            Utils.backUbicarPrimera(tablero,fichas);
+        }*/
 
         int nhilo= 1;
         TareaRunnable tarea = new TareaRunnable(tablero,fichas,String.valueOf(nhilo));

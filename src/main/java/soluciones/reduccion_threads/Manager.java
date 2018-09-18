@@ -27,19 +27,19 @@ public class Manager extends Thread {
     static final Logger resultLog = Logger.getLogger("resultadoLogger");
     
    
-    private int hilosParalelos = 4;
+    private int hilosParalelos = 24;
 
-    private boolean desordenar = false;
+    private boolean desordenar = true;
 
-    private static int N = 7;
+    private static int N = 9;
 
-    private static int NIVEL_BACK_INICIAL =4;
+    private static int NIVEL_BACK_INICIAL = 5;
     
-    private static int colores = 7;
+    private static int colores = 10;
     
-    boolean primera_ficha_colocada = false;
+    boolean primera_ficha_colocada = true ;
 
-    private final String TIPO_BACK = "BFS";
+    private final String TIPO_BACK = "DFS";
     
 
 
@@ -144,7 +144,7 @@ public class Manager extends Thread {
 
     public synchronized void ejecutar(ArrayList <Ficha> fichas, Tablero tablero, int nivelBackInicial)  {
        
-        pendientes = creadorTareas.crearTareasIniciales(tablero, fichas, nivelBackInicial,primera_ficha_colocada);
+        pendientes = creadorTareas.crearTareasIniciales(tablero, fichas, nivelBackInicial);
         setCantTareasIniciales(pendientes.size());
         cargarThreadsIniciales();
 
@@ -154,7 +154,7 @@ public class Manager extends Thread {
         while (cantActivas()>0 || pendientes.size() > indice){
         	if(cantActivas() < hilosParalelos && pendientes.size() == indice) { // si hay pendientes no divido
         		TareaAbs.setDividir(true);
-	            resultLog.info("manager setea dividir");
+	            //resultLog.info("manager setea dividir");
         	}
         	
         	try {
@@ -174,9 +174,15 @@ public class Manager extends Thread {
         GeneradorFichas generadorFichas = new GeneradorFichasUnicas(N,colores);
         ArrayList <Ficha> fichas = generadorFichas.getFichasUnicas();
         //TODO Desordenar fichas
+        Tablero tablero = new Tablero(N);
+        if(primera_ficha_colocada) {
+            tablero.insertarFinal(fichas.get(0));
+            tablero.aumentarPosicion();
+            fichas.get(0).setUsada(true);
+        }
+
         if(desordenar)
         	Collections.shuffle(fichas);
-        Tablero tablero = new Tablero(N);
         resultLog.info("----- INICIO  " + ZonedDateTime.now());
         Manager m = new Manager();
 

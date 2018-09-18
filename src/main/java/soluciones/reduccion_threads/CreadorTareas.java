@@ -85,11 +85,7 @@ public class CreadorTareas {
 
     //TODO Que BUSQUE y coloque la primera ficha una sola vez y a partir de eso conseguir las restantes hasta el nivelInicial
     /** nivelInicial = cantidad de fichas bien colocadas en los tableros devueltos */
-    public ArrayList<Estado> crearTareasIniciales(Tablero tablero, ArrayList<Ficha> fichas, int nivelObjetivo, boolean ubicarPrimera){
-        if (ubicarPrimera){
-            Utils.backUbicarPrimera(tablero, fichas);
-            return backNivel(fichas,1,tablero,nivelObjetivo);
-        }else
+    public ArrayList<Estado> crearTareasIniciales(Tablero tablero, ArrayList<Ficha> fichas, int nivelObjetivo){
         return backNivel(fichas,0,tablero,nivelObjetivo);
     }
 
