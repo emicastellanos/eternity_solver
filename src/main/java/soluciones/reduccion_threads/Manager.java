@@ -27,17 +27,17 @@ public class Manager extends Thread {
     static final Logger resultLog = Logger.getLogger("resultadoLogger");
     
    
-    private int hilosParalelos = 24;
+    private int hilosParalelos = 32;
 
     private boolean desordenar = true;
 
-    private static int N = 9;
+    private static int N = 8;
 
-    private static int NIVEL_BACK_INICIAL = 5;
+    private static int NIVEL_BACK_INICIAL = 6;
     
-    private static int colores = 10;
+    private static int colores = 8;
     
-    boolean primera_ficha_colocada = true ;
+    boolean primera_ficha_colocada = false ;
 
     private final String TIPO_BACK = "DFS";
     
@@ -100,6 +100,7 @@ public class Manager extends Thread {
         if(pendientes.size()>indice){
             result = pendientes.get(indice);
             indice +=1;
+            System.out.println("se entrego una, indice =" + indice);
         }
 
         return result;
@@ -153,7 +154,7 @@ public class Manager extends Thread {
 
         while (cantActivas()>0 || pendientes.size() > indice){
         	if(cantActivas() < hilosParalelos && pendientes.size() == indice) { // si hay pendientes no divido
-        		TareaAbs.setDividir(true);
+        		//TareaAbs.setDividir(true);
 	            //resultLog.info("manager setea dividir");
         	}
         	

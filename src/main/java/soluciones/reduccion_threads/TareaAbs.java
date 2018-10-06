@@ -86,10 +86,14 @@ public abstract class TareaAbs extends Thread {
                 //resultLog.info("SALIENDO DEL BACK " + Thread.currentThread().getName());
                 finalizado = true;
             } 
-            else {
+            /*else {
             	manager.despertar();
-            }
+            }*/
             actual = Manager.getProximoEstado();
+            if(actual==null){
+                manager.despertar();
+                break;
+            }
         }
         resultLog.info( "MUERE" + Thread.currentThread().getName());
     }
