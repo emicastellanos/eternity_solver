@@ -4,6 +4,8 @@ import entidades.Ficha;
 import entidades.Tablero;
 import org.apache.log4j.Logger;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +18,7 @@ public class TareaRunnable extends Thread {
     public String nombreThread;
     public static int solucion;
     static final Logger resultLog = Logger.getLogger("resultadoLogger");
+    static final Logger MEDICIONES_LOGGER = Logger.getLogger("medicionesLogger");
 
     public TareaRunnable(Tablero tablero, ArrayList<Ficha> fichas, String nombre) {
         this.tablero = tablero;
@@ -33,7 +36,7 @@ public class TareaRunnable extends Thread {
                     if (tablero.esSolucion()) {
                         if (tablero.esSolucionFinal()) {
                             solucion++;
-                            resultLog.info("SOLUCION");
+                            resultLog.info("SOLUCION " + nombreThread);
                             resultLog.info(tablero.imprimirse());
                             //listaSoluciones.add(tablero.clone());
                         } else {
@@ -53,9 +56,17 @@ public class TareaRunnable extends Thread {
 
     @Override
     public void run() {
-        resultLog.info("\n----- ARRANCA EL THREAD " + nombreThread + " " + ZonedDateTime.now());
+        //resultLog.info("\n----- ARRANCA EL THREAD " + nombreThread + " " + ZonedDateTime.now());
+        MEDICIONES_LOGGER.info("\n----- ARRANCA EL THREAD " + nombreThread + " " + ZonedDateTime.now());
+        //resultLog.info("\n----- TERMINO EL THREAD " + nombreThread+" "+ZonedDateTime.now());
+        long startTime = System.nanoTime();
         backRichi();
-        resultLog.info("\n----- TERMINO EL THREAD " + nombreThread+" "+ZonedDateTime.now());
-        
+        long endTime = System.nanoTime();
+
+        BigDecimal duration = new BigDecimal((endTime - startTime));
+        BigDecimal durationSecs = (duration.divide(new BigDecimal(1000000000))).setScale(3, RoundingMode.HALF_UP);
+        MEDICIONES_LOGGER.info("\n----- TERMINO EL THREAD " + nombreThread + " " + ZonedDateTime.now());
+        MEDICIONES_LOGGER.info("\nTIEMPO " + nombreThread + " "+ durationSecs.toString().replace('.',',') + " SEGUNDOS");
+
     }
 }
