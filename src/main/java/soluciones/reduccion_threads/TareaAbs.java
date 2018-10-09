@@ -22,6 +22,7 @@ public abstract class TareaAbs extends Thread {
 
     private String nombre;
     static final Logger resultLog = Logger.getLogger("resultadoLogger");
+    static final Logger MEDICIONES_LOGGER = Logger.getLogger("medicionesLogger");
     private long id ;
 
     public TareaAbs(){
@@ -57,11 +58,11 @@ public abstract class TareaAbs extends Thread {
     public Estado getActual(){
         return actual;
     }
-    
+
     public synchronized void despertar() {
  	   notify();
     }
-    
+
 //    public static synchronized void sumar() {
 //  	   it++;
 //     }
@@ -81,30 +82,29 @@ public abstract class TareaAbs extends Thread {
 
     @Override
     public void run(){
-        while (Manager.TIENE_TAREAS) {
-            if (actual != null) {
-                inicializar();
+        /*while (Manager.TIENE_TAREAS) {*/
+        if (actual != null) {
+            inicializar();
 
-                long startTime = System.nanoTime();
-                backRichi(this.fichas, nivelComienzo);
-                long endTime = System.nanoTime();
+            long startTime = System.nanoTime();
+            backRichi(this.fichas, nivelComienzo);
+            long endTime = System.nanoTime();
 
-                BigDecimal duration = new BigDecimal((endTime - startTime));
-                BigDecimal durationSecs = (duration.divide(new BigDecimal(1000000000))).setScale(3, RoundingMode.HALF_UP);
+            BigDecimal duration = new BigDecimal((endTime - startTime));
+            BigDecimal durationSecs = (duration.divide(new BigDecimal(1000000000))).setScale(3, RoundingMode.HALF_UP);
 
-                resultLog.info("TIEMPO " + durationSecs.toString().replace('.',',') + " SEGUNDOS ");
-                //resultLog.info("SALIENDO DEL BACK " + Thread.currentThread().getName());
-                finalizado = true;
-            } 
+            MEDICIONES_LOGGER.info("TIEMPO " + durationSecs.toString().replace('.',',') + " SEGUNDOS ");
+            finalizado = true;
+        }
+
+        manager.despertar();
+
             /*else {
             	manager.despertar();
             }*/
            // actual = Manager.getProximoEstado();
-            if(actual==null){
-               // manager.despertar();
-                break;
-            }
-        }
-        resultLog.info( "MUERE" + Thread.currentThread().getName());
+
+        /*}*/
+        MEDICIONES_LOGGER.info("MUERE" + Thread.currentThread().getName());
     }
 }

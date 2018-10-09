@@ -27,13 +27,13 @@ public class Manager extends Thread {
     static final Logger resultLog = Logger.getLogger("resultadoLogger");
     
    
-    private int hilosParalelos = 32;
+    private int hilosParalelos = 4;
 
     private boolean desordenar = true;
 
     private static int N = 8;
 
-    private static int NIVEL_BACK_INICIAL = 6;
+    private static int NIVEL_BACK_INICIAL = 1;
     
     private static int colores = 8;
     
@@ -153,10 +153,10 @@ public class Manager extends Thread {
         iniciarTareas();
 
         while (cantActivas()>0 || pendientes.size() > indice){
-        	if(cantActivas() < hilosParalelos && pendientes.size() == indice) { // si hay pendientes no divido
+        	/*if(cantActivas() < hilosParalelos && pendientes.size() == indice) { // si hay pendientes no divido
         		//TareaAbs.setDividir(true);
 	            //resultLog.info("manager setea dividir");
-        	}
+        	}*/
         	
         	try {
                wait();
