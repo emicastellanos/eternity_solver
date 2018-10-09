@@ -7,10 +7,12 @@ import soluciones.master_slave.TareaRunnable;
 import utilidades.GeneradorFichas;
 import utilidades.GeneradorFichasUnicas;
 
+import java.lang.management.ManagementFactory;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 public class CuatroHilosFijos {
 
@@ -18,11 +20,9 @@ public class CuatroHilosFijos {
 
     private boolean desordenar = true;
 
-    private static int N = 8;
+    private static int N = 7;
 
-    private static int NIVEL_BACK_INICIAL = 6;
-
-    private static int colores = 8;
+    private static int colores = 7;
 
     public static void ejecucionParalela(TareaRunnable tarea1,TareaRunnable tarea2,TareaRunnable tarea3,TareaRunnable tarea4){
         tarea1.start();
@@ -54,6 +54,18 @@ public class CuatroHilosFijos {
 
     }
 
+    public static void imprimirTablero(List<Ficha> fichas){
+        int j = 0;
+        for(Ficha f: fichas){
+            System.out.print(f.imprimirse() + "|");
+            j++;
+            if(j==N){
+                j=0;
+                System.out.println("");
+            }
+        }
+    }
+
     public static void main(String[] args){
 
         GeneradorFichas generadorFichas1 = new GeneradorFichasUnicas(N,colores);
@@ -68,53 +80,21 @@ public class CuatroHilosFijos {
         System.out.println("FIN GENERACION FICHAS \n");
 
         int n1 = 0;
-        int n2 = 7;
-        int n3 = 56;
-        int n4 = 63;
+        int n2 = 6; //7
+        int n3 = 41;//56
+        int n4 = 48;//63
 
 
 
-        System.out.println("TABLERO 1 (ficha "+ n1 +"): \n");
-        int j = 0;
-        for(Ficha f: fichas1){
-            System.out.print(f.imprimirse() + "|");
-            j++;
-            if(j==N){
-                j=0;
-                System.out.println("");
-            }
-        }
-        System.out.println("TABLERO 2 (ficha "+ n2 +"): \n");
-        j = 0;
-        for(Ficha f: fichas2){
-            System.out.print(f.imprimirse() + "|");
-            j++;
-            if(j==N){
-                j=0;
-                System.out.println("");
-            }
-        }
+        System.out.println("TABLERO 1 (ficha inicial"+ n1 +"): \n");
+        imprimirTablero(fichas1);
+        System.out.println("TABLERO 2 (ficha inicial"+ n1 +"): \n");
+        imprimirTablero(fichas2);
+        System.out.println("TABLERO 3 (ficha inicial"+ n1 +"): \n");
+        imprimirTablero(fichas3);
+        System.out.println("TABLERO 4 (ficha inicial"+ n1 +"): \n");
+        imprimirTablero(fichas4);
 
-        System.out.println("TABLERO 3 (ficha "+ n3 +"): \n");
-        j = 0;
-        for(Ficha f: fichas3){
-            System.out.print(f.imprimirse() + "|");
-            j++;
-            if(j==N){
-                j=0;
-                System.out.println("");
-            }
-        }
-        System.out.println("TABLERO 4 (ficha "+ n4 +"): \n");
-        j = 0;
-        for(Ficha f: fichas4){
-            System.out.print(f.imprimirse() + "|");
-            j++;
-            if(j==N){
-                j=0;
-                System.out.println("");
-            }
-        }
 
         Tablero tablero1 = new Tablero(N);
         Ficha f1 = fichas1.get(n1);
@@ -155,10 +135,11 @@ public class CuatroHilosFijos {
 
         MEDICIONES_LOGGER.info("\n----- MAIN ------\n");
         //ejecucionParalela(tarea1,tarea2,tarea3,tarea4);
-        ejecucionParalela(tarea1,tarea2,tarea3,tarea4);
 
+        ejecucionLineal(tarea1,tarea2,tarea3,tarea4);
 
-
+        //System.out.println("medible? " + ManagementFactory.getThreadMXBean().isCurrentThreadCpuTimeSupported());
+        MEDICIONES_LOGGER.info("\nTIEMPO CurrentThreadCpuTime MAIN "+ (new BigDecimal(ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime()).divide(new BigDecimal(1000000000))).setScale(3, RoundingMode.HALF_UP));
     }
 
 }

@@ -4,6 +4,7 @@ import entidades.Ficha;
 import entidades.Tablero;
 import org.apache.log4j.Logger;
 
+import java.lang.management.ManagementFactory;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.ZonedDateTime;
@@ -67,6 +68,8 @@ public class TareaRunnable extends Thread {
         BigDecimal durationSecs = (duration.divide(new BigDecimal(1000000000))).setScale(3, RoundingMode.HALF_UP);
         MEDICIONES_LOGGER.info("\n----- TERMINO EL THREAD " + nombreThread + " " + ZonedDateTime.now());
         MEDICIONES_LOGGER.info("\nTIEMPO " + nombreThread + " "+ durationSecs.toString().replace('.',',') + " SEGUNDOS");
+        MEDICIONES_LOGGER.info("\nTIEMPO CurrentThreadCpuTime " + nombreThread + " "+ (new BigDecimal(ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime()).divide(new BigDecimal(1000000000))).setScale(3, RoundingMode.HALF_UP));
+        MEDICIONES_LOGGER.info("\nTIEMPO getThreadCpuTime " + nombreThread + " "+ ManagementFactory.getThreadMXBean().getThreadCpuTime(this.getId()));
 
     }
 }
