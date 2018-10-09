@@ -4,6 +4,7 @@ import entidades.Ficha;
 import entidades.Tablero;
 import org.apache.log4j.Logger;
 
+import java.lang.management.ManagementFactory;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -14,8 +15,7 @@ public abstract class TareaAbs extends Thread {
     protected ArrayList<Ficha> fichas;
     private Estado actual;
     protected Manager manager ;
-    //public static long it;
-
+    public boolean divisible = false;
 
     private Integer nivelComienzo;
     private static boolean dividir; // es la señal que se va a activar para que la primera tarea que la vea genere hijos
@@ -37,6 +37,10 @@ public abstract class TareaAbs extends Thread {
         this.nombre = "TAREA-" + this.id;
         this.manager = m;
         this.finalizado = true;
+    }
+
+    public void setDivisible (boolean b){
+        divisible = b;
     }
 
     public String getNombre() {
@@ -82,29 +86,41 @@ public abstract class TareaAbs extends Thread {
 
     @Override
     public void run(){
-        /*while (Manager.TIENE_TAREAS) {*/
-        if (actual != null) {
-            inicializar();
+        if(divisible){
+            while (Manager.TIENE_TAREAS) {
+                if (actual != null) {
+                    inicializar();
+                    long startTime = System.nanoTime();
+                    backRichi(this.fichas, nivelComienzo);
+                    long endTime = System.nanoTime();
 
-            long startTime = System.nanoTime();
-            backRichi(this.fichas, nivelComienzo);
-            long endTime = System.nanoTime();
+                    BigDecimal duration = new BigDecimal((endTime - startTime));
+                    BigDecimal durationSecs = (duration.divide(new BigDecimal(1000000000))).setScale(3, RoundingMode.HALF_UP);
+                    MEDICIONES_LOGGER.info("TIEMPO " +Thread.currentThread().getName() +" "+ durationSecs.toString().replace('.',',') + " SEGUNDOS ");
+                    finalizado = true;
+                }else {
+                    manager.despertar();
+                }
+                actual = Manager.getProximoEstado();
+            }
+        }
+        else {
+            if (actual != null) {
+                inicializar();
 
-            BigDecimal duration = new BigDecimal((endTime - startTime));
-            BigDecimal durationSecs = (duration.divide(new BigDecimal(1000000000))).setScale(3, RoundingMode.HALF_UP);
+                long startTime = System.nanoTime();
+                backRichi(this.fichas, nivelComienzo);
+                long endTime = System.nanoTime();
 
-            MEDICIONES_LOGGER.info("TIEMPO " + durationSecs.toString().replace('.',',') + " SEGUNDOS ");
-            finalizado = true;
+                BigDecimal duration = new BigDecimal((endTime - startTime));
+                BigDecimal durationSecs = (duration.divide(new BigDecimal(1000000000))).setScale(3, RoundingMode.HALF_UP);
+
+                MEDICIONES_LOGGER.info("TIEMPO CORRIENDO " + Thread.currentThread().getName() + " " + durationSecs.toString().replace('.', ',') + " SEGUNDOS ");
+                finalizado = true;
+            }
         }
 
-        manager.despertar();
-
-            /*else {
-            	manager.despertar();
-            }*/
-           // actual = Manager.getProximoEstado();
-
-        /*}*/
-        MEDICIONES_LOGGER.info("MUERE" + Thread.currentThread().getName());
+        MEDICIONES_LOGGER.info("MUERE " + Thread.currentThread().getName());
+        MEDICIONES_LOGGER.info("\nTIEMPO DE CPU " + Thread.currentThread().getName() + " "+ (new BigDecimal(ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime()).divide(new BigDecimal(1000000000))).setScale(3, RoundingMode.HALF_UP));
     }
 }

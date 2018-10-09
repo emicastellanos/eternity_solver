@@ -20,9 +20,9 @@ public class CuatroHilosFijos {
 
     private boolean desordenar = true;
 
-    private static int N = 7;
+    private static int N = 8;
 
-    private static int colores = 7;
+    private static int colores = 8;
 
     public static void ejecucionParalela(TareaRunnable tarea1,TareaRunnable tarea2,TareaRunnable tarea3,TareaRunnable tarea4){
         tarea1.start();
@@ -80,19 +80,19 @@ public class CuatroHilosFijos {
         System.out.println("FIN GENERACION FICHAS \n");
 
         int n1 = 0;
-        int n2 = 6; //7
-        int n3 = 41;//56
-        int n4 = 48;//63
+        int n2 = 7; //7
+        int n3 = 56;//56
+        int n4 = 63;//63
 
 
 
-        System.out.println("TABLERO 1 (ficha inicial"+ n1 +"): \n");
+        System.out.println("TABLERO 1 (ficha inicial "+ n1 +"): \n");
         imprimirTablero(fichas1);
-        System.out.println("TABLERO 2 (ficha inicial"+ n1 +"): \n");
+        System.out.println("TABLERO 2 (ficha inicial "+ n2 +"): \n");
         imprimirTablero(fichas2);
-        System.out.println("TABLERO 3 (ficha inicial"+ n1 +"): \n");
+        System.out.println("TABLERO 3 (ficha inicial "+ n3 +"): \n");
         imprimirTablero(fichas3);
-        System.out.println("TABLERO 4 (ficha inicial"+ n1 +"): \n");
+        System.out.println("TABLERO 4 (ficha inicial "+ n4 +"): \n");
         imprimirTablero(fichas4);
 
 
@@ -134,9 +134,9 @@ public class CuatroHilosFijos {
 
 
         MEDICIONES_LOGGER.info("\n----- MAIN ------\n");
-        //ejecucionParalela(tarea1,tarea2,tarea3,tarea4);
+        ejecucionParalela(tarea1,tarea2,tarea3,tarea4);
 
-        ejecucionLineal(tarea1,tarea2,tarea3,tarea4);
+        //ejecucionLineal(tarea1,tarea2,tarea3,tarea4);
 
         //System.out.println("medible? " + ManagementFactory.getThreadMXBean().isCurrentThreadCpuTimeSupported());
         MEDICIONES_LOGGER.info("\nTIEMPO CurrentThreadCpuTime MAIN "+ (new BigDecimal(ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime()).divide(new BigDecimal(1000000000))).setScale(3, RoundingMode.HALF_UP));

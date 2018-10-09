@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import utilidades.GeneradorFichas;
 import utilidades.GeneradorFichasUnicas;
 
+import java.lang.management.ManagementFactory;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.ZonedDateTime;
@@ -25,22 +26,24 @@ public class Manager extends Thread {
     private CreadorTareas creadorTareas;
     private ArrayList<TareaAbs> hilos;
     static final Logger resultLog = Logger.getLogger("resultadoLogger");
-    
-   
-    private int hilosParalelos = 4;
+    static final Logger MEDICIONES_LOGGER = Logger.getLogger("medicionesLogger");
+
+    private boolean divisible = true;
+
+    private int hilosParalelos = 1774;
 
     private boolean desordenar = true;
 
     private static int N = 8;
 
-    private static int NIVEL_BACK_INICIAL = 1;
-    
+    private static int NIVEL_BACK_INICIAL = 6;
+
     private static int colores = 8;
-    
+
     boolean primera_ficha_colocada = false ;
 
     private final String TIPO_BACK = "DFS";
-    
+
 
 
 
@@ -100,12 +103,12 @@ public class Manager extends Thread {
         if(pendientes.size()>indice){
             result = pendientes.get(indice);
             indice +=1;
-            System.out.println("se entrego una, indice =" + indice);
+            System.out.println("se entrego una tarea, indice = " + indice);
         }
 
         return result;
     }
-    
+
 
 
     /**
@@ -118,7 +121,7 @@ public class Manager extends Thread {
             if (!(tareaAbs.getActual()==null && tareaAbs.isFinalizado())){
                 c+=1;
             }
-        	
+
         }
         return c;
     }
@@ -130,7 +133,7 @@ public class Manager extends Thread {
             }
         }
     }
-    
+
    public synchronized void despertar() {
 	   notify();
    }
@@ -139,12 +142,13 @@ public class Manager extends Thread {
     public void cargarThreadsIniciales(){
         for (int i = 0; i< hilosParalelos; i++){
             TareaAbs tareaAbs = tareaFactory.crearTarea(getProximoEstado(),this);
+            tareaAbs.setDivisible(divisible);
             hilos.add(tareaAbs);
         }
     }
 
     public synchronized void ejecutar(ArrayList <Ficha> fichas, Tablero tablero, int nivelBackInicial)  {
-       
+
         pendientes = creadorTareas.crearTareasIniciales(tablero, fichas, nivelBackInicial);
         setCantTareasIniciales(pendientes.size());
         cargarThreadsIniciales();
@@ -157,18 +161,18 @@ public class Manager extends Thread {
         		//TareaAbs.setDividir(true);
 	            //resultLog.info("manager setea dividir");
         	}*/
-        	
+
         	try {
                wait();
-            } 
+            }
         	catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        
+
         TIENE_TAREAS = false;
     }
-    
+
     @Override
     public void run(){
     	//TareaAbs.it=0;
@@ -227,6 +231,7 @@ public class Manager extends Thread {
     public static void main(String[] args){
     	Manager m = new Manager();
     	m.run();
+        MEDICIONES_LOGGER.info("\nTIEMPO " + Thread.currentThread().getName() + " "+ (new BigDecimal(ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime()).divide(new BigDecimal(1000000000))).setScale(3, RoundingMode.HALF_UP));
     }
         
 }
