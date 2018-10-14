@@ -7,6 +7,7 @@ import soluciones.master_slave.TareaRunnable;
 import utilidades.GeneradorFichas;
 import utilidades.GeneradorFichasUnicas;
 
+import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -18,11 +19,11 @@ public class CuatroHilosFijos {
 
     static final Logger MEDICIONES_LOGGER = Logger.getLogger("medicionesLogger");
 
-    private boolean desordenar = true;
+    //private boolean desordenar = true;
 
-    private static int N = 8;
+    private static int N = 7;
 
-    private static int colores = 8;
+    private static int colores = 7;
 
     public static void ejecucionParalela(TareaRunnable tarea1,TareaRunnable tarea2,TareaRunnable tarea3,TareaRunnable tarea4){
         tarea1.start();
@@ -80,9 +81,9 @@ public class CuatroHilosFijos {
         System.out.println("FIN GENERACION FICHAS \n");
 
         int n1 = 0;
-        int n2 = 7; //7
-        int n3 = 56;//56
-        int n4 = 63;//63
+        int n2 = 6; //7
+        int n3 = 41;//56
+        int n4 = 48;//63
 
 
 
@@ -140,6 +141,25 @@ public class CuatroHilosFijos {
 
         //System.out.println("medible? " + ManagementFactory.getThreadMXBean().isCurrentThreadCpuTimeSupported());
         MEDICIONES_LOGGER.info("\nTIEMPO CurrentThreadCpuTime MAIN "+ (new BigDecimal(ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime()).divide(new BigDecimal(1000000000))).setScale(3, RoundingMode.HALF_UP));
+        MEDICIONES_LOGGER.info("\n" + ManagementFactory.getOperatingSystemMXBean().getArch());
+        MEDICIONES_LOGGER.info("\n" + ManagementFactory.getOperatingSystemMXBean().getAvailableProcessors());
+        MEDICIONES_LOGGER.info("\n" + Runtime.getRuntime().availableProcessors());
+        MEDICIONES_LOGGER.info("\n" + ManagementFactory.getOperatingSystemMXBean().getSystemLoadAverage());
+        MEDICIONES_LOGGER.info("\n" + ManagementFactory.getOperatingSystemMXBean().getVersion());
+        MEDICIONES_LOGGER.info("\n" + ManagementFactory.getRuntimeMXBean().getSystemProperties().get("java.home"));
+        MEDICIONES_LOGGER.info("\n" + ManagementFactory.getRuntimeMXBean().getSystemProperties().get("java.class.path"));
+        MEDICIONES_LOGGER.info("\n" + ManagementFactory.getRuntimeMXBean().getSystemProperties().get("os.name"));
+        MEDICIONES_LOGGER.info("\n" + ManagementFactory.getRuntimeMXBean().getUptime());
+
+        List<GarbageCollectorMXBean> lista = ManagementFactory.getGarbageCollectorMXBeans();
+        for(int i = 0; i < lista.size(); i++){
+            System.out.println(i + " - GC count " + lista.get(i).getCollectionCount());
+            System.out.println(i + " - Time elapsed " + lista.get(i).getCollectionTime());
+        }
+
+        MEDICIONES_LOGGER.info("active-Threads " + Thread.activeCount());
+        MEDICIONES_LOGGER.info("procesadores disponibles " + ManagementFactory.getOperatingSystemMXBean().getAvailableProcessors());
+        ManagementFactory.getMemoryPoolMXBeans();
     }
 
 }

@@ -13,6 +13,18 @@ public class TareaDFS extends TareaAbs {
 
     }
 
+    public void avanzarNodo(Ficha ficha, Integer nivel){
+        nivel += 1;
+        ficha.setUsada(true);
+        tablero.aumentarPosicion();
+    }
+
+    public void retrocederNodo(Ficha ficha, Integer nivel){
+        tablero.retrocederPosicion();
+        ficha.setUsada(false);
+        nivel -= 1;
+    }
+
     public void backRichi(ArrayList<Ficha> fichas, Integer nivel){
         boolean encontro = false;
         synchronized (this){
@@ -29,7 +41,6 @@ public class TareaDFS extends TareaAbs {
                 if(!f.isUsada()) {
                     for(int i=0; i<4;i++) {
                         tablero.insertarFinal(f);
-                        //sumar();
 
                         if(tablero.esSolucion()) {
                             if (tablero.esSolucionFinal()) {
@@ -37,13 +48,9 @@ public class TareaDFS extends TareaAbs {
                                 Tablero resultado = tablero.clone();
                                 Manager.SOLUCIONES.add(resultado);
                             } else {
-                                nivel += 1;
-                                f.setUsada(true);
-                                tablero.aumentarPosicion();
+                                avanzarNodo(f,nivel);
                                 backRichi(fichas, nivel);
-                                tablero.retrocederPosicion();
-                                f.setUsada(false);
-                                nivel -= 1;
+                                retrocederNodo(f,nivel);
                             }
                         }
                         tablero.eliminarUltima();

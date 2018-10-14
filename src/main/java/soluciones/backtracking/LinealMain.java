@@ -9,6 +9,7 @@ import utilidades.GeneradorFichasAleatorio;
 import utilidades.GeneradorFichasUnicas;
 import utilidades.Utils;
 
+import java.lang.management.ManagementFactory;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.ZonedDateTime;
@@ -19,7 +20,7 @@ import java.util.Collections;
 public class LinealMain {
     public static ArrayList<Ficha> fichas;
 
-    private static final int N = 8;
+    private static final int N = 6;
     private static Boolean UBICAR_PRIMERA = Boolean.FALSE;
 
     static final Logger resultLog = Logger.getLogger("resultadoLogger");
@@ -58,6 +59,11 @@ public class LinealMain {
         resultLog.info("----- TERMINO " + ZonedDateTime.now());
 
         resultLog.info("TIEMPO " + durationSecs.toString().replace('.',',') + " SEGUNDOS");
+        BigDecimal threadUserTime = new BigDecimal(ManagementFactory.getThreadMXBean().getCurrentThreadUserTime());
+        BigDecimal threadCpuTime = new BigDecimal(ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime());
+        resultLog.info("threadUserTime " + (threadUserTime.divide(new BigDecimal(1000000000))).setScale(3, RoundingMode.HALF_UP)) ;
+        resultLog.info("threadCPUTime " + (threadCpuTime.divide(new BigDecimal(1000000000))).setScale(3, RoundingMode.HALF_UP)) ;
+        resultLog.info("active-Threads " + Thread.activeCount());
 
     }
 }
