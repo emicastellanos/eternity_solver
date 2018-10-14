@@ -95,40 +95,6 @@ public abstract class TareaAbs extends Thread {
             }
             actual = ManagerAbs.getProximoEstado();
         }
-
-        /*if(ManagerAbs.isDivisible()){
-            while (ManagerAbs.TIENE_TAREAS) {
-                if (actual != null) {
-                    inicializar();
-                    long startTime = System.nanoTime();
-                    backRichi(this.fichas, nivelComienzo);
-                    long endTime = System.nanoTime();
-
-                    BigDecimal duration = new BigDecimal((endTime - startTime));
-                    BigDecimal durationSecs = (duration.divide(new BigDecimal(1000000000))).setScale(3, RoundingMode.HALF_UP);
-                    MEDICIONES_LOGGER.info(Thread.currentThread().getName() +" TIEMPO CORRIENDO " + nombreTarea  +" : " durationSecs.toString().replace('.', ',') + " SEGUNDOS ");
-                    finalizado = true;
-                }else {
-                    managerAbs.despertar();
-                }
-                actual = ManagerAbs.getProximoEstado();
-            }
-        }*/
-        /*else {
-            if (actual != null) {
-                inicializar();
-
-                long startTime = System.nanoTime();
-                backRichi(this.fichas, nivelComienzo);
-                long endTime = System.nanoTime();
-
-                BigDecimal duration = new BigDecimal((endTime - startTime));
-                BigDecimal durationSecs = (duration.divide(new BigDecimal(1000000000))).setScale(3, RoundingMode.HALF_UP);
-
-                MEDICIONES_LOGGER.info(Thread.currentThread().getName() +" TIEMPO CORRIENDO " + nombreTarea  +" : " durationSecs.toString().replace('.', ',') + " SEGUNDOS ");
-                finalizado = true;
-            }
-        }*/
         MEDICIONES_LOGGER.info("TIEMPO DE CPU " + Thread.currentThread().getName() + " "+ (new BigDecimal(ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime()).divide(new BigDecimal(1000000000))).setScale(3, RoundingMode.HALF_UP));
     }
 }

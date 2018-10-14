@@ -29,7 +29,6 @@ public abstract class ManagerAbs extends Thread {
     static final Logger MEDICIONES_LOGGER = Logger.getLogger("medicionesLogger");
     public static Map<String, Integer> interrupciones;
     public static int cantdivisiones;
-    private static boolean divisible = true;
 
     protected int hilosParalelos = 4;
 
@@ -84,9 +83,6 @@ public abstract class ManagerAbs extends Thread {
         return hilos;
     }
 
-    public static boolean isDivisible(){
-        return divisible;
-    }
 
     public static int getCantTareasIniciales() {
         return cantTareasIniciales;
