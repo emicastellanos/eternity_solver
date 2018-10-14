@@ -122,7 +122,7 @@ public class Manager {
         int activadas = cantActivadas();
         int espacioLibre = windowSize - activadas;
 
-        /*resultLog.info("ACTUAL " + Thread.currentThread().getName() + "  ---------- manager.activarTareas() ---------");
+        /*resultLog.info("ACTUAL " + Thread.currentThread().getName() + "  ---------- managerAbs.activarTareas() ---------");
         resultLog.info(" HAY " + activas.size() + " activas");
         resultLog.info(" HAY " + String.valueOf(activadas) + " activadas");
         resultLog.info(" HAY " + pendientes.size() + " pendientes");
@@ -142,7 +142,7 @@ public class Manager {
         /*resultLog.info("quedaron");
         resultLog.info("activas " + activas.size());
         resultLog.info("pendientes " + pendientes.size());
-        resultLog.info("SALIENDO CON EL " + Thread.currentThread().getName() + "  ---------- manager.activarTareas() ---------");*/
+        resultLog.info("SALIENDO CON EL " + Thread.currentThread().getName() + "  ---------- managerAbs.activarTareas() ---------");*/
     }
 
     /**
@@ -205,7 +205,7 @@ public class Manager {
         int entradas = 0;
         while (tieneTareas()){
             entradas ++;
-            //resultLog.info("manager.ejecutar (entrada= " + entradas + ")");
+            //resultLog.info("managerAbs.ejecutar (entrada= " + entradas + ")");
             if(cantActivadas()+pendientes.size() < windowSize){
                 solicitarMas();
             }
@@ -268,7 +268,7 @@ public class Manager {
             s++;
         }*//*
 
-        Manager m = new Manager();
+        ManagerAbs m = new ManagerAbs();
         m.ejecutar(fichas,tablero);
 
         resultLog.info("PARALELIZADO: " + SOLUCIONES.size());

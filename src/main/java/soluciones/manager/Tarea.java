@@ -22,8 +22,8 @@ public class Tarea extends Thread {
     private long id ;
 
 
-    /**Es necesario realmente que haya una referencia al manager ? Podria reemplazarse por el uso de
-     * variables estaticas en el manager ? */
+    /**Es necesario realmente que haya una referencia al managerAbs ? Podria reemplazarse por el uso de
+     * variables estaticas en el managerAbs ? */
     public Tarea(Tablero tablero, ArrayList<Ficha> fichas, String nombre,Integer nivel,Manager manager) {
         this.tablero = tablero;
         this.nivelComienzo = nivel;
@@ -89,7 +89,7 @@ public class Tarea extends Thread {
             /**Quizas haya alguna forma de no crear una tarea si despues el thread padre
              * no va a conseguir una tarea para continuar**/
             /**Quizas se conveniente devolver mas de un estado.. una lista **/
-            //desbloquea el manager
+            //desbloquea el managerAbs
             dividir = false;
             bloqueado = true;
             manager.setBloqueado(0);

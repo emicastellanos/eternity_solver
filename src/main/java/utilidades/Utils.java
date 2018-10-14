@@ -4,6 +4,7 @@ import entidades.Ficha;
 import entidades.Tablero;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Utils {
 
@@ -69,5 +70,17 @@ public class Utils {
             }
         }
         return Boolean.TRUE;
+    }
+
+    public static String imprimirTablerosSolucion(List<Tablero> tableros){
+        StringBuffer buffer = new StringBuffer();
+        int i = 1;
+        for(Tablero t : tableros){
+            buffer.append("SOLUCION # " + i +"\n");
+            buffer.append(t.imprimirUsadas() + "\n");
+            buffer.append(t.imprimirse() + "\n");
+            i++;
+        }
+        return buffer.toString();
     }
 }

@@ -10,6 +10,8 @@ public class Estado {
     private Tablero tablero;
     private ArrayList<Ficha> fichas;
     private Integer nivel;
+    private String nombre;
+    private static int nroTarea = 0;
     static final Logger resultLog = Logger.getLogger("resultadoLogger");
 
 
@@ -17,6 +19,8 @@ public class Estado {
         this.tablero = t;
         this.nivel = new Integer(nivel);
         this.fichas = fichas;
+        this.nombre = "NODO-"+nroTarea+"_nivel-"+nivel;
+        this.nroTarea +=1;
     }
 
     public Tablero getTablero() {
@@ -29,5 +33,9 @@ public class Estado {
 
     public Integer getNivel() {
         return nivel;
+    }
+
+    public String getNombre(){
+        return nombre;
     }
 }

@@ -5,6 +5,7 @@ import entidades.Tablero;
 import org.apache.log4j.Logger;
 import utilidades.GeneradorFichas;
 import utilidades.GeneradorFichasUnicas;
+import utilidades.Utils;
 
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
@@ -13,7 +14,7 @@ import java.math.RoundingMode;
 import java.time.ZonedDateTime;
 import java.util.*;
 
-public class Manager extends Thread {
+public abstract class ManagerAbs extends Thread {
     private long bloqueado; // Contiene el id del thread por el cual se bloqueo
     public static List<Tablero> SOLUCIONES;
     public static boolean TIENE_TAREAS = true;
@@ -28,15 +29,15 @@ public class Manager extends Thread {
     static final Logger MEDICIONES_LOGGER = Logger.getLogger("medicionesLogger");
     public static Map<String, Integer> interrupciones;
     public static int cantdivisiones;
-    private boolean divisible = true;
+    private static boolean divisible = true;
 
-    private int hilosParalelos = 10;
+    protected int hilosParalelos = 4;
 
     private boolean desordenar = true;
 
     private static int N = 7;
 
-    private static int NIVEL_BACK_INICIAL = 1;
+    private static int NIVEL_BACK_INICIAL = 2;
 
     private static int colores = 7;
 
@@ -47,7 +48,7 @@ public class Manager extends Thread {
 
 
 
-    public Manager() {
+    public ManagerAbs() {
         creadorTareas = new CreadorTareas();
         pendientes = Collections.synchronizedList(new ArrayList<Estado>());
         hilos = new ArrayList<>();
@@ -59,7 +60,7 @@ public class Manager extends Thread {
         cantdivisiones=0;
     }
 
-    public int getHilosParalelos() {
+    public int getCantHilosParalelos() {
         return hilosParalelos;
     }
 
@@ -79,12 +80,20 @@ public class Manager extends Thread {
         return hilos.size();
     }
 
+    public List<TareaAbs> getAllThreads(){
+        return hilos;
+    }
+
+    public static boolean isDivisible(){
+        return divisible;
+    }
+
     public static int getCantTareasIniciales() {
         return cantTareasIniciales;
     }
 
     public static void setCantTareasIniciales(int cantTareasIniciales) {
-        Manager.cantTareasIniciales = cantTareasIniciales;
+        ManagerAbs.cantTareasIniciales = cantTareasIniciales;
     }
 
     public static long getNextContador(){
@@ -145,36 +154,8 @@ public class Manager extends Thread {
     public void cargarThreadsIniciales(){
         for (int i = 0; i< hilosParalelos; i++){
             TareaAbs tareaAbs = tareaFactory.crearTarea(getProximoEstado(),this);
-            tareaAbs.setDivisible(divisible);
             hilos.add(tareaAbs);
         }
-    }
-
-    public synchronized void ejecutar(ArrayList <Ficha> fichas, Tablero tablero, int nivelBackInicial)  {
-
-        pendientes = creadorTareas.crearTareasIniciales(tablero, fichas, nivelBackInicial);
-        setCantTareasIniciales(pendientes.size());
-        cargarThreadsIniciales();
-
-        resultLog.info("SE ACTIVAN  " + hilos.size() + " / PENDIENTES " + (pendientes.size() - indice));
-        iniciarTareas();
-
-        while (cantActivas()>0 || pendientes.size() > indice){
-        	if(cantActivas() < hilosParalelos && pendientes.size() == indice) { // si hay pendientes no divido
-        		TareaAbs.setDividir(true);
-        		cantdivisiones+=1;
-	            //resultLog.info("manager setea dividir");
-        	}
-
-        	try {
-               wait();
-            }
-        	catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        TIENE_TAREAS = false;
     }
 
     public String getInterrupciones(){
@@ -186,6 +167,23 @@ public class Manager extends Thread {
             result.append(threadName).append(" - ").append(interrupciones.get(threadName)).append("\n");
         }
         return result.toString();
+    }
+
+    public abstract void logicaDivisiones();
+
+
+    public synchronized void ejecutar(ArrayList <Ficha> fichas, Tablero tablero, int nivelBackInicial)  {
+
+        pendientes = creadorTareas.crearTareasIniciales(tablero, fichas, nivelBackInicial);
+        setCantTareasIniciales(pendientes.size());
+        cargarThreadsIniciales();
+
+        resultLog.info("SE ACTIVAN  " + hilos.size() + " / PENDIENTES " + (pendientes.size() - indice));
+        iniciarTareas();
+
+        logicaDivisiones();
+
+        TIENE_TAREAS = false;
     }
 
     @Override
@@ -204,10 +202,10 @@ public class Manager extends Thread {
         if(desordenar)
         	Collections.shuffle(fichas);
         resultLog.info("----- INICIO  " + ZonedDateTime.now());
-        Manager m = new Manager();
+
 
         long startTime = System.nanoTime();
-        m.ejecutar(fichas,tablero, NIVEL_BACK_INICIAL);
+        ejecutar(fichas,tablero, NIVEL_BACK_INICIAL);
         long endTime = System.nanoTime();
 
         BigDecimal duration = new BigDecimal((endTime - startTime));
@@ -215,45 +213,31 @@ public class Manager extends Thread {
 
 
 
-        resultLog.info("PARALELIZADO: " + SOLUCIONES.size());
-        int i = 1;
-        for(Tablero t : SOLUCIONES){
-            resultLog.info("SOLUCION # " + i);
-            resultLog.info(t.imprimirUsadas());
-            resultLog.info(t.imprimirse());
-            i++;
-        }
+        //resultLog.info("PARALELIZADO: " + SOLUCIONES.size());
+        //Utils.imprimirTablerosSolucion(SOLUCIONES);
 
-        //TODO redondear a dos
-
-        resultLog.info("********************************");
+        resultLog.info("\n******************************** RESUMEN ******************************** \n");
         resultLog.info("TAMANO TABLERO                  = " + N);
         resultLog.info("CANTIDAD COLORES                = " + colores) ;
         resultLog.info("PRIMERA COLOCADA?               = " + primera_ficha_colocada) ;
         resultLog.info("FICHAS MEZCLADAS?               = " + desordenar) ;
-        resultLog.info("CANTIDAD HILOS USADOS           = " +( m.getHilosParalelos() +1));
+        resultLog.info("CANTIDAD HILOS USADOS           = " +( getCantHilosParalelos() +1));
         resultLog.info("CANTIDAD NUCLEOS DEL PROCESADOR = "+Runtime.getRuntime().availableProcessors() );
         resultLog.info("CANTIDAD SOLUCIONES             = " + SOLUCIONES.size()) ;
         resultLog.info("NIVEL DE BACK INICIAL           = " + NIVEL_BACK_INICIAL);
         resultLog.info("CANTIDAD TAREAS INICIALES       = "+ getCantTareasIniciales());
         resultLog.info("TIEMPO                          = " + durationSecs.toString().replace('.',',') + " SEGUNDOS");
-        resultLog.info("# tareas totales que se ejecutaron " + m.pendientes.size());
-        // resultLog.info("# iteraciones totales "+TareaAbs.it);
+        resultLog.info("# tareas totales que se ejecutaron " + pendientes.size());
         resultLog.info("INTERRUPCIONES:  " + getInterrupciones());
         resultLog.info("cant divisiones:  " + cantdivisiones);
 
+        // resultLog.info("# iteraciones totales "+TareaAbs.it);
 
-    }
 
-
-    public static void main(String[] args){
-    	Manager m = new Manager();
-    	m.start();
 
         MEDICIONES_LOGGER.info("\nTIEMPO " + Thread.currentThread().getName() + " "+ (new BigDecimal(ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime()).divide(new BigDecimal(1000000000))).setScale(3, RoundingMode.HALF_UP));
 
-        MEDICIONES_LOGGER.info("\nTIEMPO CurrentThreadCpuTime MAIN "+ (new BigDecimal(ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime()).divide(new BigDecimal(1000000000))).setScale(3, RoundingMode.HALF_UP));
-        MEDICIONES_LOGGER.info("\n" + ManagementFactory.getOperatingSystemMXBean().getArch());
+        /*MEDICIONES_LOGGER.info("\n" + ManagementFactory.getOperatingSystemMXBean().getArch());
         MEDICIONES_LOGGER.info("\n" + ManagementFactory.getOperatingSystemMXBean().getAvailableProcessors());
         MEDICIONES_LOGGER.info("\n" + Runtime.getRuntime().availableProcessors());
         MEDICIONES_LOGGER.info("\n" + ManagementFactory.getOperatingSystemMXBean().getSystemLoadAverage());
@@ -262,15 +246,23 @@ public class Manager extends Thread {
         MEDICIONES_LOGGER.info("\n" + ManagementFactory.getRuntimeMXBean().getSystemProperties().get("java.class.path"));
         MEDICIONES_LOGGER.info("\n" + ManagementFactory.getRuntimeMXBean().getSystemProperties().get("os.name"));
         MEDICIONES_LOGGER.info("\n" + ManagementFactory.getRuntimeMXBean().getUptime());
-        ManagementFactory.getMemoryPoolMXBeans();
+        ManagementFactory.getMemoryPoolMXBeans();*/
 
         List<GarbageCollectorMXBean> lista = ManagementFactory.getGarbageCollectorMXBeans();
-        for(int i = 0; i < lista.size(); i++){
-            System.out.println(i + " - GC count " + lista.get(i).getCollectionCount());
-            System.out.println(i + " - Time elapsed " + lista.get(i).getCollectionTime());
+        for(int j = 0; j < lista.size(); j++){
+            System.out.println(j + " - GC count " + lista.get(j).getCollectionCount());
+            System.out.println(j + " - Time elapsed " + lista.get(j).getCollectionTime() + "nanosecs");
         }
 
         ManagementFactory.getMemoryPoolMXBeans();
+
+
+    }
+
+
+    public static void main(String[] args){
+    	ManagerAbs m = new ManagerSinDividir();
+    	m.start();
     }
         
 }

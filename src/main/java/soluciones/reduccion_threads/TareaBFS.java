@@ -12,7 +12,7 @@ public class TareaBFS extends TareaAbs {
 
     }
 
-    public TareaBFS (Estado estado, Manager m){
+    public TareaBFS (Estado estado, ManagerAbs m){
         super(estado,m);
     }
 
@@ -28,7 +28,7 @@ public class TareaBFS extends TareaAbs {
                        if (tablero.esSolucionFinal()) {
                            resultLog.info(" ---------------- SE ENCONTRO UNA SOLUCION " + Thread.currentThread().getName());
                            Tablero resultado = tablero.clone();
-                           Manager.SOLUCIONES.add(resultado);
+                           ManagerAbs.SOLUCIONES.add(resultado);
                        } else {
                            nivel += 1;
                            f.setUsada(true);
@@ -41,7 +41,7 @@ public class TareaBFS extends TareaAbs {
                            if (lockDividir) {
                                subTareas.add(new Estado(tablero.clone(), Utils.getCopia(fichas), nivel));
                                //por que no ir agregando de una ? esto es acceso a zona sincronizada
-                               //Manager.addEstado(new Estado(tablero.clone(), Utils.getCopia(fichas),nivel));
+                               //ManagerAbs.addEstado(new Estado(tablero.clone(), Utils.getCopia(fichas),nivel));
                            } else {
                                backRichi(fichas, nivel);
                            }
@@ -56,7 +56,7 @@ public class TareaBFS extends TareaAbs {
             }
        }
        if (lockDividir){
-           Manager.addAllEstado(subTareas);
+           ManagerAbs.addAllEstado(subTareas);
        }
     }
     //resultLog.info("SALIENDO DEL BACK " + Thread.currentThread().getName());

@@ -9,7 +9,7 @@ public class TareaFactory implements TareaFactoryMethod {
     }
 
     @Override
-    public TareaAbs crearTarea(Estado estado, Manager m) {
+    public TareaAbs crearTarea(Estado estado, ManagerAbs m) {
         if ("BFS".equals(tipo)){
             return new TareaBFS(estado,m);
         }else return new TareaDFS(estado,m);

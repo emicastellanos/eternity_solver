@@ -12,7 +12,7 @@ public class CreadorTareas {
     private Manager manager;
     static final Logger resultLog = Logger.getLogger("resultadoLogger");
 
-    //TODO Debe haber alguna alternativa mejor que pasar una referencia del manager
+    //TODO Debe haber alguna alternativa mejor que pasar una referencia del managerAbs
     public CreadorTareas (Manager m){
         manager = m;
     }
