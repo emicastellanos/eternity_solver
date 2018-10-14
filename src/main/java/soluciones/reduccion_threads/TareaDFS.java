@@ -36,12 +36,17 @@ public class TareaDFS extends TareaAbs {
         if(encontro){
             Manager.addEstado(new Estado(tablero.clone(), Utils.getCopia(fichas),nivel));
             //resultLog.info("dividi" + Thread.currentThread().getName());
+            Integer cantidad = Manager.interrupciones.get(Thread.currentThread().getName());
+            if(cantidad == null){
+                Manager.interrupciones.put(Thread.currentThread().getName(), 1);
+            }else{
+                Manager.interrupciones.put(Thread.currentThread().getName(), ++cantidad);
+            }
         }else{
             for (Ficha f : fichas) {
                 if(!f.isUsada()) {
                     for(int i=0; i<4;i++) {
                         tablero.insertarFinal(f);
-
                         if(tablero.esSolucion()) {
                             if (tablero.esSolucionFinal()) {
                                 resultLog.info(" ---------------- SE ENCONTRO UNA SOLUCION " + Thread.currentThread().getName());

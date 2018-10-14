@@ -11,9 +11,7 @@ import java.lang.management.ManagementFactory;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class Manager extends Thread {
     private long bloqueado; // Contiene el id del thread por el cual se bloqueo
@@ -28,18 +26,19 @@ public class Manager extends Thread {
     private ArrayList<TareaAbs> hilos;
     static final Logger resultLog = Logger.getLogger("resultadoLogger");
     static final Logger MEDICIONES_LOGGER = Logger.getLogger("medicionesLogger");
-
+    public static Map<String, Integer> interrupciones;
+    public static int cantdivisiones;
     private boolean divisible = true;
 
-    private int hilosParalelos = 4;
+    private int hilosParalelos = 10;
 
     private boolean desordenar = true;
 
-    private static int N = 8;
+    private static int N = 7;
 
-    private static int NIVEL_BACK_INICIAL = 3;
+    private static int NIVEL_BACK_INICIAL = 1;
 
-    private static int colores = 8;
+    private static int colores = 7;
 
     boolean primera_ficha_colocada = false ;
 
@@ -56,6 +55,8 @@ public class Manager extends Thread {
         bloqueado = 0;
         contadorThreads = 0;
         tareaFactory = new TareaFactory(TIPO_BACK);
+        interrupciones = new HashMap<String,Integer>();
+        cantdivisiones=0;
     }
 
     public int getHilosParalelos() {
@@ -91,6 +92,7 @@ public class Manager extends Thread {
         return contadorThreads;
     }
 
+    //Es al pedo que este synchronized porque solo lo va a llamar una tarea a la vez
     public static synchronized void addEstado(Estado proximo){
         pendientes.add(proximo);
     }
@@ -158,10 +160,11 @@ public class Manager extends Thread {
         iniciarTareas();
 
         while (cantActivas()>0 || pendientes.size() > indice){
-        	/*if(cantActivas() < hilosParalelos && pendientes.size() == indice) { // si hay pendientes no divido
-        		//TareaAbs.setDividir(true);
+        	if(cantActivas() < hilosParalelos && pendientes.size() == indice) { // si hay pendientes no divido
+        		TareaAbs.setDividir(true);
+        		cantdivisiones+=1;
 	            //resultLog.info("manager setea dividir");
-        	}*/
+        	}
 
         	try {
                wait();
@@ -172,6 +175,17 @@ public class Manager extends Thread {
         }
 
         TIENE_TAREAS = false;
+    }
+
+    public String getInterrupciones(){
+        StringBuffer result = new StringBuffer("\n");
+        Set<String> keys = interrupciones.keySet();
+        Iterator<String> iterator = keys.iterator();
+        while(iterator.hasNext()){
+            String threadName = iterator.next();
+            result.append(threadName).append(" - ").append(interrupciones.get(threadName)).append("\n");
+        }
+        return result.toString();
     }
 
     @Override
@@ -225,6 +239,9 @@ public class Manager extends Thread {
         resultLog.info("TIEMPO                          = " + durationSecs.toString().replace('.',',') + " SEGUNDOS");
         resultLog.info("# tareas totales que se ejecutaron " + m.pendientes.size());
         // resultLog.info("# iteraciones totales "+TareaAbs.it);
+        resultLog.info("INTERRUPCIONES:  " + getInterrupciones());
+        resultLog.info("cant divisiones:  " + cantdivisiones);
+
 
     }
 
