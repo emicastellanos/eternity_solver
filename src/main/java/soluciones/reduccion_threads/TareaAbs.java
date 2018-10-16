@@ -14,6 +14,7 @@ public abstract class TareaAbs extends Thread {
     protected Tablero tablero;
     protected ArrayList<Ficha> fichas;
     private Estado actual;
+    private Estado punteroAEstadoGenerador;
     protected ManagerAbs managerAbs;
 
     private Integer nivelComienzo;
@@ -23,6 +24,7 @@ public abstract class TareaAbs extends Thread {
     static final Logger resultLog = Logger.getLogger("resultadoLogger");
     static final Logger MEDICIONES_LOGGER = Logger.getLogger("medicionesLogger");
     private long id ;
+    private boolean inicializado;
 
     public TareaAbs(){
 
@@ -35,6 +37,8 @@ public abstract class TareaAbs extends Thread {
         this.id = ManagerAbs.getNextContador();
         this.managerAbs = m;
         this.finalizado = true;
+        punteroAEstadoGenerador = null;
+        inicializado = false;
     }
 
 
@@ -58,6 +62,10 @@ public abstract class TareaAbs extends Thread {
  	   notify();
     }
 
+    public boolean isInicializado(){
+        return inicializado;
+    }
+
 //    public static synchronized void sumar() {
 //  	   it++;
 //     }
@@ -71,7 +79,9 @@ public abstract class TareaAbs extends Thread {
         nivelComienzo = actual.getNivel();
         nombreTarea = actual.getNombre();
         finalizado = false;
+        punteroAEstadoGenerador = actual;
         actual = null;
+        inicializado = true;
     }
 
     public abstract void backRichi(ArrayList<Ficha> fichas, Integer nivel);
@@ -88,13 +98,15 @@ public abstract class TareaAbs extends Thread {
 
                 BigDecimal duration = new BigDecimal((endTime - startTime));
                 BigDecimal durationSecs = (duration.divide(new BigDecimal(1000000000))).setScale(3, RoundingMode.HALF_UP);
-                MEDICIONES_LOGGER.info(Thread.currentThread().getName() +" TIEMPO CORRIENDO " + nombreTarea  +" : "+ durationSecs.toString().replace('.', ',') + " SEGUNDOS ");
+                MEDICIONES_LOGGER.info(Thread.currentThread().getName() +" TIEMPO CORRIENDO " + nombreTarea  +" : "+ durationSecs.toString().replace('.', ',') + " SEGUNDOS EN ALGUN core ");
                 finalizado = true;
+                punteroAEstadoGenerador.setEstadoExplorado(true);
             }else {
                 managerAbs.despertar();
             }
             actual = ManagerAbs.getProximoEstado();
         }
-        MEDICIONES_LOGGER.info("TIEMPO DE CPU " + Thread.currentThread().getName() + " "+ (new BigDecimal(ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime()).divide(new BigDecimal(1000000000))).setScale(3, RoundingMode.HALF_UP));
+        MEDICIONES_LOGGER.info("TIEMPO DE CPU " + Thread.currentThread().getName() + " TAREA " + nombreTarea + " : " + (new BigDecimal(ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime()).divide(new BigDecimal(1000000000))).setScale(3, RoundingMode.HALF_UP).toString().replace('.', ','));
+        managerAbs.despertar();
     }
 }

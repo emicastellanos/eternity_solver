@@ -34,11 +34,11 @@ public abstract class ManagerAbs extends Thread {
 
     private boolean desordenar = true;
 
-    private static int N = 7;
+    private static int N = 8;
 
-    private static int NIVEL_BACK_INICIAL = 2;
+    private static int NIVEL_BACK_INICIAL = 1;
 
-    private static int colores = 7;
+    private static int colores = 8;
 
     boolean primera_ficha_colocada = false ;
 
@@ -167,6 +167,28 @@ public abstract class ManagerAbs extends Thread {
 
     public abstract void logicaDivisiones();
 
+    //si algun hilo no finalizo significa que esta trabajando
+    public boolean hayHilosTrabajando(){
+        List<TareaAbs> threads = getAllThreads();
+        for(TareaAbs thread : threads){
+            if (!thread.isFinalizado()){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void esperarParaTerminar(){
+        while (hayHilosTrabajando()){
+            try {
+                wait();
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 
     public synchronized void ejecutar(ArrayList <Ficha> fichas, Tablero tablero, int nivelBackInicial)  {
 
@@ -180,6 +202,9 @@ public abstract class ManagerAbs extends Thread {
         logicaDivisiones();
 
         TIENE_TAREAS = false;
+
+        esperarParaTerminar();
+
     }
 
     @Override
@@ -202,6 +227,7 @@ public abstract class ManagerAbs extends Thread {
 
         long startTime = System.nanoTime();
         ejecutar(fichas,tablero, NIVEL_BACK_INICIAL);
+        //ESPERAR A QUE TODOS LOS THREADS TERMINEN
         long endTime = System.nanoTime();
 
         BigDecimal duration = new BigDecimal((endTime - startTime));
@@ -251,14 +277,6 @@ public abstract class ManagerAbs extends Thread {
         }
 
         ManagementFactory.getMemoryPoolMXBeans();
-
-
     }
 
-
-    public static void main(String[] args){
-    	ManagerAbs m = new ManagerSinDividir();
-    	m.start();
-    }
-        
 }
