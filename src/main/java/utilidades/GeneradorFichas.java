@@ -8,6 +8,8 @@ import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Locale;
 
 public abstract class GeneradorFichas {
@@ -122,6 +124,52 @@ public abstract class GeneradorFichas {
         }
 
         return generadas;
+    }
+
+    /**ESTE METODO DEVUELVE LA CANTIDAD DE VECES QUE SE UTILIZO CADA COLOR**/
+    private static HashMap<Integer,Integer> getCantidadVecesUsadoCadaColorMap (ArrayList<Ficha> fichas ){
+        HashMap<Integer,Integer> map = new HashMap<>();
+        for(Ficha ficha : fichas){
+            if(map.get(ficha.getAbj())==null){
+                map.put(ficha.getAbj(),1);
+            }else{
+                Integer cant = map.get(ficha.getAbj());
+                map.put(ficha.getAbj(),++cant);
+            }
+
+            if(map.get(ficha.getDer())==null){
+                map.put(ficha.getDer(),1);
+            }else{
+                Integer cant = map.get(ficha.getDer());
+                map.put(ficha.getDer(),++cant);
+            }
+
+            if(map.get(ficha.getArr())==null){
+                map.put(ficha.getArr(),1);
+            }else{
+                Integer cant = map.get(ficha.getArr());
+                map.put(ficha.getArr(),++cant);
+            }
+
+            if(map.get(ficha.getIzq())==null){
+                map.put(ficha.getIzq(),1);
+            }else{
+                Integer cant = map.get(ficha.getIzq());
+                map.put(ficha.getIzq(),++cant);
+            }
+        }
+        return map;
+    }
+
+    public static String getOcurrenciasCadaColor(ArrayList<Ficha> fichas){
+        HashMap<Integer,Integer> map = getCantidadVecesUsadoCadaColorMap(fichas);
+        Iterator<Integer> it = map.keySet().iterator();
+        StringBuffer result = new StringBuffer();
+        while (it.hasNext()){
+            Integer p = it.next();
+            result.append(p + ": " + map.get(p) + "\n");
+        }
+        return result.toString();
     }
 
     public static void main(String[] args){

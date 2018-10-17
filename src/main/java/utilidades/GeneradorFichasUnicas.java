@@ -25,7 +25,6 @@ public class GeneradorFichasUnicas extends GeneradorFichas {
         boolean corte = false;
         while(!corte){
             if(existe(ficha)){
-                //si la ficha generada ya existe, se libera los colores de izq y abajo y se eligen al azar hasta que se encuentre una ficha valida.
                 if(j!=N-1){
                     colores[ficha.getDer()]-=1;
                     ficha.setDer(getColorUnico());
@@ -43,6 +42,30 @@ public class GeneradorFichasUnicas extends GeneradorFichas {
             }
         }
 		return true;
+    }
+
+    public static boolean sonIguales(ArrayList<Ficha> fichas , ArrayList<Ficha> fichasComparador ){
+        for(int i=0; i<fichas.size();i++){
+            if(!fichas.get(i).equals(fichasComparador.get(i))){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static void main (String [] args){
+        GeneradorFichas g1 = new GeneradorFichasUnicas(8,8);
+        ArrayList<Ficha> fichas = g1.getFichasUnicas();
+        for(int prueba = 1 ; prueba < 25; prueba++){
+            GeneradorFichas comparativa = new GeneradorFichasUnicas(8,8);
+            System.out.println("Compara " + prueba);
+            if (!sonIguales(fichas, comparativa.getFichasUnicas())){
+                System.out.println("NOOOOOO");
+                break;
+            }
+        }
+        System.out.println("termino");
+        System.out.println(getOcurrenciasCadaColor(fichas));
     }
 
 }
