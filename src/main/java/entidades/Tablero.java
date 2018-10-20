@@ -60,9 +60,6 @@ public class Tablero {
         return usadas;
     }
 
-
-
-    
     public void retrocederPosicion() {
 	    	if(columna != 0) {
 	    		columna--;
@@ -71,6 +68,14 @@ public class Tablero {
 	    		columna = N-1;
 	    		fila--;
 	    	}
+    }
+
+    public int getTamano(){
+        return N;
+    }
+
+    public int getCantidadNivelesFinal(){
+        return N*N;
     }
     
 

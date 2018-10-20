@@ -8,8 +8,10 @@ import java.util.ArrayList;
 
 public class TareaBFS extends TareaAbs {
 
-    public TareaBFS() {
+    public TareaBFS() { }
 
+    public TareaBFS (ManagerAbs m){
+        super(m);
     }
 
     public TareaBFS (Estado estado, ManagerAbs m){

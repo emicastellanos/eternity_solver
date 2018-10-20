@@ -32,29 +32,26 @@ public abstract class ManagerAbs extends Thread {
 
     protected int hilosParalelos = 4;
 
-    private boolean desordenar = true;
+    private boolean desordenar = false;
 
     private static int N = 8;
 
-    private static int NIVEL_BACK_INICIAL = 1;
+    private static int NIVEL_BACK_INICIAL = 2;
 
     private static int colores = 8;
 
     boolean primera_ficha_colocada = false ;
 
-    private final String TIPO_BACK = "DFS";
 
 
-
-
-    public ManagerAbs() {
+    public ManagerAbs(String tipoBack) {
         creadorTareas = new CreadorTareas();
         pendientes = Collections.synchronizedList(new ArrayList<Estado>());
         hilos = new ArrayList<>();
         SOLUCIONES = Collections.synchronizedList(new ArrayList<>());
         bloqueado = 0;
         contadorThreads = 0;
-        tareaFactory = new TareaFactory(TIPO_BACK);
+        tareaFactory = new TareaFactory(tipoBack);
         interrupciones = new HashMap<String,Integer>();
         cantdivisiones=0;
     }
@@ -77,6 +74,21 @@ public abstract class ManagerAbs extends Thread {
 
     public int getCantActivados(){
         return hilos.size();
+    }
+
+    public boolean hayNodosParaExplorar(){
+        return pendientes.size()<indice;
+    }
+
+    //ESTE METODO NOS DICE TRUE O FALSE DEPENDIENDEO DE SI HAY ALGUN THREAD QUE TIENE UNA SETEADA QUE TODAVIA NO INICIALIZO (ni siquiera la empezo a trabajar)
+    public boolean todosInicializados(){
+        List<TareaAbs> tareas = getAllThreads();
+        for (TareaAbs tarea : tareas){
+            if (!tarea.isInicializado()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public List<TareaAbs> getAllThreads(){
@@ -111,8 +123,11 @@ public abstract class ManagerAbs extends Thread {
         if(pendientes.size()>indice){
             result = pendientes.get(indice);
             indice +=1;
-            System.out.println("se entrego una tarea, indice = " + indice);
+            System.out.println("se entrego una tarea al " + Thread.currentThread().getName() + ", indice = " + indice);
+        }else{
+            System.out.println("se PIDIO una tarea para el " + Thread.currentThread().getName() + ", pero indice = " + indice);
         }
+
 
         return result;
     }
@@ -120,7 +135,7 @@ public abstract class ManagerAbs extends Thread {
 
 
     /**
-     * Considera activas a las tareas que estan en etapa de carga (actual!=null)
+     * Considera activas a las tareas que estan en etapa de carga (actual!=null) o
      * finalizado = false
      * */
     public int cantActivas(){
@@ -178,6 +193,16 @@ public abstract class ManagerAbs extends Thread {
         return false;
     }
 
+    public void despertarDormidos(){
+        List<TareaAbs> threads = getAllThreads();
+        for(TareaAbs thread : threads){
+            if (thread.getState().equals(State.WAITING)){
+                thread.despertar();
+            }
+        }
+
+    }
+
     public void esperarParaTerminar(){
         while (hayHilosTrabajando()){
             try {
@@ -187,6 +212,7 @@ public abstract class ManagerAbs extends Thread {
                 e.printStackTrace();
             }
         }
+        despertarDormidos();
     }
 
 
@@ -214,6 +240,7 @@ public abstract class ManagerAbs extends Thread {
         ArrayList <Ficha> fichas = generadorFichas.getFichasUnicas();
         //TODO Desordenar fichas
         Tablero tablero = new Tablero(N);
+
         if(primera_ficha_colocada) {
             tablero.insertarFinal(fichas.get(0));
             tablero.aumentarPosicion();
@@ -227,7 +254,6 @@ public abstract class ManagerAbs extends Thread {
 
         long startTime = System.nanoTime();
         ejecutar(fichas,tablero, NIVEL_BACK_INICIAL);
-        //ESPERAR A QUE TODOS LOS THREADS TERMINEN
         long endTime = System.nanoTime();
 
         BigDecimal duration = new BigDecimal((endTime - startTime));

@@ -17,10 +17,10 @@ public abstract class TareaAbs extends Thread {
     private Estado punteroAEstadoGenerador;
     protected ManagerAbs managerAbs;
 
-    private Integer nivelComienzo;
-    private static boolean dividir; // es la señal que se va a activar para que la primera tarea que la vea genere hijos
+    public Integer nivelComienzo;
+    private static boolean dividir;
 
-    private String nombreTarea;
+    protected String nombreTarea;
     static final Logger resultLog = Logger.getLogger("resultadoLogger");
     static final Logger MEDICIONES_LOGGER = Logger.getLogger("medicionesLogger");
     private long id ;
@@ -30,6 +30,14 @@ public abstract class TareaAbs extends Thread {
 
     }
 
+    public TareaAbs(ManagerAbs m) {
+        this.actual = null;
+        this.dividir = false;
+        this.id = ManagerAbs.getNextContador();
+        this.managerAbs = m;
+        this.finalizado = true;
+        inicializado = false;
+    }
 
     public TareaAbs(Estado estado, ManagerAbs m) {
         this.actual = estado;
@@ -58,6 +66,10 @@ public abstract class TareaAbs extends Thread {
         return actual;
     }
 
+    public void setActual(Estado e){
+        this.actual = e;
+    }
+
     public synchronized void despertar() {
  	   notify();
     }
@@ -66,9 +78,6 @@ public abstract class TareaAbs extends Thread {
         return inicializado;
     }
 
-//    public static synchronized void sumar() {
-//  	   it++;
-//     }
 
     /** Metodo de inicializacion toma el estado definido como actual y obtiene de el un tablero y una lista
      * de fichas para comenzar la ejecucion. Luego actual = null */
@@ -82,6 +91,41 @@ public abstract class TareaAbs extends Thread {
         punteroAEstadoGenerador = actual;
         actual = null;
         inicializado = true;
+    }
+
+    public void avanzarNodo(Ficha ficha, Integer nivel){
+        nivel += 1;
+        ficha.setUsada(true);
+        tablero.aumentarPosicion();
+    }
+
+    public void retrocederNodo(Ficha ficha, Integer nivel){
+        tablero.retrocederPosicion();
+        ficha.setUsada(false);
+        nivel -= 1;
+    }
+
+    public void backDFS ( Integer nivel){
+        for (Ficha f : fichas) {
+            if(!f.isUsada()) {
+                for(int i=0; i<4;i++) {
+                    tablero.insertarFinal(f);
+                    if(tablero.esSolucion()) {
+                        if (tablero.esSolucionFinal()) {
+                            resultLog.info(" ---------------- SE ENCONTRO UNA SOLUCION " + Thread.currentThread().getName());
+                            Tablero resultado = tablero.clone();
+                            ManagerAbs.SOLUCIONES.add(resultado);
+                        } else {
+                            avanzarNodo(f,nivel);
+                            backRichi(fichas, nivel);
+                            retrocederNodo(f,nivel);
+                        }
+                    }
+                    tablero.eliminarUltima();
+                    f.rotar();
+                }
+            }
+        }
     }
 
     public abstract void backRichi(ArrayList<Ficha> fichas, Integer nivel);

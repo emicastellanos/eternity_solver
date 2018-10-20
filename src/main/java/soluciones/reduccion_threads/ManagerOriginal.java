@@ -2,6 +2,10 @@ package soluciones.reduccion_threads;
 
 public class ManagerOriginal extends ManagerAbs {
 
+    public ManagerOriginal(String tipo){
+        super(tipo);
+    }
+
     public void logicaDivisiones(){
         while (cantActivas()>0 || pendientes.size() > indice){
             if(cantActivas() < hilosParalelos && pendientes.size() == indice) { // si hay pendientes no divido
@@ -18,4 +22,10 @@ public class ManagerOriginal extends ManagerAbs {
             }
         }
     }
+
+    public static void main(String[] args){
+        ManagerAbs m = new ManagerOriginal("DFS");
+        m.start();
+    }
+
 }

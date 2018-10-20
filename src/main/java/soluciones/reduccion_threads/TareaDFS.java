@@ -13,18 +13,7 @@ public class TareaDFS extends TareaAbs {
 
     }
 
-    public void avanzarNodo(Ficha ficha, Integer nivel){
-        nivel += 1;
-        ficha.setUsada(true);
-        tablero.aumentarPosicion();
-    }
-
-    public void retrocederNodo(Ficha ficha, Integer nivel){
-        tablero.retrocederPosicion();
-        ficha.setUsada(false);
-        nivel -= 1;
-    }
-
+    @Override
     public void backRichi(ArrayList<Ficha> fichas, Integer nivel){
         boolean encontro = false;
         synchronized (this){
@@ -42,26 +31,7 @@ public class TareaDFS extends TareaAbs {
                 ManagerAbs.interrupciones.put(Thread.currentThread().getName(), ++cantidad);
             }
         }else{
-            for (Ficha f : fichas) {
-                if(!f.isUsada()) {
-                    for(int i=0; i<4;i++) {
-                        tablero.insertarFinal(f);
-                        if(tablero.esSolucion()) {
-                            if (tablero.esSolucionFinal()) {
-                                resultLog.info(" ---------------- SE ENCONTRO UNA SOLUCION " + Thread.currentThread().getName());
-                                Tablero resultado = tablero.clone();
-                                ManagerAbs.SOLUCIONES.add(resultado);
-                            } else {
-                                avanzarNodo(f,nivel);
-                                backRichi(fichas, nivel);
-                                retrocederNodo(f,nivel);
-                            }
-                        }
-                        tablero.eliminarUltima();
-                        f.rotar();
-                    }
-                }
-            }
+            backDFS(nivel);
         }
         //resultLog.info("SALIENDO DEL BACK " + Thread.currentThread().getName());
     }
