@@ -30,13 +30,13 @@ public abstract class ManagerAbs extends Thread {
     public static Map<String, Integer> interrupciones;
     public static int cantdivisiones;
 
-    protected int hilosParalelos = 4;
+    protected int hilosParalelos = 8;
 
     private boolean desordenar = false;
 
     private static int N = 8;
 
-    private static int NIVEL_BACK_INICIAL = 2;
+    private static int NIVEL_BACK_INICIAL = 1;
 
     private static int colores = 8;
 

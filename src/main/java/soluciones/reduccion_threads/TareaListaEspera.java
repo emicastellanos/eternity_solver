@@ -105,7 +105,6 @@ public class TareaListaEspera extends TareaAbs {
                 ((ManagerListaEspera)managerAbs).insertarEnListaEspera(this);
                 dormir();
                 //managerAbs.despertar();
-
             }
             setActual(ManagerAbs.getProximoEstado());
         }

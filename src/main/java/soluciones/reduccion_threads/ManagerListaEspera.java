@@ -15,6 +15,9 @@ public class ManagerListaEspera extends ManagerAbs{
         flagDividir = false;
     }
 
+    public List<TareaListaEspera> getListaEspera(){
+        return listaEspera;
+    }
 
     public void setFlagDividir(boolean flagDividir) {
         this.flagDividir = flagDividir;
@@ -24,7 +27,7 @@ public class ManagerListaEspera extends ManagerAbs{
         return flagDividir;
     }
 
-    public synchronized void insertarEnListaEspera(TareaListaEspera t){
+    public static synchronized void insertarEnListaEspera(TareaListaEspera t){
         listaEspera.add(t);
         //TODO eliminar linea
         System.out.println("inserta en lista espera, cant :"+listaEspera.size());
@@ -63,7 +66,7 @@ public class ManagerListaEspera extends ManagerAbs{
         while (hayNodosParaExplorar() || ( !hayNodosParaExplorar() && hayHilosTrabajando())) { // CONDICION DE QUE NO HAYA EXPOLORADO TODAS LAS POSICIONES
             if (listaEspera.size() >= getCantHilosParalelos() * Double.parseDouble("0.5")) { // CONVIENE GENERAR MAS TRABAJO ?
                 setFlagDividir(true); //LUEGO, LOS HILOS QUE HAYAN QUEDADO TRABAJANDO SE VAN A PONER A BUSCAR MAS TAREAS
-
+                System.out.println("MARCADO COMO SITUACION DE DIVIR");
                 dormir(1000);
                 if(hayNodosParaExplorar()){
                     despertarWorkers();
