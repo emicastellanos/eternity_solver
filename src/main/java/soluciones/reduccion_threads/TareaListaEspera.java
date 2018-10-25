@@ -1,6 +1,7 @@
 package soluciones.reduccion_threads;
 
 import entidades.Ficha;
+import entidades.Tablero;
 import utilidades.Utils;
 
 import java.lang.management.ManagementFactory;
@@ -10,16 +11,22 @@ import java.util.ArrayList;
 
 public class TareaListaEspera extends TareaAbs {
 
+    public Double porcentaje;
+
     public TareaListaEspera (ManagerAbs m){
         super(m);
+        porcentaje = new Double(0);
     }
 
     public TareaListaEspera(Estado estado, ManagerAbs m){
         super(estado,m);
+        porcentaje = new Double(0);
 
     }
 
-
+    public Double getPorcentaje() {
+        return porcentaje;
+    }
 
     public void contarInterrupciones(){
         Integer cantidad = ManagerAbs.interrupciones.get(Thread.currentThread().getName());
@@ -40,7 +47,7 @@ public class TareaListaEspera extends TareaAbs {
                     if(tablero.esSolucion()) {
                         avanzarNodo(f, nivel);
 
-                        new Estado(tablero.clone(), Utils.getCopia(fichas), nivel);
+                        nuevosEstados.add(new Estado(tablero.clone(), Utils.getCopia(fichas), nivel));
 
                         retrocederNodo(f, nivel);
                     }
@@ -53,22 +60,52 @@ public class TareaListaEspera extends TareaAbs {
         return nuevosEstados;
     }
 
-    public boolean generarTrabajo(Integer nivel){
+    public boolean convieneGenerarTrabajo(Integer nivel){
         return nivel <= tablero.getCantidadNivelesFinal() - 2 * tablero.getTamano();
+    }
+
+    public void modificarPorcentajeDeExploracion(int pos){
+        int div = pos +1 ;
+        porcentaje = new Double(div / fichas.size());
+    }
+
+
+    public void backDFS ( Integer nivel){
+        for (int pos=0; pos<fichas.size();pos++){
+            Ficha f = fichas.get(pos);
+
+            if(!f.isUsada()) {
+                modificarPorcentajeDeExploracion(pos);
+                for(int i=0; i<4;i++) {
+                    tablero.insertarFinal(f);
+                    if(tablero.esSolucion()) {
+                        if (tablero.esSolucionFinal()) {
+                            resultLog.info(" ---------------- SE ENCONTRO UNA SOLUCION " + Thread.currentThread().getName());
+                            Tablero resultado = tablero.clone();
+                            ManagerAbs.SOLUCIONES.add(resultado);
+                        } else {
+                            avanzarNodo(f,nivel);
+                            backRichi(fichas, nivel);
+                            retrocederNodo(f,nivel);
+                        }
+                    }
+                    tablero.eliminarUltima();
+                    f.rotar();
+                }
+            }
+
+        }
     }
 
     public void backRichi(ArrayList<Ficha> fichas, Integer nivel){
 
-        if(((ManagerListaEspera)managerAbs).getFlagDividir() == true && generarTrabajo(nivel)){
+        if(((ManagerListaEspera)managerAbs).getFlagDividir() == true && convieneGenerarTrabajo(nivel)){
 
             contarInterrupciones();
 
             managerAbs.addAllEstado(proximosNodosAnalizar(fichas,nivel));
 
-            //indice - pendientes.size() -> cantidad de tareas a ejecutarse < listaDeEspera => despertarlos y continuar
-            /*if ((pendientes.size() - indice) >= 1){
-                managerAbs.despertar();
-            }*/
+            //podriamos despertar al manager aca si lo consideramos conveniente, aunque tambien puede estar despierto ya para este momento y ahi ¿que pasaria?
 
         }else{
             backDFS(nivel);
@@ -89,6 +126,7 @@ public class TareaListaEspera extends TareaAbs {
 
     @Override
     public void run(){
+        ((ManagerListaEspera)managerAbs).setAlgunaTareaComenzada(true);
 
         while (ManagerAbs.TIENE_TAREAS) {
             if (getActual() != null) {
@@ -104,11 +142,10 @@ public class TareaListaEspera extends TareaAbs {
             }else {
                 ((ManagerListaEspera)managerAbs).insertarEnListaEspera(this);
                 dormir();
-                //managerAbs.despertar();
             }
             setActual(ManagerAbs.getProximoEstado());
         }
         MEDICIONES_LOGGER.info("TIEMPO DE CPU " + Thread.currentThread().getName() + " TAREA " + nombreTarea + " : " + (new BigDecimal(ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime()).divide(new BigDecimal(1000000000))).setScale(3, RoundingMode.HALF_UP).toString().replace('.', ','));
-        //managerAbs.despertar();
+        managerAbs.despertar(); // SOLO SIRVE PARA DESPERTAR EL MANAGER QUE SE QUEDO EN "ESPERAR PARA TERMINAR"
     }
 }
