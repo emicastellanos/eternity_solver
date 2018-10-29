@@ -83,4 +83,15 @@ public class Utils {
         }
         return buffer.toString();
     }
+
+    public static ArrayList<Ficha> getCopiaFichasSinUsar(ArrayList<Ficha> fichas) {
+        ArrayList<Ficha> result = new ArrayList<>();
+        for (Ficha f : fichas) {
+            if (!f.isUsada()) {
+                Ficha nueva = f.clone();
+                result.add(nueva);
+            }
+        }
+        return result;
+    }
 }

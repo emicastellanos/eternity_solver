@@ -47,7 +47,7 @@ public class TareaListaEspera extends TareaAbs {
                     if(tablero.esSolucion()) {
                         avanzarNodo(f, nivel);
 
-                        nuevosEstados.add(new Estado(tablero.clone(), Utils.getCopia(fichas), nivel));
+                        nuevosEstados.add(new Estado(tablero.clone(), Utils.getCopiaFichasSinUsar(fichas), nivel));
 
                         retrocederNodo(f, nivel);
                     }
