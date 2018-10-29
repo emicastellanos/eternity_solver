@@ -30,15 +30,15 @@ public abstract class ManagerAbs extends Thread {
     public static Map<String, Integer> interrupciones;
     public static int cantdivisiones;
 
-    protected int hilosParalelos = 10;
+    protected int hilosParalelos = 32;
 
-    private boolean desordenar = false;
+    private boolean desordenar = true;
 
-    private static int N = 7;
+    private static int N = 8;
 
-    private static int NIVEL_BACK_INICIAL = 2;
+    private static int NIVEL_BACK_INICIAL = 4;
 
-    private static int colores = 7;
+    private static int colores = 8;
 
     boolean primera_ficha_colocada = false ;
 
@@ -52,7 +52,7 @@ public abstract class ManagerAbs extends Thread {
         bloqueado = 0;
         contadorThreads = 0;
         tareaFactory = new TareaFactory(tipoBack);
-        interrupciones = new HashMap<String,Integer>();
+        interrupciones = Collections.synchronizedMap(new HashMap<String, Integer>());
         cantdivisiones=0;
     }
 
@@ -123,9 +123,9 @@ public abstract class ManagerAbs extends Thread {
         if(pendientes.size()>indice){
             result = pendientes.get(indice);
             indice +=1;
-            System.out.println("se entrego una tarea al " + Thread.currentThread().getName() + ", indice = " + indice);
+            //System.out.println("se entrego una tarea al " + Thread.currentThread().getName() + ", indice = " + indice);
         }else{
-            System.out.println("se PIDIO una tarea para el " + Thread.currentThread().getName() + ", pero indice = " + indice);
+            //System.out.println("se PIDIO una tarea para el " + Thread.currentThread().getName() + ", pero indice = " + indice);
         }
 
 
@@ -173,11 +173,14 @@ public abstract class ManagerAbs extends Thread {
         StringBuffer result = new StringBuffer("\n");
         Set<String> keys = interrupciones.keySet();
         Iterator<String> iterator = keys.iterator();
+        Integer c = 0;
         while(iterator.hasNext()){
             String threadName = iterator.next();
-            result.append(threadName).append(" - ").append(interrupciones.get(threadName)).append("\n");
+            //result.append(threadName).append(" - ").append(interrupciones.get(threadName)).append("\n");
+            c += interrupciones.get(threadName);
         }
-        return result.toString();
+
+        return c.toString();
     }
 
     public abstract void logicaDivisiones();

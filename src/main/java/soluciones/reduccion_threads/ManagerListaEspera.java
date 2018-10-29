@@ -39,7 +39,7 @@ public class ManagerListaEspera extends ManagerAbs{
     public static synchronized void insertarEnListaEspera(TareaListaEspera t){
         listaEspera.add(t);
         //TODO eliminar linea
-        System.out.println("inserta en lista espera, cant :"+listaEspera.size());
+        //System.out.println("inserta en lista espera, cant :"+listaEspera.size());
     }
 
     /**
@@ -95,10 +95,10 @@ public class ManagerListaEspera extends ManagerAbs{
     public void logicaDivisiones() {
 
         //TODAS LAS TAREAS COMENZARON y HAY TAREAS QUE CONVIENE DIVIDIR O VER QUE ONDA
-        while(!isAlgunaTareaComenzada() || (isAlgunaTareaComenzada() && hayNodosPrometedores(new Double(0.75)))) {
-            if (listaEspera.size() >= getCantHilosParalelos() * Double.parseDouble("0.5")) { // CONVIENE GENERAR MAS TRABAJO ?
+        while(!isAlgunaTareaComenzada() || (isAlgunaTareaComenzada() && hayNodosPrometedores(new Double(0.85)))) {
+            if (listaEspera.size() >= getCantHilosParalelos() * new Double(0.1)) { // CONVIENE GENERAR MAS TRABAJO ?
                 setFlagDividir(true); //LUEGO, LOS HILOS QUE HAYAN QUEDADO TRABAJANDO SE VAN A PONER A BUSCAR MAS TAREAS
-                System.out.println("MARCADO COMO SITUACION DE DIVIR");
+                System.out.println("MARCADO COMO SITUACION DE DIVIDIR");
                 dormir(100);
                 if(hayNodosParaExplorar()){
                     despertarWorkers();
