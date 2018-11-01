@@ -47,7 +47,7 @@ public class TareaListaEspera extends TareaAbs {
                     if(tablero.esSolucion()) {
                         avanzarNodo(f, nivel);
 
-                        nuevosEstados.add(new Estado(tablero.clone(), Utils.getCopia(fichas), nivel));
+                        nuevosEstados.add(new Estado(tablero.clone(), Utils.getCopiaFichasSinUsar(fichas), nivel));
 
                         retrocederNodo(f, nivel);
                     }
@@ -137,7 +137,7 @@ public class TareaListaEspera extends TareaAbs {
 
                 BigDecimal duration = new BigDecimal((endTime - startTime));
                 BigDecimal durationSecs = (duration.divide(new BigDecimal(1000000000))).setScale(3, RoundingMode.HALF_UP);
-                MEDICIONES_LOGGER.info(Thread.currentThread().getName() +" TIEMPO CORRIENDO " + nombreTarea  +" : "+ durationSecs.toString().replace('.', ',') + " SEGUNDOS EN ALGUN core ");
+                //MEDICIONES_LOGGER.info(Thread.currentThread().getName() +" TIEMPO CORRIENDO " + nombreTarea  +" : "+ durationSecs.toString().replace('.', ',') + " SEGUNDOS EN ALGUN core ");
                 finalizado = true;
             }else {
                 ((ManagerListaEspera)managerAbs).insertarEnListaEspera(this);
@@ -145,7 +145,7 @@ public class TareaListaEspera extends TareaAbs {
             }
             setActual(ManagerAbs.getProximoEstado());
         }
-        MEDICIONES_LOGGER.info("TIEMPO DE CPU " + Thread.currentThread().getName() + " TAREA " + nombreTarea + " : " + (new BigDecimal(ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime()).divide(new BigDecimal(1000000000))).setScale(3, RoundingMode.HALF_UP).toString().replace('.', ','));
+        //MEDICIONES_LOGGER.info("TIEMPO DE CPU " + Thread.currentThread().getName() + " TAREA " + nombreTarea + " : " + (new BigDecimal(ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime()).divide(new BigDecimal(1000000000))).setScale(3, RoundingMode.HALF_UP).toString().replace('.', ','));
         managerAbs.despertar(); // SOLO SIRVE PARA DESPERTAR EL MANAGER QUE SE QUEDO EN "ESPERAR PARA TERMINAR"
     }
 }

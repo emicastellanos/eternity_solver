@@ -10,8 +10,8 @@ public class ManagerListaEspera extends ManagerAbs{
     public static List<TareaListaEspera> listaEspera;
     public boolean algunaTareaComenzada;
 
-    public ManagerListaEspera (){
-        super ("LS");
+    public ManagerListaEspera (int n, int c, int h, int b, int des){
+        super ("LS",n,c,h,b,des);
         listaEspera = Collections.synchronizedList(new ArrayList<>());
         flagDividir = false;
     }
@@ -39,7 +39,7 @@ public class ManagerListaEspera extends ManagerAbs{
     public static synchronized void insertarEnListaEspera(TareaListaEspera t){
         listaEspera.add(t);
         //TODO eliminar linea
-        System.out.println("inserta en lista espera, cant :"+listaEspera.size());
+        //System.out.println("inserta en lista espera, cant :"+listaEspera.size());
     }
 
     /**
@@ -61,7 +61,7 @@ public class ManagerListaEspera extends ManagerAbs{
             (borrar.get(i)).despertar();
         }
         //TODO eliminar linea
-        System.out.println("se borran de lista espera :"+borrar.size());
+        MEDICIONES_LOGGER.info("se borran de lista espera :"+borrar.size());
 
     }
 
@@ -95,10 +95,10 @@ public class ManagerListaEspera extends ManagerAbs{
     public void logicaDivisiones() {
 
         //TODAS LAS TAREAS COMENZARON y HAY TAREAS QUE CONVIENE DIVIDIR O VER QUE ONDA
-        while(!isAlgunaTareaComenzada() || (isAlgunaTareaComenzada() && hayNodosPrometedores(new Double(0.75)))) {
-            if (listaEspera.size() >= getCantHilosParalelos() * Double.parseDouble("0.5")) { // CONVIENE GENERAR MAS TRABAJO ?
+        while(!isAlgunaTareaComenzada() || (isAlgunaTareaComenzada() && hayNodosPrometedores(new Double(0.85)))) {
+            if (listaEspera.size() >= getCantHilosParalelos() * new Double(0.1)) { // CONVIENE GENERAR MAS TRABAJO ?
                 setFlagDividir(true); //LUEGO, LOS HILOS QUE HAYAN QUEDADO TRABAJANDO SE VAN A PONER A BUSCAR MAS TAREAS
-                System.out.println("MARCADO COMO SITUACION DE DIVIR");
+                MEDICIONES_LOGGER.info("MARCADO COMO SITUACION DE DIVIDIR");
                 dormir(100);
                 if(hayNodosParaExplorar()){
                     despertarWorkers();
@@ -107,13 +107,27 @@ public class ManagerListaEspera extends ManagerAbs{
                 }
 
             } else {
-                dormir(100);
+                dormir(1000);
             }
         }
     }
 
     public static void main(String [] args){
-        ManagerAbs managerAbs = new ManagerListaEspera();
+        int n = 7;
+        int c = 7;
+        int h = 4;
+        int b = 3;
+        int des = 0;
+
+        if(args.length == 5){
+            n = Integer.valueOf(args[0]);
+            c = Integer.valueOf(args[1]);
+            h = Integer.valueOf(args[2]);
+            b = Integer.valueOf(args[3]);
+            des = Integer.valueOf(args[4]);
+        }
+
+        ManagerAbs managerAbs = new ManagerListaEspera(n,c,h,b,des);
         managerAbs.start();
     }
 }
