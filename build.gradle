@@ -1,13 +1,35 @@
 apply plugin: 'java'
 apply plugin: 'idea'
 
+version = '1.0'
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+//create a single Jar with all dependencies
+jar{
+    manifest {
+        attributes 'Implementation-Title': 'Gradle Jar File Example',
+                'Implementation-Version': version ,
+                'Main-Class': 'soluciones.reduccion_threads.ManagerListaEspera'
+    }
+    baseName = project.name + '-emijxa'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+            {
+                exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
+            }
+
+    exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA', 'META-INF/*.MF'
+}
+
 repositories {
     jcenter()
 }
 
 dependencies {
     compile 'org.slf4j:slf4j-api:1.7.21'
+    compile 'commons-logging:commons-logging:1.2'
     testCompile 'junit:junit:4.12'
+
 }
 
 dependencies {

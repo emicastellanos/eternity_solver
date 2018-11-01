@@ -7,8 +7,8 @@ import java.util.List;
  **/
 public class ManagerSinDividir extends ManagerAbs {
 
-    public ManagerSinDividir (String tipo){
-        super(tipo);
+    public ManagerSinDividir (String tipo,int n, int c, int h, int b, int des){
+        super(tipo,n,c,h,b,des);
     }
 
 
@@ -27,7 +27,7 @@ public class ManagerSinDividir extends ManagerAbs {
     }
 
     public static void main(String[] args){
-        ManagerAbs m = new ManagerSinDividir("DFS");
+        ManagerAbs m = new ManagerSinDividir("DFS",7,7,4,3,0);
         m.start();
     }
 }

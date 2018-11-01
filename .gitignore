@@ -9,4 +9,5 @@
 *.iws
 /output/
 /out/
-/build/
+/build/*
+*.class
