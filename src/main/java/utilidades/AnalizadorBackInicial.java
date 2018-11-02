@@ -77,12 +77,7 @@ public class AnalizadorBackInicial {
             mapResultados.put(i,new TiempoCantidad(duracionSeg,cantEstados));
 
             reiniciarEstructuras();
-
-
         }
-
-
-
     }
 
     public static void main (String[] args){
