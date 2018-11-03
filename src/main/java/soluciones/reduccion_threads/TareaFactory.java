@@ -14,6 +14,8 @@ public class TareaFactory implements TareaFactoryMethod {
             return new TareaBFS(estado,m);
         }else if("DFS".equals(tipo)){
             return new TareaDFS(estado,m);
+        }else if("DFSin".equals(tipo)){
+        		return new TareaDFSinDividir(estado, m);
         }else return new TareaListaEspera(estado,m);
     }
 }

@@ -13,7 +13,7 @@ public abstract class TareaAbs extends Thread {
     protected boolean finalizado; // cuando llega al final del metodo run ()
     protected Tablero tablero;
     protected ArrayList<Ficha> fichas;
-    private Estado actual;
+    protected Estado actual;
     private Estado punteroAEstadoGenerador;
     protected ManagerAbs managerAbs;
 

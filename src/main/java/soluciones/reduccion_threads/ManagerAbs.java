@@ -28,6 +28,7 @@ public abstract class ManagerAbs extends Thread {
     static final Logger MEDICIONES_LOGGER = Logger.getLogger("medicionesLogger");
     public static Map<String, Integer> interrupciones;
     public static int cantdivisiones;
+    public long tiempoInicial;
 
     protected int hilosParalelos;// = 32;
 
@@ -39,7 +40,7 @@ public abstract class ManagerAbs extends Thread {
 
     private static int colores; // = 8;
 
-    boolean primera_ficha_colocada = false ;
+    boolean primera_ficha_colocada = true ;
 
 
 
@@ -58,6 +59,14 @@ public abstract class ManagerAbs extends Thread {
         NIVEL_BACK_INICIAL = b;
         hilosParalelos = h;
         desordenar = des==1;
+    }
+    
+    public void setTiempoInicial(long l) {
+    		this.tiempoInicial = l;
+    }
+    
+    public long getTiempoInicial() {
+    		return tiempoInicial;
     }
 
     public int getCantHilosParalelos() {
@@ -224,7 +233,7 @@ public abstract class ManagerAbs extends Thread {
 
 
     public synchronized void ejecutar(ArrayList <Ficha> fichas, Tablero tablero, int nivelBackInicial)  {
-
+    		setTiempoInicial(System.nanoTime());
         pendientes = creadorTareas.crearTareasIniciales(tablero, fichas, nivelBackInicial);
         setCantTareasIniciales(pendientes.size());
         cargarThreadsIniciales();
