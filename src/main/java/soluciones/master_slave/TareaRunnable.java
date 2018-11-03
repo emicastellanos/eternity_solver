@@ -57,9 +57,8 @@ public class TareaRunnable extends Thread {
 
     @Override
     public void run() {
-        //resultLog.info("\n----- ARRANCA EL THREAD " + nombreThread + " " + ZonedDateTime.now());
         MEDICIONES_LOGGER.info("\n----- ARRANCA EL THREAD " + nombreThread + " " + ZonedDateTime.now());
-        //resultLog.info("\n----- TERMINO EL THREAD " + nombreThread+" "+ZonedDateTime.now());
+
         long startTime = System.nanoTime();
         backRichi();
         long endTime = System.nanoTime();

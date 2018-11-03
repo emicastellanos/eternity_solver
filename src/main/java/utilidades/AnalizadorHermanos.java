@@ -16,7 +16,7 @@ public class AnalizadorHermanos {
     static final Logger resultLog = Logger.getLogger("analizadorLogger");
 
     public AnalizadorHermanos (int N){
-        int colores = N;
+        int colores = N-1;
         GeneradorFichas g = new GeneradorFichasUnicas(N,colores);
         tablero = new Tablero(N);
         fichas = g.getFichasUnicas();
@@ -91,7 +91,7 @@ public class AnalizadorHermanos {
 
 
     public static void main (String[] args){
-        int N = 7; /*** TAMAÑO DEL TABLERO ***/
+        int N = 6; /*** TAMAÑO DEL TABLERO ***/
         AnalizadorHermanos analizador = new AnalizadorHermanos (N);
         analizador.recorrido();
 

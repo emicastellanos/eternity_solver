@@ -17,33 +17,41 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 
-public class LinealMain {
+public class BackLineal {
     public static ArrayList<Ficha> fichas;
 
-    private static final int N = 8;
     private static Boolean UBICAR_PRIMERA = Boolean.TRUE;
 
     static final Logger resultLog = Logger.getLogger("resultadoLogger");
 
 
     public static void main(String[] args) {
-        GeneradorFichas generadorFichas = new GeneradorFichasUnicas(N,N);
+
+        int n = 6;
+        int c = 6;
+        int des = 1;
+
+        if(args.length == 3){
+            n = Integer.valueOf(args[0]);
+            c = Integer.valueOf(args[1]);
+            des = Integer.valueOf(args[2]);
+        }
+
+
+        GeneradorFichas generadorFichas = new GeneradorFichasUnicas(n,c);
         fichas = generadorFichas.getFichasUnicas();
 
-        Tablero tablero = new Tablero(N);
+        Tablero tablero = new Tablero(n);
 
         if(UBICAR_PRIMERA) {
             tablero.insertarFinal(fichas.get(0));
             tablero.aumentarPosicion();
             fichas.get(0).setUsada(true);
         }
-        Collections.shuffle(fichas);
 
-
-
-        /*if(UBICAR_PRIMERA){
-            Utils.backUbicarPrimera(tablero,fichas);
-        }*/
+        if(des == 1){
+            Collections.shuffle(fichas);
+        }
 
         int nhilo= 1;
         TareaRunnable tarea = new TareaRunnable(tablero,fichas,String.valueOf(nhilo));
@@ -63,7 +71,7 @@ public class LinealMain {
         BigDecimal threadCpuTime = new BigDecimal(ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime());
         resultLog.info("threadUserTime " + (threadUserTime.divide(new BigDecimal(1000000000))).setScale(3, RoundingMode.HALF_UP)) ;
         resultLog.info("threadCPUTime " + (threadCpuTime.divide(new BigDecimal(1000000000))).setScale(3, RoundingMode.HALF_UP)) ;
-        resultLog.info("active-Threads " + Thread.activeCount());
+        //resultLog.info("active-Threads " + Thread.activeCount());
 
     }
 }

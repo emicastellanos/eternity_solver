@@ -25,7 +25,7 @@ public class ManagerSinDividir extends ManagerAbs {
     public void logicaDivisiones(){}
 
     public static void main(String[] args){
-    	    int n = 8;
+    	int n = 8;
         int c = 8;
         int h = 12;
         int b = 5;
