@@ -19,6 +19,7 @@ public class TareaDFS extends TareaAbs {
         synchronized (this){
             if(isDividir() && fichas.size()>1){
                 this.setDividir(false);
+                //MEDICIONES_LOGGER.info("FLAG DIVIDIR = FALSE");
                 encontro = true;
             }
         }
@@ -33,6 +34,6 @@ public class TareaDFS extends TareaAbs {
         }else{
             backDFS(nivel);
         }
-        //resultLog.info("SALIENDO DEL BACK " + Thread.currentThread().getName());
+
     }
 }

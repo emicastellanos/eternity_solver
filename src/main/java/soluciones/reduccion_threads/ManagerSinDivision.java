@@ -1,13 +1,11 @@
 package soluciones.reduccion_threads;
 
-import java.util.List;
-
 /**
  * ESTA IMPLEMENTACION DEJA DORMIDO AL MANAGER MIENTRAS EXISTAN TAREAS SIN FINALIZAR (ni pendientes)
  **/
-public class ManagerSinDividir extends ManagerAbs {
+public class ManagerSinDivision extends ManagerAbs {
 
-    public ManagerSinDividir (String tipo,int n, int c, int h, int b, int des){
+    public ManagerSinDivision(String tipo, int n, int c, int h, int b, int des){
         super(tipo,n,c,h,b,des);
     }
     
@@ -29,7 +27,7 @@ public class ManagerSinDividir extends ManagerAbs {
         int c = 8;
         int h = 12;
         int b = 5;
-        int des = 1;
+        int des = 0;
 
         if(args.length == 5){
             n = Integer.valueOf(args[0]);
@@ -38,7 +36,7 @@ public class ManagerSinDividir extends ManagerAbs {
             b = Integer.valueOf(args[3]);
             des = Integer.valueOf(args[4]);
         }
-        ManagerAbs m = new ManagerSinDividir("DFSin",n,c,h,b,des);
+        ManagerAbs m = new ManagerSinDivision("DFSin",n,c,h,b,des);
         m.start();
     }
 }

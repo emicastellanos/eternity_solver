@@ -76,7 +76,7 @@ public class Utils {
         StringBuffer buffer = new StringBuffer();
         int i = 1;
         for(Tablero t : tableros){
-            buffer.append("SOLUCION # " + i +"\n");
+            buffer.append("\nSOLUCION # " + i +"\n");
             buffer.append(t.imprimirUsadas() + "\n");
             buffer.append(t.imprimirse() + "\n");
             i++;

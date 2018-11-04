@@ -18,14 +18,17 @@ public class TareaDFSinDividir extends TareaAbs {
 
     @Override
     public void run(){
-    		long startTime = managerAbs.getTiempoInicial();
+
+        long startTime = managerAbs.getTiempoInicial();
+
         while (actual!=null) {
             inicializar();
             backRichi(this.fichas,nivelComienzo);
             actual = ManagerAbs.getProximoEstado();
         }
-        MEDICIONES_LOGGER.info("TIEMPO DE CPU " + Thread.currentThread().getName() + " TAREA " + nombreTarea + " : " + (new BigDecimal(ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime()).divide(new BigDecimal(1000000000))).setScale(3, RoundingMode.HALF_UP).toString().replace('.', ','));
         long endTime = System.nanoTime();
+        //MEDICIONES_LOGGER.info("TIEMPO DE CPU " + Thread.currentThread().getName() + " TAREA " + nombreTarea + " : " + (new BigDecimal(ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime()).divide(new BigDecimal(1000000000))).setScale(3, RoundingMode.HALF_UP).toString().replace('.', ','));
+
         BigDecimal duration = new BigDecimal((endTime - startTime));
         BigDecimal durationSecs = (duration.divide(new BigDecimal(1000000000))).setScale(3, RoundingMode.HALF_UP);
         MEDICIONES_LOGGER.info(Thread.currentThread().getName() +" TIEMPO TOTAL " + nombreTarea  +" : "+ durationSecs.toString().replace('.', ',') + " SEGUNDOS ");
@@ -33,7 +36,7 @@ public class TareaDFSinDividir extends TareaAbs {
 
 	@Override
 	public void backRichi(ArrayList<Ficha> fichas, Integer nivel) {
-		// TODO Auto-generated method stub
+
 		backDFS(nivelComienzo);
 		
 	}

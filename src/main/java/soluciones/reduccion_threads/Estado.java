@@ -12,9 +12,6 @@ public class Estado {
     private Integer nivel;
     private String nombre;
     private static int nroTarea = 1;
-    static final Logger resultLog = Logger.getLogger("resultadoLogger");
-    private boolean estadoExplorado;
-
 
     public Estado(Tablero t, ArrayList<Ficha> fichas, Integer nivel){
         this.tablero = t;
@@ -22,7 +19,6 @@ public class Estado {
         this.fichas = fichas;
         this.nombre = "NODO-"+nroTarea+"_nivel-"+nivel;
         this.nroTarea +=1;
-        estadoExplorado = false;
     }
 
     public Tablero getTablero() {
@@ -41,11 +37,4 @@ public class Estado {
         return nombre;
     }
 
-    public boolean isEstadoExplorado() {
-        return estadoExplorado;
-    }
-
-    public void setEstadoExplorado(boolean estadoExplorado) {
-        this.estadoExplorado = estadoExplorado;
-    }
 }

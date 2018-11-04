@@ -102,10 +102,10 @@ public class TareaListaEspera extends TareaAbs {
         if(((ManagerListaEspera)managerAbs).getFlagDividir() == true && convieneGenerarTrabajo(nivel)){
 
             contarInterrupciones();
-
-            managerAbs.addAllEstado(proximosNodosAnalizar(fichas,nivel));
-
-            //podriamos despertar al manager aca si lo consideramos conveniente, aunque tambien puede estar despierto ya para este momento y ahi ¿que pasaria?
+            ArrayList<Estado> masTareas = proximosNodosAnalizar(fichas,nivel);
+            if(masTareas.size()>0){
+                managerAbs.addAllEstado(masTareas);
+            }
 
         }else{
             backDFS(nivel);
@@ -137,7 +137,7 @@ public class TareaListaEspera extends TareaAbs {
 
                 BigDecimal duration = new BigDecimal((endTime - startTime));
                 BigDecimal durationSecs = (duration.divide(new BigDecimal(1000000000))).setScale(3, RoundingMode.HALF_UP);
-                //MEDICIONES_LOGGER.info(Thread.currentThread().getName() +" TIEMPO CORRIENDO " + nombreTarea  +" : "+ durationSecs.toString().replace('.', ',') + " SEGUNDOS EN ALGUN core ");
+                MEDICIONES_LOGGER.info(Thread.currentThread().getName() +" TIEMPO CORRIENDO " + nombreTarea  +" : "+ durationSecs.toString().replace('.', ',') + " SEGUNDOS EN ALGUN core ");
                 finalizado = true;
             }else {
                 ((ManagerListaEspera)managerAbs).insertarEnListaEspera(this);

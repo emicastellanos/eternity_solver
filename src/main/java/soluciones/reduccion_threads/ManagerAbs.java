@@ -189,7 +189,6 @@ public abstract class ManagerAbs extends Thread {
         Integer c = 0;
         while(iterator.hasNext()){
             String threadName = iterator.next();
-            //result.append(threadName).append(" - ").append(interrupciones.get(threadName)).append("\n");
             c += interrupciones.get(threadName);
         }
 
@@ -238,13 +237,13 @@ public abstract class ManagerAbs extends Thread {
         setCantTareasIniciales(pendientes.size());
         cargarThreadsIniciales();
 
-        resultLog.info("SE ACTIVAN  " + hilos.size() + " / de " + pendientes.size());
+        resultLog.info("-- SE ACTIVAN  " + hilos.size() + " / de " + pendientes.size() +" --");
         iniciarTareas();
 
         logicaDivisiones();
 
         TIENE_TAREAS = false;
-        System.out.println("TIENE TAREAS = FALSE");
+        resultLog.info("-- MANAGER LISTO PARA TERMINAR --");
 
         esperarParaTerminar();
 
@@ -264,10 +263,9 @@ public abstract class ManagerAbs extends Thread {
             fichas.get(0).setUsada(true);
         }
 
-        if(desordenar)
-        	Collections.shuffle(fichas);
-        //resultLog.info("----- INICIO  " + ZonedDateTime.now());
-
+        if(desordenar){
+            Collections.shuffle(fichas);
+        }
 
         long startTime = System.nanoTime();
         ejecutar(fichas,tablero, NIVEL_BACK_INICIAL);
@@ -286,26 +284,18 @@ public abstract class ManagerAbs extends Thread {
         resultLog.info("CANTIDAD COLORES                = " + colores) ;
         resultLog.info("PRIMERA COLOCADA?               = " + primera_ficha_colocada) ;
         resultLog.info("FICHAS MEZCLADAS?               = " + desordenar) ;
-        resultLog.info("CANTIDAD HILOS USADOS           = " +( getCantHilosParalelos() +1));
-        resultLog.info("CANTIDAD NUCLEOS DEL PROCESADOR = "+Runtime.getRuntime().availableProcessors() );
+        resultLog.info("CANTIDAD HILOS USADOS           = " + ( getCantHilosParalelos() +1));
+        resultLog.info("CANTIDAD NUCLEOS DEL PROCESADOR = " + Runtime.getRuntime().availableProcessors() );
         resultLog.info("CANTIDAD SOLUCIONES             = " + SOLUCIONES.size()) ;
         resultLog.info("NIVEL DE BACK INICIAL           = " + NIVEL_BACK_INICIAL);
-        resultLog.info("CANTIDAD TAREAS INICIALES       = "+ getCantTareasIniciales());
+        resultLog.info("CANTIDAD TAREAS INICIALES       = " + getCantTareasIniciales());
         resultLog.info("TIEMPO                          = " + durationSecs.toString().replace('.',',') + " SEGUNDOS");
-        resultLog.info("# tareas totales que se ejecutaron " + pendientes.size());
-        resultLog.info("INTERRUPCIONES:  " + getInterrupciones());
-        resultLog.info("cant divisiones:  " + cantdivisiones);
+        resultLog.info("TAM LISTA PENDIENTES            = " + pendientes.size());
+        resultLog.info("INTERRUPCIONES A TAREAS         =  " + getInterrupciones());
+        resultLog.info("CANT VECES PUESTO EL FLAG DIV   =  " + cantdivisiones);
 
 
 
-
-        /*List<GarbageCollectorMXBean> lista = ManagementFactory.getGarbageCollectorMXBeans();
-        for(int j = 0; j < lista.size(); j++){
-            System.out.println(j + " - GC count " + lista.get(j).getCollectionCount());
-            System.out.println(j + " - Time elapsed " + lista.get(j).getCollectionTime() + "nanosecs");
-        }
-
-        ManagementFactory.getMemoryPoolMXBeans();*/
     }
 
 }

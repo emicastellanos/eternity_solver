@@ -95,17 +95,17 @@ public class ManagerListaEspera extends ManagerAbs{
     public void logicaDivisiones() {
 
         //TODAS LAS TAREAS COMENZARON y HAY TAREAS QUE CONVIENE DIVIDIR O VER QUE ONDA
-        while(!isAlgunaTareaComenzada() || (isAlgunaTareaComenzada() && hayNodosPrometedores(new Double(0.85)))) {
-            if (listaEspera.size() >= getCantHilosParalelos() * new Double(0.1)) { // CONVIENE GENERAR MAS TRABAJO ?
+        while(!isAlgunaTareaComenzada() || (isAlgunaTareaComenzada() && hayNodosPrometedores(new Double(0.9)))) {
+            if (listaEspera.size() >= getCantHilosParalelos() * new Double(0.25)) { // CONVIENE GENERAR MAS TRABAJO ?
                 setFlagDividir(true); //LUEGO, LOS HILOS QUE HAYAN QUEDADO TRABAJANDO SE VAN A PONER A BUSCAR MAS TAREAS
-                MEDICIONES_LOGGER.info("MARCADO COMO SITUACION DE DIVIDIR");
+                MEDICIONES_LOGGER.info("FLAG DIVIDIR = TRUE");
                 dormir(100);
                 if(hayNodosParaExplorar()){
                     despertarWorkers();
                     setFlagDividir(false);
-                    //dormir(1000);
+                    MEDICIONES_LOGGER.info("FLAG DIVIDIR = FALSE");
+                    cantdivisiones+=1;
                 }
-
             } else {
                 dormir(1000);
             }
@@ -113,10 +113,10 @@ public class ManagerListaEspera extends ManagerAbs{
     }
 
     public static void main(String [] args){
-        int n = 7;
-        int c = 7;
-        int h = 4;
-        int b = 3;
+        int n = 8;
+        int c = 8;
+        int h = 12;
+        int b = 4;
         int des = 0;
 
         if(args.length == 5){

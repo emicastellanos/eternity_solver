@@ -93,16 +93,18 @@ public abstract class TareaAbs extends Thread {
         inicializado = true;
     }
 
-    public void avanzarNodo(Ficha ficha, Integer nivel){
+    public Integer avanzarNodo(Ficha ficha, Integer nivel){
         nivel += 1;
         ficha.setUsada(true);
         tablero.aumentarPosicion();
+        return nivel;
     }
 
-    public void retrocederNodo(Ficha ficha, Integer nivel){
+    public Integer retrocederNodo(Ficha ficha, Integer nivel){
         tablero.retrocederPosicion();
         ficha.setUsada(false);
         nivel -= 1;
+        return  nivel;
     }
 
     public void backDFS ( Integer nivel){
@@ -116,9 +118,9 @@ public abstract class TareaAbs extends Thread {
                             Tablero resultado = tablero.clone();
                             ManagerAbs.SOLUCIONES.add(resultado);
                         } else {
-                            avanzarNodo(f,nivel);
+                            nivel = avanzarNodo(f,nivel);
                             backRichi(fichas, nivel);
-                            retrocederNodo(f,nivel);
+                            nivel = retrocederNodo(f,nivel);
                         }
                     }
                     tablero.eliminarUltima();
@@ -142,9 +144,8 @@ public abstract class TareaAbs extends Thread {
 
                 BigDecimal duration = new BigDecimal((endTime - startTime));
                 BigDecimal durationSecs = (duration.divide(new BigDecimal(1000000000))).setScale(3, RoundingMode.HALF_UP);
-                MEDICIONES_LOGGER.info(Thread.currentThread().getName() +" TIEMPO CORRIENDO " + nombreTarea  +" : "+ durationSecs.toString().replace('.', ',') + " SEGUNDOS EN ALGUN core ");
+                //MEDICIONES_LOGGER.info(Thread.currentThread().getName() +" TIEMPO CORRIENDO " + nombreTarea  +" : "+ durationSecs.toString().replace('.', ',') + " SEGUNDOS EN ALGUN core ");
                 finalizado = true;
-                punteroAEstadoGenerador.setEstadoExplorado(true);
             }else {
                 managerAbs.despertar();
             }
