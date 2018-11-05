@@ -63,7 +63,7 @@ public class ManagerListaEspera extends ManagerAbs{
             (borrar.get(i)).despertar();
         }
         //TODO eliminar linea
-        MEDICIONES_LOGGER.info("se borran de lista espera :"+borrar.size());
+        MEDICIONES_LOGGER.info("se borran de lista espera :" + borrar.size());
 
     }
 
@@ -101,12 +101,12 @@ public class ManagerListaEspera extends ManagerAbs{
             if (listaEspera.size() >= getCantHilosParalelos() * pctjeHilosDormidos) { // CONVIENE GENERAR MAS TRABAJO ?
                 setFlagDividir(true); //LUEGO, LOS HILOS QUE HAYAN QUEDADO TRABAJANDO SE VAN A PONER A BUSCAR MAS TAREAS
                 MEDICIONES_LOGGER.info("FLAG DIVIDIR = TRUE");
+                cantdivisiones+=1;
                 dormir(100);
                 if(hayNodosParaExplorar()){
                     despertarWorkers();
                     setFlagDividir(false);
                     MEDICIONES_LOGGER.info("FLAG DIVIDIR = FALSE");
-                    cantdivisiones+=1;
                 }
             } else {
                 dormir(1000);
