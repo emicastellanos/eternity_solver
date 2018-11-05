@@ -59,7 +59,6 @@ public class CreadorTareas {
             if (!f.isUsada()) {
                 for (int i = 0; i < 4; i++) {
                     tablero.insertarFinal(f);
-                    //TareaAbs.sumar();
                     if (tablero.esSolucion()) {
                         nivel += 1;
                         f.setUsada(true);
@@ -86,7 +85,7 @@ public class CreadorTareas {
     //TODO Que BUSQUE y coloque la primera ficha una sola vez y a partir de eso conseguir las restantes hasta el nivelInicial
     /** nivelInicial = cantidad de fichas bien colocadas en los tableros devueltos */
     public ArrayList<Estado> crearTareasIniciales(Tablero tablero, ArrayList<Ficha> fichas, int nivelObjetivo){
-        return backNivel(fichas,0,tablero,nivelObjetivo);
+        return backNivel(fichas,1,tablero,nivelObjetivo);
     }
 
 }
