@@ -84,9 +84,9 @@ public class TareaListaEspera extends TareaAbs {
                             Tablero resultado = tablero.clone();
                             ManagerAbs.SOLUCIONES.add(resultado);
                         } else {
-                            avanzarNodo(f,nivel);
+                            nivel = avanzarNodo(f,nivel);
                             backRichi(fichas, nivel);
-                            retrocederNodo(f,nivel);
+                            nivel = retrocederNodo(f,nivel);
                         }
                     }
                     tablero.eliminarUltima();
@@ -135,9 +135,9 @@ public class TareaListaEspera extends TareaAbs {
                 backRichi(this.fichas, nivelComienzo);
                 long endTime = System.nanoTime();
 
-                BigDecimal duration = new BigDecimal((endTime - startTime));
+                /*BigDecimal duration = new BigDecimal((endTime - startTime));
                 BigDecimal durationSecs = (duration.divide(new BigDecimal(1000000000))).setScale(3, RoundingMode.HALF_UP);
-                //MEDICIONES_LOGGER.info(Thread.currentThread().getName() +" TIEMPO CORRIENDO " + nombreTarea  +" : "+ durationSecs.toString().replace('.', ',') + " SEGUNDOS EN ALGUN core ");
+                MEDICIONES_LOGGER.info(Thread.currentThread().getName() +" TIEMPO CORRIENDO " + nombreTarea  +" : "+ durationSecs.toString().replace('.', ',') + " SEGUNDOS EN ALGUN core ");*/
                 finalizado = true;
             }else {
                 ((ManagerListaEspera)managerAbs).insertarEnListaEspera(this);

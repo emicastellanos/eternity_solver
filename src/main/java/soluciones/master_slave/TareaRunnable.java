@@ -37,7 +37,7 @@ public class TareaRunnable extends Thread {
                     if (tablero.esSolucion()) {
                         if (tablero.esSolucionFinal()) {
                             solucion++;
-                            resultLog.info("SOLUCION " + nombreThread);
+                            resultLog.info("SOLUCION");
                             resultLog.info(tablero.imprimirse());
                             //listaSoluciones.add(tablero.clone());
                         } else {

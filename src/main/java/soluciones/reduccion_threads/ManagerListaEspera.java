@@ -9,11 +9,13 @@ public class ManagerListaEspera extends ManagerAbs{
     public boolean flagDividir;
     public static List<TareaListaEspera> listaEspera;
     public boolean algunaTareaComenzada;
+    public double pctjeHilosDormidos;
 
-    public ManagerListaEspera (int n, int c, int h, int b, int des){
+    public ManagerListaEspera (int n, int c, int h, int b, int des, double p){
         super ("LS",n,c,h,b,des);
         listaEspera = Collections.synchronizedList(new ArrayList<>());
         flagDividir = false;
+        pctjeHilosDormidos = p;
     }
 
     public boolean isAlgunaTareaComenzada() {
@@ -95,8 +97,8 @@ public class ManagerListaEspera extends ManagerAbs{
     public void logicaDivisiones() {
 
         //TODAS LAS TAREAS COMENZARON y HAY TAREAS QUE CONVIENE DIVIDIR O VER QUE ONDA
-        while(!isAlgunaTareaComenzada() || (isAlgunaTareaComenzada() && hayNodosPrometedores(new Double(0.9)))) {
-            if (listaEspera.size() >= getCantHilosParalelos() * new Double(0.25)) { // CONVIENE GENERAR MAS TRABAJO ?
+        while(!isAlgunaTareaComenzada() || (isAlgunaTareaComenzada() && hayNodosPrometedores(new Double(0.8)))) {
+            if (listaEspera.size() >= getCantHilosParalelos() * pctjeHilosDormidos) { // CONVIENE GENERAR MAS TRABAJO ?
                 setFlagDividir(true); //LUEGO, LOS HILOS QUE HAYAN QUEDADO TRABAJANDO SE VAN A PONER A BUSCAR MAS TAREAS
                 MEDICIONES_LOGGER.info("FLAG DIVIDIR = TRUE");
                 dormir(100);
@@ -118,16 +120,18 @@ public class ManagerListaEspera extends ManagerAbs{
         int h = 12;
         int b = 4;
         int des = 0;
+        double pctje = 0.25;
 
-        if(args.length == 5){
+        if(args.length == 6){
             n = Integer.valueOf(args[0]);
             c = Integer.valueOf(args[1]);
             h = Integer.valueOf(args[2]);
             b = Integer.valueOf(args[3]);
             des = Integer.valueOf(args[4]);
+            pctje = Double.valueOf(args[5]);
         }
 
-        ManagerAbs managerAbs = new ManagerListaEspera(n,c,h,b,des);
+        ManagerAbs managerAbs = new ManagerListaEspera(n,c,h,b,des,pctje);
         managerAbs.start();
     }
 }
