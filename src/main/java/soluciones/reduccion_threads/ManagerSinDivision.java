@@ -1,8 +1,5 @@
 package soluciones.reduccion_threads;
 
-/**
- * ESTA IMPLEMENTACION DEJA DORMIDO AL MANAGER MIENTRAS EXISTAN TAREAS SIN FINALIZAR (ni pendientes)
- **/
 public class ManagerSinDivision extends ManagerAbs {
 
     public ManagerSinDivision(String tipo, int n, int c, int h, int b, int des){
@@ -19,7 +16,7 @@ public class ManagerSinDivision extends ManagerAbs {
     
     public void esperarParaTerminar(){}
 
-    /**como no se va a dividir, la idea es que el manager termine si todas las tareas pendientes estan siendo usadas o si ya terminaron su trabajo*/
+
     public void logicaDivisiones(){}
 
     public static void main(String[] args){
